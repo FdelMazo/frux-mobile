@@ -5,14 +5,36 @@ import { View } from "../components/Themed";
 import { Button, Input, Div } from "react-native-magnus";
 import { signIn, registration, signInWithGithub } from "../auth";
 import { Header } from "../components/Header";
-
+import { graphql } from "react-apollo";
+import gql from "graphql-tag";
 export default function Profile() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const query = gql`
+    query AllUsersQuery {
+      allUsers {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `;
+
+  const Name = ({ data }: { data: any }) => {
+    return (
+      <>GraphQL Thingy: {JSON.stringify(data.allUsers?.edges[0].node.name)}</>
+    );
+  };
+
+  const NameWithApo = graphql(query)(Name);
+
   return (
     <>
       <Header title="Welcome to FRUX" icon="logo" />
+      <NameWithApo />
       <View style={styles.container}>
         <Div w="65%" mt={25}>
           <Input
