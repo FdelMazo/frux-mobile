@@ -12,6 +12,11 @@ export default {
     screens: {
       Root: {
         screens: {
+          Projects: {
+            screens: {
+              Projects: "ProjectsScreen",
+            },
+          },
           Profile: {
             screens: {
               Profile: "ProfileScreen",

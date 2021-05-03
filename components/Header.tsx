@@ -6,13 +6,21 @@ type Props = {
   title: string;
 };
 
+interface IconType {
+  [key: string]: { name: string; fontFamily: any };
+}
+
 export function Header(props: Props) {
+  const icons: IconType = {
+    logo: { name: "tree", fontFamily: "Entypo" },
+    projects: { name: "seedling", fontFamily: "FontAwesome5" },
+  };
   return (
     <Div
       alignItems="center"
       justifyContent="flex-start"
       bgImg={require("../assets/images/forest.jpg")}
-      h={500}
+      h={300}
     >
       <Text
         p={20}
@@ -23,14 +31,14 @@ export function Header(props: Props) {
         {props.title}
       </Text>
       <Icon
-        bg="#8B7D3A"
+        bg="#896C39"
         p={20}
         rounded="circle"
-        name="tree"
-        color="#006442"
+        name={icons[props.icon].name}
+        color="#90B44B"
         borderWidth={2}
         fontSize="5xl"
-        fontFamily="Entypo"
+        fontFamily={icons[props.icon].fontFamily}
       />
     </Div>
   );

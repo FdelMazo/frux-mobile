@@ -11,7 +11,12 @@ import { Icon } from "react-native-magnus";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Profile from "../screens/Profile";
-import { BottomTabParamList, ProfileParamList } from "../types";
+import Projects from "../screens/Projects";
+import {
+  BottomTabParamList,
+  ProfileParamList,
+  ProjectsParamList,
+} from "../types";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -20,9 +25,18 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Projects"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
+      <BottomTab.Screen
+        name="Projects"
+        component={ProjectsNavigator}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="seedling" fontFamily="FontAwesome5" color={color} />
+          ),
+        }}
+      />
       <BottomTab.Screen
         name="Profile"
         component={ProfileNavigator}
@@ -31,6 +45,20 @@ export default function BottomTabNavigator() {
         }}
       />
     </BottomTab.Navigator>
+  );
+}
+
+const ProjectsStack = createStackNavigator<ProjectsParamList>();
+
+function ProjectsNavigator() {
+  return (
+    <ProjectsStack.Navigator>
+      <ProjectsStack.Screen
+        name="ProjectsScreen"
+        component={Projects}
+        options={{ headerTitle: "Projects" }}
+      />
+    </ProjectsStack.Navigator>
   );
 }
 
