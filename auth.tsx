@@ -3,10 +3,11 @@ import "firebase/auth";
 import "firebase/firestore";
 import { Alert } from "react-native";
 
-export async function registration(email, password) {
+export async function registration(email: string, password: string) {
   try {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
     const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
 
     const db = firebase.firestore();
     db.collection("users").doc(currentUser.uid).set({
@@ -17,7 +18,7 @@ export async function registration(email, password) {
   }
 }
 
-export async function signIn(email, password) {
+export async function signIn(email: string, password: string) {
   try {
     await firebase.auth().signInWithEmailAndPassword(email, password);
   } catch (err) {
@@ -29,6 +30,17 @@ export async function loggingOut() {
   try {
     await firebase.auth().signOut();
   } catch (err) {
-    Alert.alert("There is something wrong!", err.message);
+    alert(err.message);
   }
+}
+
+export async function signInWithGithub() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {})
+    .catch((error) => {
+      alert(error.message);
+    });
 }

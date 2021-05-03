@@ -2,8 +2,8 @@ import * as React from "react";
 import { StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
-import { Button, Input, Div, Icon } from "react-native-magnus";
-import { signIn, registration } from "../auth";
+import { Button, Input, Div } from "react-native-magnus";
+import { signIn, registration, signInWithGithub } from "../auth";
 import { Header } from "../components/Header";
 
 export default function Profile() {
@@ -14,10 +14,16 @@ export default function Profile() {
     <>
       <Header title="Welcome to FRUX" icon="logo" />
       <View style={styles.container}>
-        <Div alignItems="center">
-          <Input value={email} onChangeText={setEmail} placeholder="Mail" />
+        <Div w="65%" mt={25}>
+          <Input
+            my={8}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Mail"
+          />
 
           <Input
+            my={8}
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
@@ -25,24 +31,37 @@ export default function Profile() {
           />
 
           <Button
+            my={8}
             onPress={() => signIn(email, password)}
-            mt="lg"
-            px="xl"
-            py="lg"
             bg="#006442"
             color="white"
+            w="100%"
           >
             Login
           </Button>
           <Button
+            my={8}
+            bg="white"
             onPress={() => registration(email, password)}
-            mt="lg"
-            px="xl"
-            py="lg"
-            bg="#006442"
-            color="white"
+            borderColor="#006442"
+            color="#006442"
+            borderWidth={1}
+            w="100%"
           >
             Sign Up
+          </Button>
+        </Div>
+        <Div w="65%">
+          <Button
+            my={15}
+            bg="white"
+            onPress={() => signInWithGithub()}
+            borderColor="#006442"
+            color="#006442"
+            borderWidth={1}
+            w="100%"
+          >
+            Sign In with Google
           </Button>
         </Div>
       </View>
@@ -54,6 +73,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
 });
