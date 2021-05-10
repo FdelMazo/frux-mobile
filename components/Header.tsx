@@ -39,13 +39,13 @@ export function Header(props: Props) {
         />
       ) : (
         <Icon
-          bg="#896C39"
+          bg="fruxbrown"
           p={20}
           h={60}
           w={60}
           rounded="circle"
           name={icons[props.icon].name}
-          color="#90B44B"
+          color="fruxgreen"
           borderWidth={2}
           fontSize="5xl"
           fontFamily={icons[props.icon].fontFamily}

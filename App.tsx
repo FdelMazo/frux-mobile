@@ -12,6 +12,13 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import firebaseConfig from "./config/firebase";
 
+const theme = {
+  colors: {
+    fruxgreen: "#90B44B",
+    fruxbrown: "#896C39",
+  },
+};
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   if (!firebase.apps.length) {
@@ -30,7 +37,7 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <ApolloProvider client={client}>
-          <ThemeProvider>
+          <ThemeProvider theme={theme}>
             <Navigation colorScheme={colorScheme} />
             <StatusBar />
           </ThemeProvider>

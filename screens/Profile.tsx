@@ -55,7 +55,7 @@ export default function Profile() {
           <Button
             my={8}
             onPress={() => signIn(email, password)}
-            bg="#90B44B"
+            bg="fruxgreen"
             color="white"
             w="100%"
           >
@@ -65,8 +65,8 @@ export default function Profile() {
             my={8}
             bg="white"
             onPress={() => registration(email, password)}
-            borderColor="#90B44B"
-            color="#90B44B"
+            borderColor="fruxgreen"
+            color="fruxgreen"
             borderWidth={1}
             w="100%"
           >
@@ -78,8 +78,8 @@ export default function Profile() {
             my={15}
             bg="white"
             onPress={() => signInWithGithub()}
-            borderColor="#90B44B"
-            color="#90B44B"
+            borderColor="fruxgreen"
+            color="fruxgreen"
             borderWidth={1}
             w="100%"
           >
