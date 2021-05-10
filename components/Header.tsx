@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, Div, Icon } from "react-native-magnus";
+import { Text, Div, Icon, Image } from "react-native-magnus";
 
 type Props = {
   icon: string;
@@ -12,7 +12,6 @@ interface IconType {
 
 export function Header(props: Props) {
   const icons: IconType = {
-    logo: { name: "tree", fontFamily: "Entypo" },
     projects: { name: "seedling", fontFamily: "FontAwesome5" },
   };
   return (
@@ -30,16 +29,28 @@ export function Header(props: Props) {
       >
         {props.title}
       </Text>
-      <Icon
-        bg="#896C39"
-        p={20}
-        rounded="circle"
-        name={icons[props.icon].name}
-        color="#90B44B"
-        borderWidth={2}
-        fontSize="5xl"
-        fontFamily={icons[props.icon].fontFamily}
-      />
+      {props.icon === "logo" ? (
+        <Image
+          h={80}
+          w={80}
+          borderWidth={2}
+          rounded="circle"
+          source={require("../assets/images/logo.png")}
+        />
+      ) : (
+        <Icon
+          bg="#896C39"
+          p={20}
+          h={60}
+          w={60}
+          rounded="circle"
+          name={icons[props.icon].name}
+          color="#90B44B"
+          borderWidth={2}
+          fontSize="5xl"
+          fontFamily={icons[props.icon].fontFamily}
+        />
+      )}
     </Div>
   );
 }
