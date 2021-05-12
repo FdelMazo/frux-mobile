@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { View } from "../components/Themed";
-import { Button, Input, Div } from "react-native-magnus";
+import { Button, Input, Div, Text, Skeleton } from "react-native-magnus";
 import { signIn, registration, signInWithGithub } from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
@@ -10,8 +10,42 @@ import gql from "graphql-tag";
 const UserScreen = ({ data }: { data?: any }) => {
   return (
     <>
-      <Header title={data.user.username || data.user.mail} icon="logo" />
-      <View></View>
+      <Header
+        title={data.user.username || data.user.mail}
+        icon={data.user.picture}
+      />
+      <View>
+        <Div w="65%" mt={25}>
+          <Div>
+            <Text fontSize="xl">My Topics</Text>
+            <Skeleton.Box mt="sm" />
+            <Skeleton.Box mt="sm" />
+            <Skeleton.Box mt="sm" />
+            <Skeleton.Box mt="sm" />
+          </Div>
+          <Div>
+            <Text fontSize="xl">My Topics</Text>
+            <Skeleton.Box mt="sm" />
+          </Div>
+          <Div>
+            <Text fontSize="xl">My Topics</Text>
+            <Skeleton.Box mt="sm" />
+          </Div>
+          <Div>
+            <Text fontSize="xl">My Topics</Text>
+            <Skeleton.Box mt="sm" />
+          </Div>
+        </Div>
+        <Div w="65%" justifyContent="space-between" mb={15} flexDir="row">
+          <Div>
+            <Text>{data.user.mail}</Text>
+          </Div>
+
+          <Button p={0} bg={undefined}>
+            <Text color="fruxgreen">Change my password</Text>
+          </Button>
+        </Div>
+      </View>
     </>
   );
 };
