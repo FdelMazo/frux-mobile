@@ -2,7 +2,16 @@ import * as React from "react";
 import { StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
-import { Icon, Input, Div, Tag } from "react-native-magnus";
+import {
+  Icon,
+  Input,
+  Div,
+  Tag,
+  Skeleton,
+  Text,
+  Fab,
+  Button,
+} from "react-native-magnus";
 import { Header } from "../components/Header";
 import { TopicContainer } from "../components/TopicContainer";
 
@@ -82,6 +91,22 @@ export default function Discover() {
             />
           </Div>
         </Div>
+        <Div my={25}>
+          <Text fontSize="xl">Recommended Seeds</Text>
+          <Skeleton.Box mt="sm" h="25vh" w="50vw" />
+        </Div>
+        <Button
+          h={40}
+          w={40}
+          bg="blue600"
+          rounded="circle"
+          alignSelf="flex-end"
+          mb={30}
+          mr={10}
+          p={20}
+        >
+          <Icon fontSize="6xl" name="add" color="white" fontFamily="Ionicons" />
+        </Button>
       </View>
     </>
   );

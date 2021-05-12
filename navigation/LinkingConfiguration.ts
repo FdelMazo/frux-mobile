@@ -17,11 +17,6 @@ export default {
               Discover: "DiscoverScreen",
             },
           },
-          Projects: {
-            screens: {
-              Projects: "ProjectsScreen",
-            },
-          },
           Profile: {
             screens: {
               Profile: "ProfileScreen",

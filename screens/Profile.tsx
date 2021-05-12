@@ -6,6 +6,7 @@ import { signIn, registration, signInWithGithub } from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
+import { TopicContainer } from "../components/TopicContainer";
 
 const UserScreen = ({ data }: { data?: any }) => {
   return (
@@ -16,24 +17,30 @@ const UserScreen = ({ data }: { data?: any }) => {
       />
       <View>
         <Div w="65%" mt={25}>
-          <Div>
+          <Div mt={15}>
             <Text fontSize="xl">My Topics</Text>
-            <Skeleton.Box mt="sm" />
-            <Skeleton.Box mt="sm" />
-            <Skeleton.Box mt="sm" />
+            <Div row flexWrap="wrap">
+              <TopicContainer
+                name="Tech"
+                img="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fcogwheel-gear-mechanism-icon-black-minimalist-icon-isolated-on-white-vector-id858148342%3Fk%3D6%26m%3D858148342%26s%3D170667a%26w%3D0%26h%3D9IjQ2MmVS2a0MS8qNQR-l4Gz5foaX1ILVtlYmp6DMak%3D&f=1&nofb=1"
+              />
+            </Div>
+          </Div>
+          <Div mt={15}>
+            <Text fontSize="xl">My Projects</Text>
             <Skeleton.Box mt="sm" />
           </Div>
-          <Div>
-            <Text fontSize="xl">My Topics</Text>
+          <Div mt={15}>
+            <Text fontSize="xl">My Seedlings</Text>
             <Skeleton.Box mt="sm" />
           </Div>
-          <Div>
-            <Text fontSize="xl">My Topics</Text>
+          <Div mt={15}>
+            <Text fontSize="xl">My Favourites</Text>
             <Skeleton.Box mt="sm" />
           </Div>
-          <Div>
-            <Text fontSize="xl">My Topics</Text>
-            <Skeleton.Box mt="sm" />
+          <Div mt={15}>
+            <Text fontSize="xl">My Location</Text>
+            <Skeleton.Box mt="sm" h="15vh" w="50vw" />
           </Div>
         </Div>
         <Div w="65%" justifyContent="space-between" mb={15} flexDir="row">
@@ -131,7 +138,7 @@ export default function RenderProfile(props: any) {
   `;
   const mockedData = {
     user: {
-      username: "Federico",
+      username: "fede-capo",
       mail: "fededm97@hotmail.com",
       picture: "seed",
     },

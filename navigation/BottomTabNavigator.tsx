@@ -11,12 +11,10 @@ import { Icon } from "react-native-magnus";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Profile from "../screens/Profile";
-import Projects from "../screens/Projects";
 import Discover from "../screens/Discover";
 import {
   BottomTabParamList,
   ProfileParamList,
-  ProjectsParamList,
   DiscoverParamList,
 } from "../types";
 
@@ -36,15 +34,6 @@ export default function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="seedling" fontFamily="FontAwesome5" color={color} />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name="Projects"
-        component={ProjectsNavigator}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Icon name="trees" fontFamily="Foundation" color={color} />
           ),
         }}
       />
@@ -70,20 +59,6 @@ function DiscoverNavigator() {
         options={{ headerTitle: "Discover" }}
       />
     </DiscoverStack.Navigator>
-  );
-}
-
-const ProjectsStack = createStackNavigator<ProjectsParamList>();
-
-function ProjectsNavigator() {
-  return (
-    <ProjectsStack.Navigator>
-      <ProjectsStack.Screen
-        name="ProjectsScreen"
-        component={Projects}
-        options={{ headerTitle: "Projects" }}
-      />
-    </ProjectsStack.Navigator>
   );
 }
 
