@@ -12,10 +12,12 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Profile from "../screens/Profile";
 import Projects from "../screens/Projects";
+import Discover from "../screens/Discover";
 import {
   BottomTabParamList,
   ProfileParamList,
   ProjectsParamList,
+  DiscoverParamList,
 } from "../types";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
@@ -25,15 +27,24 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Projects"
+      initialRouteName="Discover"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
     >
+      <BottomTab.Screen
+        name="Discover"
+        component={DiscoverNavigator}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="seedling" fontFamily="FontAwesome5" color={color} />
+          ),
+        }}
+      />
       <BottomTab.Screen
         name="Projects"
         component={ProjectsNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="seedling" fontFamily="FontAwesome5" color={color} />
+            <Icon name="trees" fontFamily="Foundation" color={color} />
           ),
         }}
       />
@@ -45,6 +56,20 @@ export default function BottomTabNavigator() {
         }}
       />
     </BottomTab.Navigator>
+  );
+}
+
+const DiscoverStack = createStackNavigator<DiscoverParamList>();
+
+function DiscoverNavigator() {
+  return (
+    <DiscoverStack.Navigator>
+      <DiscoverStack.Screen
+        name="DiscoverScreen"
+        component={Discover}
+        options={{ headerTitle: "Discover" }}
+      />
+    </DiscoverStack.Navigator>
   );
 }
 

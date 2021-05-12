@@ -12,6 +12,11 @@ export default {
     screens: {
       Root: {
         screens: {
+          Discover: {
+            screens: {
+              Discover: "DiscoverScreen",
+            },
+          },
           Projects: {
             screens: {
               Projects: "ProjectsScreen",

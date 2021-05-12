@@ -13,8 +13,9 @@ interface IconType {
 
 export function Header(props: Props) {
   const icons: IconType = {
-    projects: { name: "seedling", fontFamily: "FontAwesome5" },
+    projects: { name: "trees", fontFamily: "Foundation" },
     seed: { name: "seed", fontFamily: "MaterialCommunityIcons" },
+    discover: { name: "seedling", fontFamily: "FontAwesome5" },
   };
   const notificationsRef = React.createRef();
 
