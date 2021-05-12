@@ -1,5 +1,4 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
 import { Button, Input, Div } from "react-native-magnus";
@@ -7,35 +6,23 @@ import { signIn, registration, signInWithGithub } from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
-export default function Profile() {
+
+const UserScreen = ({ data }: { data?: any }) => {
+  return (
+    <>
+      <Header title={data.user.username || data.user.mail} icon="logo" />
+      <View></View>
+    </>
+  );
+};
+const WelcomeScreen = ({ setLogged }: { setLogged?: any }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-
-  const query = gql`
-    query AllUsersQuery {
-      allUsers {
-        edges {
-          node {
-            name
-          }
-        }
-      }
-    }
-  `;
-
-  const Name = ({ data }: { data: any }) => {
-    return (
-      <>GraphQL Thingy: {JSON.stringify(data.allUsers?.edges[0].node.name)}</>
-    );
-  };
-
-  const NameWithApo = graphql(query)(Name);
 
   return (
     <>
       <Header title="Welcome to FRUX" icon="logo" />
-      <NameWithApo />
-      <View style={styles.container}>
+      <View>
         <Div w="65%" mt={25}>
           <Input
             my={8}
@@ -54,7 +41,8 @@ export default function Profile() {
 
           <Button
             my={8}
-            onPress={() => signIn(email, password)}
+            // onPress={() => signIn(email, password)}
+            onPress={() => setLogged(true)}
             bg="fruxgreen"
             color="white"
             w="100%"
@@ -85,16 +73,47 @@ export default function Profile() {
           >
             Sign In with Google
           </Button>
+          <Button mb={15} bg="white" color="fruxgreen" w="100%">
+            I forgot my password
+          </Button>
         </Div>
       </View>
     </>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-});
+export default function RenderProfile(props: any) {
+  const [logged, setLogged] = React.useState(false);
+  const query = gql`
+    query AllUsersQuery {
+      allUsers {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `;
+  const mockedData = {
+    user: {
+      username: "Federico",
+      mail: "fededm97@hotmail.com",
+      picture: "seed",
+    },
+  };
+  // const UserScreenRender = graphql(query)(UserScreen);
+
+  return (
+    <>
+      {logged ? (
+        <UserScreen data={mockedData} {...props} />
+      ) : (
+        // <UserScreenRender {...props} />
+        <WelcomeScreen setLogged={setLogged} />
+      )}
+    </>
+  );
+
+  return;
+}

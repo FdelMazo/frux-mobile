@@ -5,6 +5,7 @@
 
 import * as React from "react";
 import { View as DefaultView } from "react-native";
+import { StyleSheet } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -36,6 +37,18 @@ export function View(props: ViewProps) {
     { light: lightColor, dark: darkColor },
     "background"
   );
+  const defaultStyle = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+  });
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor }, defaultStyle.container, style]}
+      {...otherProps}
+    />
+  );
 }
