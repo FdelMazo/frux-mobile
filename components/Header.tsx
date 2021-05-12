@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Text, Div, Icon, Image } from "react-native-magnus";
+import { Text, Div, Icon, Image, Drawer, Button } from "react-native-magnus";
+import NotificationsList from "./NotificationsList";
 
 type Props = {
   icon: string;
@@ -14,6 +15,8 @@ export function Header(props: Props) {
   const icons: IconType = {
     projects: { name: "seedling", fontFamily: "FontAwesome5" },
   };
+  const notificationsRef = React.createRef();
+
   return (
     <Div
       alignItems="center"
@@ -21,6 +24,21 @@ export function Header(props: Props) {
       bgImg={require("../assets/images/forest.jpg")}
       h={300}
     >
+      <Drawer direction="right" ref={notificationsRef}>
+        <NotificationsList />
+      </Drawer>
+      <Div alignSelf="flex-end">
+        <Button
+          bg={undefined}
+          onPress={() => {
+            if (notificationsRef.current) {
+              notificationsRef.current.open();
+            }
+          }}
+        >
+          <Icon name="notifications" color="black" fontFamily="Ionicons" />
+        </Button>
+      </Div>
       <Text
         p={20}
         fontSize="6xl"
