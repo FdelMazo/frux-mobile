@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Text, Div, Icon, Image, Drawer, Button } from "react-native-magnus";
+import { useAuth } from "../auth";
 import NotificationsList from "./NotificationsList";
 
 type Props = {
@@ -18,7 +19,7 @@ export function Header(props: Props) {
     discover: { name: "seedling", fontFamily: "FontAwesome5" },
   };
   const notificationsRef = React.createRef();
-
+  const { user } = useAuth();
   return (
     <Div
       alignItems="center"
@@ -29,18 +30,21 @@ export function Header(props: Props) {
       <Drawer direction="right" ref={notificationsRef}>
         <NotificationsList />
       </Drawer>
-      <Div alignSelf="flex-end">
-        <Button
-          bg={undefined}
-          onPress={() => {
-            if (notificationsRef.current) {
-              notificationsRef.current.open();
-            }
-          }}
-        >
-          <Icon name="notifications" color="black" fontFamily="Ionicons" />
-        </Button>
-      </Div>
+
+      {user && (
+        <Div alignSelf="flex-end">
+          <Button
+            bg={undefined}
+            onPress={() => {
+              if (notificationsRef.current) {
+                notificationsRef.current.open();
+              }
+            }}
+          >
+            <Icon name="notifications" color="black" fontFamily="Ionicons" />
+          </Button>
+        </Div>
+      )}
       <Text
         p={20}
         fontSize="6xl"

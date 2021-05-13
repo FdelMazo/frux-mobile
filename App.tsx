@@ -4,13 +4,15 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import firebase from "firebase/app";
 import { AppRegistry } from "react-native";
 import { ThemeProvider } from "react-native-magnus";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "react-apollo";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import firebaseConfig from "./config/firebase";
+import { useAuth } from "./auth";
 
 const theme = {
   colors: {
@@ -25,8 +27,22 @@ export default function App() {
     firebase.initializeApp(firebaseConfig);
   }
 
-  const client = new ApolloClient({
+  const { token } = useAuth();
+  const httpLink = createHttpLink({
     uri: "https://frux-app-server.herokuapp.com/graphql",
+  });
+  const authLink = setContext((_, { headers }) => {
+    // return the headers to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
   });
 

@@ -1,6 +1,29 @@
+import { gql } from "@apollo/client";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { graphql } from "graphql";
+import React from "react";
+
+export const useAuth = () => {
+  const [state, setState] = React.useState(async () => {
+    const user = firebase.auth().currentUser;
+    const token = await user?.getIdToken();
+    return { initializing: !user, user, token };
+  });
+  async function onChange(user) {
+    const token = await user?.getIdToken();
+
+    setState({ initializing: false, user, token });
+  }
+
+  React.useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(onChange);
+    return () => unsubscribe();
+  }, []);
+
+  return state;
+};
 
 export async function registration(email: string, password: string) {
   try {

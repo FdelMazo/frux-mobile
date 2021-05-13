@@ -2,18 +2,24 @@ import * as React from "react";
 
 import { View } from "../components/Themed";
 import { Button, Input, Div, Text, Skeleton } from "react-native-magnus";
-import { signIn, registration, signInWithGithub } from "../auth";
+import {
+  signIn,
+  registration,
+  signInWithGithub,
+  loggingOut,
+  useAuth,
+} from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 import { TopicContainer } from "../components/TopicContainer";
 
 const UserScreen = ({ data }: { data?: any }) => {
-  return (
+  return data.profile ? (
     <>
       <Header
-        title={data.user.username || data.user.mail}
-        icon={data.user.picture}
+        title={data.profile.username || data.profile.email}
+        icon={data.profile.picture || "seed"}
       />
       <View>
         <Div w="65%" mt={25}>
@@ -45,18 +51,24 @@ const UserScreen = ({ data }: { data?: any }) => {
         </Div>
         <Div w="65%" justifyContent="space-between" mb={15} flexDir="row">
           <Div>
-            <Text>{data.user.mail}</Text>
+            <Text>{data.profile.email}</Text>
           </Div>
 
           <Button p={0} bg={undefined}>
             <Text color="fruxgreen">Change my password</Text>
           </Button>
+
+          <Button p={0} bg={undefined} onPress={() => loggingOut()}>
+            <Text color="red500">Log Out</Text>
+          </Button>
         </Div>
       </View>
     </>
+  ) : (
+    <WelcomeScreen />
   );
 };
-const WelcomeScreen = ({ setLogged }: { setLogged?: any }) => {
+const WelcomeScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -82,14 +94,14 @@ const WelcomeScreen = ({ setLogged }: { setLogged?: any }) => {
 
           <Button
             my={8}
-            // onPress={() => signIn(email, password)}
-            onPress={() => setLogged(true)}
+            onPress={() => signIn(email, password)}
             bg="fruxgreen"
             color="white"
             w="100%"
           >
             Login
           </Button>
+
           <Button
             my={8}
             bg="white"
@@ -124,37 +136,15 @@ const WelcomeScreen = ({ setLogged }: { setLogged?: any }) => {
 };
 
 export default function RenderProfile(props: any) {
-  const [logged, setLogged] = React.useState(false);
   const query = gql`
-    query AllUsersQuery {
-      allUsers {
-        edges {
-          node {
-            name
-          }
-        }
+    query Profile {
+      profile {
+        id
+        email
       }
     }
   `;
-  const mockedData = {
-    user: {
-      username: "fede-capo",
-      mail: "fededm97@hotmail.com",
-      picture: "seed",
-    },
-  };
-  // const UserScreenRender = graphql(query)(UserScreen);
+  const UserScreenRender = graphql(query)(UserScreen);
 
-  return (
-    <>
-      {logged ? (
-        <UserScreen data={mockedData} {...props} />
-      ) : (
-        // <UserScreenRender {...props} />
-        <WelcomeScreen setLogged={setLogged} />
-      )}
-    </>
-  );
-
-  return;
+  return <UserScreenRender {...props} />;
 }
