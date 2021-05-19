@@ -143,18 +143,9 @@ export default function Discover({ navigation }) {
             </Div>
           </TouchableHighlight>
         </Div>
-        <Button
-          h={40}
-          w={40}
-          bg="blue600"
-          rounded="circle"
-          alignSelf="flex-end"
-          mb={30}
-          mr={10}
-          p={20}
-        >
-          <Icon fontSize="6xl" name="add" color="white" fontFamily="Ionicons" />
-        </Button>
+        <Fab shadowColor="none" bg="blue600" h={50} w={50}>
+          <Button />
+        </Fab>
       </View>
     </>
   );

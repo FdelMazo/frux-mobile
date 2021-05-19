@@ -59,6 +59,50 @@ export default function Project(props) {
             </Div>
           </Div>
         </Div>
+        <Fab shadowColor="none" bg="blue600" h={50} w={50}>
+          <Button p="none" bg="transparent" justifyContent="flex-end">
+            <Div rounded="sm" bg="white" p="sm">
+              <Text fontSize="md">Seed</Text>
+            </Div>
+            <Icon
+              name="user"
+              color="blue600"
+              h={50}
+              w={50}
+              rounded="circle"
+              ml="md"
+              bg="white"
+            />
+          </Button>
+          <Button p="none" bg="transparent" justifyContent="flex-end">
+            <Div rounded="sm" bg="white" p="sm">
+              <Text fontSize="md">Like</Text>
+            </Div>
+            <Icon
+              name="user"
+              color="blue600"
+              h={50}
+              w={50}
+              rounded="circle"
+              ml="md"
+              bg="white"
+            />
+          </Button>
+          <Button p="none" bg="transparent" justifyContent="flex-end">
+            <Div rounded="sm" bg="white" p="sm">
+              <Text fontSize="md">Send Message</Text>
+            </Div>
+            <Icon
+              name="user"
+              color="blue600"
+              h={50}
+              w={50}
+              rounded="circle"
+              ml="md"
+              bg="white"
+            />
+          </Button>
+        </Fab>
       </View>
     </>
   );
