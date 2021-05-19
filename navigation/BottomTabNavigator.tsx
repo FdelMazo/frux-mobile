@@ -17,6 +17,7 @@ import {
   ProfileParamList,
   DiscoverParamList,
 } from "../types";
+import Project from "../screens/Project";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -57,6 +58,13 @@ function DiscoverNavigator() {
         name="DiscoverScreen"
         component={Discover}
         options={{ headerTitle: "Discover" }}
+      />
+      <DiscoverStack.Screen
+        name="ProjectScreen"
+        component={Project}
+        options={({ route }) => ({
+          headerTitle: route.params?.name || "Project",
+        })}
       />
     </DiscoverStack.Navigator>
   );

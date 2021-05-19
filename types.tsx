@@ -18,10 +18,7 @@ export type ProfileParamList = {
   ProfileScreen: undefined;
 };
 
-export type ProjectsParamList = {
-  ProjectsScreen: undefined;
-};
-
 export type DiscoverParamList = {
   DiscoverScreen: undefined;
+  ProjectScreen: undefined;
 };

@@ -15,6 +15,7 @@ export default {
           Discover: {
             screens: {
               Discover: "DiscoverScreen",
+              Project: "ProjectScreen",
             },
           },
           Profile: {
