@@ -137,7 +137,7 @@ export default function Discover({ navigation }) {
             </Div>
           </TouchableHighlight>
         </Div>
-        <Fab shadowColor="none" bg="blue600" h={50} w={50}>
+        <Fab bg="blue600" h={50} w={50}>
           <Button />
         </Fab>
       </View>

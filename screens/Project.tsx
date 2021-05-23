@@ -15,7 +15,6 @@ import {
 import { ProjectHeader } from "../components/ProjectHeader";
 import { TopicContainer } from "../components/TopicContainer";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import ProgressBar from "react-native-progress-bar-modest";
 
 export default function Project(props) {
   return (
@@ -45,21 +44,12 @@ export default function Project(props) {
                 Restoration of old 1940's Batman Comics
               </Text>
               <Div m={15}>
-                <ProgressBar
-                  reachedBarColor="#5E8AAD"
-                  reachedBarHeight={20}
-                  unreachedBarColor="#ff4c4c"
-                  unreachedBarHeight={20}
-                  value={70}
-                  showValue={false}
-                  borderRadius={5}
-                />
                 <Text fontSize="2xl">$500 out of ...</Text>
               </Div>
             </Div>
           </Div>
         </Div>
-        <Fab shadowColor="none" bg="blue600" h={50} w={50}>
+        <Fab bg="blue600" h={50} w={50}>
           <Button p="none" bg="transparent" justifyContent="flex-end">
             <Div rounded="sm" bg="white" p="sm">
               <Text fontSize="md">Seed</Text>
