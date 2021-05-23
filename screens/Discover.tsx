@@ -14,8 +14,9 @@ import {
 } from "react-native-magnus";
 import { Header } from "../components/Header";
 import { TopicContainer } from "../components/TopicContainer";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
-export default function Discover() {
+export default function Discover({ navigation }) {
   return (
     <>
       <Header title="Discover" icon="discover" />
@@ -87,20 +88,58 @@ export default function Discover() {
         </Div>
         <Div my={25}>
           <Text fontSize="xl">Recommended Seeds</Text>
-          <Skeleton.Box mt="sm" />
+          <TouchableHighlight
+            onPress={() => {
+              navigation.navigate("ProjectScreen", { name: "Batman Comics" });
+            }}
+            underlayColor="white"
+          >
+            <Div>
+              <Div>
+                <Div
+                  rounded="xl"
+                  h={150}
+                  w={250}
+                  bgImg={{
+                    uri: "https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg",
+                  }}
+                >
+                  <Div
+                    bg="pink500"
+                    rounded="md"
+                    row
+                    flexWrap="wrap"
+                    px="md"
+                    m="lg"
+                    alignSelf="flex-start"
+                  >
+                    <Text color="white" fontSize="sm">
+                      In Progress
+                    </Text>
+                  </Div>
+                </Div>
+                <Div row alignItems="center">
+                  <Div flex={1}>
+                    <Text fontWeight="bold" fontSize="xl" mt="sm">
+                      Batman Comic
+                    </Text>
+                    <Text color="gray500" fontSize="sm">
+                      Art
+                    </Text>
+                  </Div>
+                  <Div row alignItems="center">
+                    <Text color="blue500" fontWeight="bold" fontSize="xl">
+                      $500
+                    </Text>
+                  </Div>
+                </Div>
+              </Div>
+            </Div>
+          </TouchableHighlight>
         </Div>
-        <Button
-          h={40}
-          w={40}
-          bg="blue600"
-          rounded="circle"
-          alignSelf="flex-end"
-          mb={30}
-          mr={10}
-          p={20}
-        >
-          <Icon fontSize="6xl" name="add" color="white" fontFamily="Ionicons" />
-        </Button>
+        <Fab shadowColor="none" bg="blue600" h={50} w={50}>
+          <Button />
+        </Fab>
       </View>
     </>
   );
