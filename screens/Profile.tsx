@@ -46,7 +46,7 @@ const UserScreen = ({ data }: { data?: any }) => {
           </Div>
           <Div mt={15}>
             <Text fontSize="xl">My Location</Text>
-            <Skeleton.Box mt="sm" h="15vh" w="50vw" />
+            <Skeleton.Box mt="sm" />
           </Div>
         </Div>
         <Div w="65%" justifyContent="space-between" mb={15} flexDir="row">

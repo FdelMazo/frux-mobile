@@ -43,9 +43,7 @@ export default function Discover() {
               bg="yellow200"
               borderColor="yellow700"
               borderWidth={1}
-              suffix={
-                <Icon ml={2} name="close" color="gray700" fontSize="caption" />
-              }
+              suffix={<Icon ml={2} name="close" color="gray700" />}
             >
               In Progress
             </Tag>
@@ -54,9 +52,7 @@ export default function Discover() {
               bg="blue200"
               borderColor="blue700"
               borderWidth={1}
-              suffix={
-                <Icon ml={2} name="close" color="gray700" fontSize="caption" />
-              }
+              suffix={<Icon ml={2} name="close" color="gray700" />}
             >
               Almost Done!
             </Tag>
@@ -65,9 +61,7 @@ export default function Discover() {
               bg="green200"
               borderColor="green700"
               borderWidth={1}
-              suffix={
-                <Icon ml={2} name="close" color="gray700" fontSize="caption" />
-              }
+              suffix={<Icon ml={2} name="close" color="gray700" />}
             >
               Complete
             </Tag>
@@ -93,7 +87,7 @@ export default function Discover() {
         </Div>
         <Div my={25}>
           <Text fontSize="xl">Recommended Seeds</Text>
-          <Skeleton.Box mt="sm" h="25vh" w="50vw" />
+          <Skeleton.Box mt="sm" />
         </Div>
         <Button
           h={40}
