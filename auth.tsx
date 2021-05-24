@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client";
+import * as Google from "expo-auth-session/providers/google";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { graphql } from "graphql";
 import React from "react";
+import { FIREBASE_WEB_CLIENT_ID } from "@env";
 
 export const useAuth = () => {
   const [state, setState] = React.useState(async () => {
@@ -25,27 +25,26 @@ export const useAuth = () => {
   return state;
 };
 
-export async function registration(email: string, password: string) {
-  try {
-    await firebase.auth().createUserWithEmailAndPassword(email, password);
-    const currentUser = firebase.auth().currentUser;
-    if (!currentUser) return;
+export const useGoogleAuth = () => {
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId: FIREBASE_WEB_CLIENT_ID,
+  });
+  return [response, promptAsync];
+};
 
-    const db = firebase.firestore();
-    db.collection("users").doc(currentUser.uid).set({
-      email: currentUser.email,
-    });
-  } catch (err) {
-    alert(err.message);
-  }
+export async function registration(email: string, password: string) {
+  await firebase.auth().createUserWithEmailAndPassword(email, password);
+  const currentUser = firebase.auth().currentUser;
+  if (!currentUser) return;
+
+  const db = firebase.firestore();
+  db.collection("users").doc(currentUser.uid).set({
+    email: currentUser.email,
+  });
 }
 
 export async function signIn(email: string, password: string) {
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-  } catch (err) {
-    alert(err.message);
-  }
+  await firebase.auth().signInWithEmailAndPassword(email, password);
 }
 
 export async function loggingOut() {
@@ -56,13 +55,8 @@ export async function loggingOut() {
   }
 }
 
-export async function signInWithGithub() {
-  var provider = new firebase.auth.GoogleAuthProvider();
-  firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then((result) => {})
-    .catch((error) => {
-      alert(error.message);
-    });
+export async function signInWithGoogle(response) {
+  const { id_token } = response.params;
+  const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+  await firebase.auth().signInWithCredential(credential);
 }

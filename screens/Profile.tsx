@@ -5,9 +5,9 @@ import { Button, Input, Div, Text, Skeleton, Icon } from "react-native-magnus";
 import {
   signIn,
   registration,
-  signInWithGithub,
+  signInWithGoogle,
   loggingOut,
-  useAuth,
+  useGoogleAuth,
 } from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
@@ -71,6 +71,15 @@ const UserScreen = ({ data }: { data?: any }) => {
 const WelcomeScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState("");
+  const [response, googleSignIn] = useGoogleAuth();
+
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      signInWithGoogle(response);
+    }
+  }, [response]);
 
   return (
     <View>
@@ -82,6 +91,8 @@ const WelcomeScreen = () => {
             value={email}
             onChangeText={setEmail}
             placeholder="Mail"
+            editable={!loading}
+            autoCompleteType="email"
           />
 
           <Input
@@ -89,15 +100,28 @@ const WelcomeScreen = () => {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            autoCompleteType="password"
+            editable={!loading}
             secureTextEntry
           />
 
+          <Text color="red">{errors}</Text>
           <Button
             my={8}
-            onPress={() => signIn(email, password)}
+            onPress={async () => {
+              setErrors("");
+              setLoading(true);
+              try {
+                await signIn(email, password);
+              } catch (err) {
+                setErrors(err.message);
+              }
+              setLoading(false);
+            }}
             bg="fruxgreen"
             color="white"
             w="100%"
+            loading={loading}
           >
             Login
           </Button>
@@ -105,10 +129,20 @@ const WelcomeScreen = () => {
           <Button
             my={8}
             bg="white"
-            onPress={() => registration(email, password)}
+            onPress={async () => {
+              setErrors("");
+              setLoading(true);
+              try {
+                await registration(email, password);
+              } catch (err) {
+                setErrors(err.message);
+              }
+              setLoading(false);
+            }}
             borderColor="fruxgreen"
             color="fruxgreen"
             borderWidth={1}
+            disabled={loading}
             w="100%"
           >
             Sign Up
@@ -118,11 +152,21 @@ const WelcomeScreen = () => {
           <Button
             my={15}
             bg="white"
-            onPress={() => signInWithGithub()}
+            onPress={async () => {
+              setErrors("");
+              setLoading(true);
+              try {
+                await googleSignIn();
+              } catch (err) {
+                setErrors(err.message);
+              }
+              setLoading(false);
+            }}
             borderColor="fruxgreen"
             color="fruxgreen"
             borderWidth={1}
             w="100%"
+            disabled={loading}
           >
             Sign In with Google
           </Button>

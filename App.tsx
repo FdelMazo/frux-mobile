@@ -7,6 +7,7 @@ import { ThemeProvider } from "react-native-magnus";
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "react-apollo";
+import { GRAPHQL_ENDPOINT } from "@env";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
@@ -29,7 +30,7 @@ export default function App() {
 
   const { token } = useAuth();
   const httpLink = createHttpLink({
-    uri: "https://frux-app-server.herokuapp.com/graphql",
+    uri: GRAPHQL_ENDPOINT,
   });
   const authLink = setContext((_, { headers }) => {
     // return the headers to the context so httpLink can read them
