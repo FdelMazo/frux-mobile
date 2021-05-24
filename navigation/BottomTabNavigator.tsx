@@ -63,9 +63,7 @@ function DiscoverNavigator() {
       <DiscoverStack.Screen
         name="ProjectScreen"
         component={Project}
-        options={({ route }) => ({
-          headerTitle: route.params?.name || "Project",
-        })}
+        options={{ headerShown: false }}
       />
     </DiscoverStack.Navigator>
   );

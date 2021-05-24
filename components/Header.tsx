@@ -7,7 +7,7 @@ import NotificationsList from "./NotificationsList";
 type Props = {
   icon: string;
   title: string;
-  onPress: any;
+  onPress?: any;
 };
 
 interface IconType {

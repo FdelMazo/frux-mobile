@@ -17,7 +17,7 @@ export function ProjectHeader(props: Props) {
       bgImg={{
         uri: props.img,
       }}
-      h={300}
+      h={200}
     >
       <Drawer direction="right" ref={notificationsRef}>
         <NotificationsList />

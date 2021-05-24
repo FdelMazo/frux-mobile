@@ -32,35 +32,7 @@ const User = ({ data }) => {
       />
 
       <ScrollView>
-        <MainView>
-          <Div w="65%" mt={25}>
-            <Div mt={15}>
-              <Text fontSize="xl">My Topics</Text>
-              <Div row flexWrap="wrap">
-                <TopicContainer
-                  name="Tech"
-                  img="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fcogwheel-gear-mechanism-icon-black-minimalist-icon-isolated-on-white-vector-id858148342%3Fk%3D6%26m%3D858148342%26s%3D170667a%26w%3D0%26h%3D9IjQ2MmVS2a0MS8qNQR-l4Gz5foaX1ILVtlYmp6DMak%3D&f=1&nofb=1"
-                />
-              </Div>
-            </Div>
-            <Div mt={15}>
-              <Text fontSize="xl">My Projects</Text>
-              <Skeleton.Box mt="sm" />
-            </Div>
-            <Div mt={15}>
-              <Text fontSize="xl">My Seedlings</Text>
-              <Skeleton.Box mt="sm" />
-            </Div>
-            <Div mt={15}>
-              <Text fontSize="xl">My Favourites</Text>
-              <Skeleton.Box mt="sm" />
-            </Div>
-            <Div mt={15}>
-              <Text fontSize="xl">My Location</Text>
-              <Skeleton.Box mt="sm" />
-            </Div>
-          </Div>
-        </MainView>
+        <MainView></MainView>
       </ScrollView>
 
       <Dropdown
