@@ -40,21 +40,23 @@ export function View(props: ViewProps) {
     { light: lightColor, dark: darkColor },
     "background"
   );
-  const defaultStyle = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-  });
 
-  return (
-    <DefaultView
-      style={[{ backgroundColor }, defaultStyle.container, style]}
-      {...otherProps}
-    />
-  );
+  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
 export function ScrollView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    "background"
+  );
+
+  return (
+    <DefaultScrollView style={[{ backgroundColor }, style]} {...otherProps} />
+  );
+}
+
+export function MainView(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -64,14 +66,12 @@ export function ScrollView(props: ViewProps) {
     container: {
       flex: 1,
       alignItems: "center",
-      justifyContent: "space-between",
     },
   });
 
   return (
-    <DefaultScrollView
-      contentContainerStyle={defaultStyle.container}
-      style={[{ backgroundColor }, style]}
+    <DefaultView
+      style={[{ backgroundColor }, defaultStyle.container, style]}
       {...otherProps}
     />
   );

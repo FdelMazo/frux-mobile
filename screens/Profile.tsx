@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { View, ScrollView } from "../components/Themed";
+import { View, ScrollView, MainView } from "../components/Themed";
 import { Button, Input, Div, Text, Skeleton, Icon } from "react-native-magnus";
 import {
   signIn,
@@ -8,6 +8,7 @@ import {
   signInWithGoogle,
   loggingOut,
   useGoogleAuth,
+  resetPassword,
 } from "../auth";
 import { Header } from "../components/Header";
 import { graphql } from "react-apollo";
@@ -50,9 +51,7 @@ const UserScreen = ({ data }: { data?: any }) => {
           </Div>
         </Div>
         <Div w="65%" justifyContent="space-between" mb={15} flexDir="row">
-          <Div>
-            <Text>{data.profile.email}</Text>
-          </Div>
+          <Div>{/* <Text>{data.profile.email}</Text> */}</Div>
 
           <Button p={0} bg={undefined}>
             <Text color="fruxgreen">Change my password</Text>
@@ -85,95 +84,120 @@ const WelcomeScreen = () => {
     <View>
       <Header title="Welcome to FRUX" icon="logo" />
       <ScrollView>
-        <Div w="65%" mt={25}>
-          <Input
-            my={8}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Mail"
-            editable={!loading}
-            autoCompleteType="email"
-          />
+        <MainView>
+          <Div w="65%" mt={25}>
+            <Input
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Mail"
+              editable={!loading}
+              autoCompleteType="email"
+            />
 
-          <Input
-            my={8}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            autoCompleteType="password"
-            editable={!loading}
-            secureTextEntry
-          />
+            <Input
+              mt={8}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              autoCompleteType="password"
+              editable={!loading}
+              secureTextEntry
+            />
 
-          <Text color="red">{errors}</Text>
-          <Button
-            my={8}
-            onPress={async () => {
-              setErrors("");
-              setLoading(true);
-              try {
-                await signIn(email, password);
-              } catch (err) {
-                setErrors(err.message);
-              }
-              setLoading(false);
-            }}
-            bg="fruxgreen"
-            color="white"
-            w="100%"
-            loading={loading}
-          >
-            Login
-          </Button>
+            <Text my={8} color="red">
+              {errors}
+            </Text>
+            <Button
+              mt={8}
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                try {
+                  await signIn(email, password);
+                } catch (err) {
+                  setErrors(err.message);
+                }
+                setLoading(false);
+              }}
+              bg="fruxgreen"
+              color="white"
+              w="100%"
+              loading={loading}
+            >
+              Login
+            </Button>
 
-          <Button
-            my={8}
-            bg="white"
-            onPress={async () => {
-              setErrors("");
-              setLoading(true);
-              try {
-                await registration(email, password);
-              } catch (err) {
-                setErrors(err.message);
+            <Button
+              mt={8}
+              bg="white"
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                try {
+                  await registration(email, password);
+                } catch (err) {
+                  setErrors(err.message);
+                }
+                setLoading(false);
+              }}
+              borderColor="fruxgreen"
+              color="fruxgreen"
+              borderWidth={1}
+              disabled={loading}
+              w="100%"
+            >
+              Sign Up
+            </Button>
+          </Div>
+
+          <Div w="65%" mt={25}>
+            <Button
+              block
+              bg="white"
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                try {
+                  await googleSignIn();
+                } catch (err) {
+                  setErrors(err.message);
+                }
+                setLoading(false);
+              }}
+              borderColor="fruxgreen"
+              color="fruxgreen"
+              borderWidth={1}
+              w="100%"
+              disabled={loading}
+              suffix={
+                <Icon
+                  right={8}
+                  position="absolute"
+                  name="google"
+                  fontFamily="AntDesign"
+                />
               }
-              setLoading(false);
-            }}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            borderWidth={1}
-            disabled={loading}
-            w="100%"
-          >
-            Sign Up
-          </Button>
-        </Div>
-        <Div w="65%">
-          <Button
-            my={15}
-            bg="white"
-            onPress={async () => {
-              setErrors("");
-              setLoading(true);
-              try {
-                await googleSignIn();
-              } catch (err) {
-                setErrors(err.message);
-              }
-              setLoading(false);
-            }}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            borderWidth={1}
-            w="100%"
-            disabled={loading}
-          >
-            Sign In with Google
-          </Button>
-          <Button mb={15} bg="white" color="fruxgreen" w="100%">
-            I forgot my password
-          </Button>
-        </Div>
+            >
+              Sign In with Google
+            </Button>
+
+            <Button
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                resetPassword(email)
+                  .then(() => setErrors("Email Sent!"))
+                  .catch((err) => setErrors(err.message));
+                setLoading(false);
+              }}
+              bg="white"
+              color="fruxgreen"
+              w="100%"
+            >
+              I forgot my password
+            </Button>
+          </Div>
+        </MainView>
       </ScrollView>
     </View>
   );

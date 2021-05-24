@@ -48,15 +48,15 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function loggingOut() {
-  try {
-    await firebase.auth().signOut();
-  } catch (err) {
-    alert(err.message);
-  }
+  await firebase.auth().signOut();
 }
 
 export async function signInWithGoogle(response) {
   const { id_token } = response.params;
   const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
   await firebase.auth().signInWithCredential(credential);
+}
+
+export async function resetPassword(email) {
+  await firebase.auth().sendPasswordResetEmail(email);
 }
