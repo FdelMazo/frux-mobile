@@ -18,6 +18,7 @@ import {
   DiscoverParamList,
 } from "../types";
 import Project from "../screens/Project";
+import User from "../screens/User";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -78,6 +79,11 @@ function ProfileNavigator() {
       <ProfileStack.Screen
         name="ProfileScreen"
         component={Profile}
+        options={{ headerShown: false }}
+      />
+      <DiscoverStack.Screen
+        name="UserScreen"
+        component={User}
         options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>

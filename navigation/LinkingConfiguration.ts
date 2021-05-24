@@ -21,6 +21,7 @@ export default {
           Profile: {
             screens: {
               Profile: "ProfileScreen",
+              User: "UserScreen",
             },
           },
         },

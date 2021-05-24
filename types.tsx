@@ -9,7 +9,6 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  Projects: undefined;
   Profile: undefined;
   Discover: undefined;
 };
@@ -20,5 +19,4 @@ export type ProfileParamList = {
 
 export type DiscoverParamList = {
   DiscoverScreen: undefined;
-  ProjectScreen: undefined;
 };

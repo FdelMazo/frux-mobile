@@ -40,8 +40,18 @@ export function View(props: ViewProps) {
     { light: lightColor, dark: darkColor },
     "background"
   );
+  const defaultStyle = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+  });
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[{ backgroundColor }, defaultStyle.container, style]}
+      {...otherProps}
+    />
+  );
 }
 
 export function ScrollView(props: ViewProps) {

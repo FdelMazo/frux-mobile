@@ -5,30 +5,32 @@ import { Collapse, Div, Icon, Text } from "react-native-magnus";
 const NotificationsList = ({ data }: { data?: any }) => {
   return (
     <>
-      <Text m={20} fontSize="4xl" textAlign="right" fontWeight="bold">
-        Notifications{" "}
-        <Icon
+      <Div mt={20} mx={10} flexDir="row" justifyContent="space-between">
+        <Text
           fontSize="3xl"
+          fontFamily="latinmodernroman-bold"
+          fontWeight="bold"
+        >
+          Notifications{" "}
+        </Text>
+        <Icon
+          fontSize="2xl"
           name="notifications"
           color="black"
           fontFamily="Ionicons"
         />
-      </Text>
-      <Div m={20}>
+      </Div>
+      <Div my={20} mx={10}>
         {data.notifications.map((n) => (
-          <>
+          <Div>
             <Collapse>
               <Collapse.Header
                 active
                 bg={undefined}
                 borderWidth={1}
-                color="black"
-                fontSize="md"
-                p="xl"
-                px="none"
                 suffix={
                   <Icon
-                    px="xl"
+                    px="lg"
                     name="chevron-down"
                     fontFamily="Feather"
                     position="absolute"
@@ -38,7 +40,7 @@ const NotificationsList = ({ data }: { data?: any }) => {
                 }
                 activeSuffix={
                   <Icon
-                    px="xl"
+                    px="lg"
                     name="chevron-up"
                     fontFamily="Feather"
                     position="absolute"
@@ -48,18 +50,15 @@ const NotificationsList = ({ data }: { data?: any }) => {
                 }
               >
                 <Div>
-                  <Text>
-                    {n.timestamp}
-                    <br />
-                    {n.title.toUpperCase()}
-                  </Text>
+                  <Text fontSize="xs">{n.timestamp}</Text>
+                  <Text fontSize="xs">{n.title.toUpperCase()}</Text>
                 </Div>
               </Collapse.Header>
-              <Collapse.Body pb="xl">
-                <Text>{n.body}</Text>
+              <Collapse.Body>
+                <Text fontSize="xs">{n.body}</Text>
               </Collapse.Body>
             </Collapse>
-          </>
+          </Div>
         ))}
       </Div>
     </>
