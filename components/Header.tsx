@@ -25,7 +25,8 @@ export function Header(props: Props) {
       alignItems="center"
       justifyContent="flex-start"
       bgImg={require("../assets/images/forest.jpg")}
-      h={300}
+      p={30}
+      h={200}
     >
       <Drawer direction="right" ref={notificationsRef}>
         <NotificationsList />
@@ -45,33 +46,28 @@ export function Header(props: Props) {
           </Button>
         </Div>
       )}
-      <Text
-        p={20}
-        fontSize="6xl"
-        fontFamily="latinmodernroman-bold"
-        fontWeight="bold"
-      >
+      <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
         {props.title}
       </Text>
       {props.icon === "logo" ? (
         <Image
-          h={80}
-          w={80}
+          h={50}
+          w={50}
           borderWidth={2}
+          borderColor="black"
           rounded="circle"
           source={require("../assets/images/logo.png")}
         />
       ) : (
         <Icon
           bg="fruxbrown"
-          p={20}
-          h={60}
-          w={60}
+          h={50}
+          w={50}
           rounded="circle"
           name={icons[props.icon].name}
           color="fruxgreen"
           borderWidth={2}
-          fontSize="5xl"
+          fontSize="2xl"
           fontFamily={icons[props.icon].fontFamily}
         />
       )}

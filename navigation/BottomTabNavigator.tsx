@@ -57,7 +57,7 @@ function DiscoverNavigator() {
       <DiscoverStack.Screen
         name="DiscoverScreen"
         component={Discover}
-        options={{ headerTitle: "Discover" }}
+        options={{ headerShown: false }}
       />
       <DiscoverStack.Screen
         name="ProjectScreen"
@@ -78,7 +78,7 @@ function ProfileNavigator() {
       <ProfileStack.Screen
         name="ProfileScreen"
         component={Profile}
-        options={{ headerTitle: "Profile" }}
+        options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>
   );

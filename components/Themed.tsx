@@ -4,7 +4,10 @@
  */
 
 import * as React from "react";
-import { View as DefaultView } from "react-native";
+import {
+  View as DefaultView,
+  ScrollView as DefaultScrollView,
+} from "react-native";
 import { StyleSheet } from "react-native";
 
 import Colors from "../constants/Colors";
@@ -40,14 +43,35 @@ export function View(props: ViewProps) {
   const defaultStyle = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: "center",
-      justifyContent: "space-between",
     },
   });
 
   return (
     <DefaultView
       style={[{ backgroundColor }, defaultStyle.container, style]}
+      {...otherProps}
+    />
+  );
+}
+
+export function ScrollView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    "background"
+  );
+  const defaultStyle = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+  });
+
+  return (
+    <DefaultScrollView
+      contentContainerStyle={defaultStyle.container}
+      style={[{ backgroundColor }, style]}
       {...otherProps}
     />
   );

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
 
-import { View } from "../components/Themed";
+import { View, ScrollView } from "../components/Themed";
 import {
   Icon,
   Input,
@@ -18,9 +18,9 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Discover({ navigation }) {
   return (
-    <>
+    <View>
       <Header title="Discover" icon="discover" />
-      <View>
+      <ScrollView>
         <Div w="65%" mt={25}>
           <Div flexDir="row" alignItems="center" alignSelf="center">
             <Input
@@ -140,7 +140,7 @@ export default function Discover({ navigation }) {
         <Fab bg="blue600" h={50} w={50}>
           <Button />
         </Fab>
-      </View>
-    </>
+      </ScrollView>
+    </View>
   );
 }

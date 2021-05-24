@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { View } from "../components/Themed";
-import { Button, Input, Div, Text, Skeleton } from "react-native-magnus";
+import { View, ScrollView } from "../components/Themed";
+import { Button, Input, Div, Text, Skeleton, Icon } from "react-native-magnus";
 import {
   signIn,
   registration,
@@ -16,12 +16,12 @@ import { TopicContainer } from "../components/TopicContainer";
 
 const UserScreen = ({ data }: { data?: any }) => {
   return data.profile ? (
-    <>
+    <View>
       <Header
         title={data.profile.username || data.profile.email}
         icon={data.profile.picture || "seed"}
       />
-      <View>
+      <ScrollView>
         <Div w="65%" mt={25}>
           <Div mt={15}>
             <Text fontSize="xl">My Topics</Text>
@@ -62,8 +62,8 @@ const UserScreen = ({ data }: { data?: any }) => {
             <Text color="red500">Log Out</Text>
           </Button>
         </Div>
-      </View>
-    </>
+      </ScrollView>
+    </View>
   ) : (
     <WelcomeScreen />
   );
@@ -73,9 +73,9 @@ const WelcomeScreen = () => {
   const [password, setPassword] = React.useState("");
 
   return (
-    <>
+    <View>
       <Header title="Welcome to FRUX" icon="logo" />
-      <View>
+      <ScrollView>
         <Div w="65%" mt={25}>
           <Input
             my={8}
@@ -130,8 +130,8 @@ const WelcomeScreen = () => {
             I forgot my password
           </Button>
         </Div>
-      </View>
-    </>
+      </ScrollView>
+    </View>
   );
 };
 
