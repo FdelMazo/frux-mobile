@@ -1,21 +1,20 @@
+import gql from "graphql-tag";
 import * as React from "react";
-
-import { View, ScrollView, MainView } from "../components/Themed";
-import { Button, Input, Div, Text, Skeleton, Icon } from "react-native-magnus";
+import { useQuery } from "react-apollo";
+import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import {
-  signIn,
   registration,
+  resetPassword,
+  signIn,
   signInWithGoogle,
   useGoogleAuth,
-  resetPassword,
 } from "../auth";
 import { Header } from "../components/Header";
-import { graphql } from "react-apollo";
-import gql from "graphql-tag";
+import { MainView, ScrollView, View } from "../components/Themed";
 import User from "./User";
 
 const Profile = ({ data }: { data?: any }) => {
-  return data.profile ? <User data={data} /> : <WelcomeScreen />;
+  return data?.profile ? <User data={data} /> : <WelcomeScreen />;
 };
 
 const WelcomeScreen = () => {
@@ -155,15 +154,15 @@ const WelcomeScreen = () => {
   );
 };
 
-export default function RenderProfile(props: any) {
+export default function RenderProfile() {
   const query = gql`
     query Profile {
       profile {
-        id
+        dbId
       }
     }
   `;
-  const ProfileScreenRenderer = graphql(query)(Profile);
-
-  return <ProfileScreenRenderer {...props} />;
+  const { loading, data } = useQuery(query);
+  if (loading) return <></>;
+  return <Profile data={data} />;
 }

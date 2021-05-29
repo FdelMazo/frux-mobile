@@ -1,25 +1,14 @@
-import * as React from "react";
-
-import { View, ScrollView, MainView } from "../components/Themed";
-import {
-  Button,
-  Div,
-  Text,
-  Input,
-  Skeleton,
-  Dropdown,
-  Icon,
-  Badge,
-  Snackbar,
-} from "react-native-magnus";
-import { loggingOut, resetPassword } from "../auth";
-import { Header } from "../components/Header";
-import { graphql } from "react-apollo";
 import gql from "graphql-tag";
-import { TopicContainer } from "../components/TopicContainer";
+import * as React from "react";
+import { useMutation, useQuery } from "react-apollo";
+import { Button, Div, Dropdown, Icon, Input, Text } from "react-native-magnus";
+import { resetPassword } from "../auth";
+import { Header } from "../components/Header";
+import { MainView, ScrollView, View } from "../components/Themed";
 
-const User = ({ data }) => {
-  if (!data.profile) return <></>;
+const User = ({ data, mutations }) => {
+  const defaultName = data.user.name || data.user.email.split("@")[0];
+  const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
 
@@ -27,8 +16,8 @@ const User = ({ data }) => {
     <View>
       <Header
         onPress={() => dropdownRef.current.open()}
-        title={data.profile.username || data.profile.email}
-        icon={data.profile.picture || "seed"}
+        title={defaultName}
+        icon={data.user.picture || "seed"}
       />
 
       <ScrollView>
@@ -39,18 +28,41 @@ const User = ({ data }) => {
         ref={dropdownRef}
         title={
           <Div alignSelf="center">
-            <Input placeholder="Username" w="65%" focusBorderColor="blue700" />
+            <Input
+              placeholder="Username"
+              w="65%"
+              focusBorderColor="blue700"
+              value={name}
+              onChangeText={setName}
+              suffix={
+                <>
+                  {name !== defaultName && (
+                    <Button
+                      bg={undefined}
+                      p={0}
+                      onPress={() => {
+                        mutations.mutateName({
+                          variables: {
+                            name: name,
+                          },
+                        });
+                      }}
+                    >
+                      <Icon name="check" color="gray900" fontFamily="Feather" />
+                    </Button>
+                  )}
+                </>
+              }
+            />
             <Div flexDir="row" justifyContent="space-between">
               <Text mt={10} fontSize="sm">
-                {data.profile.email}
+                {data.user.email}
               </Text>
               <Text
                 mt={10}
                 onPress={() => {
                   if (emailSent) return;
-                  resetPassword(data.profile.email).then(() =>
-                    setEmailSent(true)
-                  );
+                  resetPassword(data.user.email).then(() => setEmailSent(true));
                 }}
                 textAlign="right"
                 color={emailSent ? "black" : "fruxgreen"}
@@ -137,16 +149,31 @@ const User = ({ data }) => {
   );
 };
 
-export default function RenderUser(props: any) {
+export default function RenderUser(props) {
   const query = gql`
-    query Profile {
-      profile {
+    query User($dbId: Int!) {
+      user(dbId: $dbId) {
         id
+        name
         email
       }
     }
   `;
-  const UserScreenRender = graphql(query)(User);
 
-  return <UserScreenRender {...props} />;
+  const updateNameMutation = gql`
+    mutation mutateUpdateUser($name: String) {
+      mutateUpdateUser(name: $name) {
+        id
+        name
+      }
+    }
+  `;
+  const [mutateName] = useMutation(updateNameMutation);
+
+  const { loading, error, data } = useQuery(query, {
+    variables: { dbId: props.data.profile.dbId },
+  });
+
+  if (loading) return null;
+  return <User data={data} mutations={{ mutateName }} />;
 }
