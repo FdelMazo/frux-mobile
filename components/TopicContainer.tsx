@@ -11,9 +11,10 @@ export function TopicContainer(props: Props) {
   return (
     <Div flexDir="column" alignItems="center" m={4}>
       <Div
-        h={50}
-        w={50}
+        h={35}
+        w={35}
         m={10}
+        bg="white"
         style={{ transform: [{ rotate: "45deg" }] }}
         borderWidth={1}
         p={2}

@@ -22,25 +22,7 @@ const User = ({ data, mutations }) => {
       />
 
       <ScrollView>
-        <MainView>
-          <Div mt={25}>
-            <Button
-              bg="fruxgreen"
-              color="white"
-              prefix={
-                <Icon
-                  name="add"
-                  fontSize="xl"
-                  fontFamily="Ionicons"
-                  mr="md"
-                  color="white"
-                />
-              }
-            >
-              Create New Project
-            </Button>
-          </Div>
-        </MainView>
+        <MainView></MainView>
       </ScrollView>
 
       <Dropdown

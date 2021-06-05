@@ -63,6 +63,23 @@ export function Header(props: Props) {
               />
             </Button>
           </Div>
+          <Div position="absolute" bottom={0}>
+            <Button
+              bg="fruxgreen"
+              borderColor="black"
+              borderWidth={1}
+              p={3}
+              mb={5}
+              onPress={() => loggingOut()}
+            >
+              <Icon
+                name="add"
+                color="white"
+                fontFamily="Ionicons"
+                fontSize="3xl"
+              />
+            </Button>
+          </Div>
         </>
       )}
       <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
