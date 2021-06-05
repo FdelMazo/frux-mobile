@@ -13,6 +13,7 @@ import {
   Button,
 } from "react-native-magnus";
 import { ProjectHeader } from "../components/ProjectHeader";
+import UserContainer from "../components/UserContainer";
 
 export default function Project(props) {
   return (
@@ -23,9 +24,8 @@ export default function Project(props) {
         <MainView>
           <Div w="90%" mt={15}>
             <Div flexDir="row">
-              <Avatar size={50} bg="red300" color="red800">
-                FdM
-              </Avatar>
+              <UserContainer id={7} />
+
               <Div>
                 <Text
                   mx={15}

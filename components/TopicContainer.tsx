@@ -9,15 +9,21 @@ type Props = {
 
 export function TopicContainer(props: Props) {
   return (
-    <Div flexDir="column" alignItems="center">
+    <Div flexDir="column" alignItems="center" m={4}>
       <Div
         h={50}
         w={50}
         m={10}
+        style={{ transform: [{ rotate: "45deg" }] }}
         borderWidth={1}
-        rounded="circle"
-        bgImg={{ uri: props.img }}
-      />
+        p={2}
+      >
+        <Div
+          h="100%"
+          bgImg={{ uri: props.img }}
+          style={{ transform: [{ rotate: "315deg" }] }}
+        />
+      </Div>
       <Div>
         <Text fontWeight="bold">{props.name}</Text>
       </Div>
