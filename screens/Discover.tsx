@@ -15,7 +15,7 @@ import {
 import { Header } from "../components/Header";
 import { TopicContainer } from "../components/TopicContainer";
 import { ProjectContainer } from "../components/ProjectContainer";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Discover({ navigation }) {
   const [searchLocation, setSearchLocation] = React.useState(false);
@@ -24,6 +24,45 @@ export default function Discover({ navigation }) {
     almostDone: false,
     complete: false,
   });
+
+  const DATA = [
+    {
+      name: "Sports",
+      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ReOALncSB413CqN4o51PmQHaIM%26pid%3DApi&f=1",
+    },
+    {
+      name: "Tech",
+      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fcogwheel-gear-mechanism-icon-black-minimalist-icon-isolated-on-white-vector-id858148342%3Fk%3D6%26m%3D858148342%26s%3D170667a%26w%3D0%26h%3D9IjQ2MmVS2a0MS8qNQR-l4Gz5foaX1ILVtlYmp6DMak%3D&f=1&nofb=1",
+    },
+    {
+      name: "Art",
+      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpng.pngtree.com%2Fpng-vector%2F20190115%2Fourlarge%2Fpngtree-paint-brush-vector-with-one-line-art-drawing-illustration-minimalist-style-png-image_316254.jpg&f=1&nofb=1",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+    {
+      name: "Music",
+      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
+    },
+  ];
 
   return (
     <View>
@@ -115,37 +154,12 @@ export default function Discover({ navigation }) {
             </Div>
 
             <Div w="90%" row flexWrap="wrap">
-              <TopicContainer
-                name="Sports"
-                img="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ReOALncSB413CqN4o51PmQHaIM%26pid%3DApi&f=1"
-              />
-              <TopicContainer
-                name="Tech"
-                img="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fcogwheel-gear-mechanism-icon-black-minimalist-icon-isolated-on-white-vector-id858148342%3Fk%3D6%26m%3D858148342%26s%3D170667a%26w%3D0%26h%3D9IjQ2MmVS2a0MS8qNQR-l4Gz5foaX1ILVtlYmp6DMak%3D&f=1&nofb=1"
-              />
-              <TopicContainer
-                name="Art"
-                img="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpng.pngtree.com%2Fpng-vector%2F20190115%2Fourlarge%2Fpngtree-paint-brush-vector-with-one-line-art-drawing-illustration-minimalist-style-png-image_316254.jpg&f=1&nofb=1"
-              />
-              <TopicContainer
-                name="Music"
-                img="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg"
-              />
-              <TopicContainer
-                name="Music"
-                img="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg"
-              />
-              <TopicContainer
-                name="Music"
-                img="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg"
-              />
-              <TopicContainer
-                name="Music"
-                img="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg"
-              />
-              <TopicContainer
-                name="Music"
-                img="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg"
+              <FlatList
+                horizontal
+                data={DATA}
+                renderItem={({ item }) => (
+                  <TopicContainer name={item.name} img={item.img} />
+                )}
               />
             </Div>
           </Div>

@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 import * as React from "react";
 import { useMutation, useQuery } from "react-apollo";
+import { FlatList } from "react-native-gesture-handler";
 import { Button, Div, Dropdown, Icon, Input, Text } from "react-native-magnus";
 import { resetPassword } from "../auth";
 import { Header } from "../components/Header";
@@ -21,7 +22,25 @@ const User = ({ data, mutations }) => {
       />
 
       <ScrollView>
-        <MainView></MainView>
+        <MainView>
+          <Div mt={25}>
+            <Button
+              bg="fruxgreen"
+              color="white"
+              prefix={
+                <Icon
+                  name="add"
+                  fontSize="xl"
+                  fontFamily="Ionicons"
+                  mr="md"
+                  color="white"
+                />
+              }
+            >
+              Create New Project
+            </Button>
+          </Div>
+        </MainView>
       </ScrollView>
 
       <Dropdown
