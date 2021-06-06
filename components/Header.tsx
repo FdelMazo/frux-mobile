@@ -1,7 +1,7 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Button, Div, Drawer, Icon, Image, Text } from "react-native-magnus";
+import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { loggingOut, useAuth } from "../auth";
 import Notifications from "./Notifications";
 
@@ -25,6 +25,7 @@ export default function Component({
     seed: { name: "seed-outline", fontFamily: "MaterialCommunityIcons" },
     discover: { name: "seedling", fontFamily: "FontAwesome5" },
   };
+  // @ts-expect-error
   const { user } = useAuth();
 
   return (
@@ -36,7 +37,7 @@ export default function Component({
     >
       {user && (
         <>
-          <Notifications />
+          <Notifications navigation={navigation} />
           <Div position="absolute" right={0} bottom={0}>
             <Button bg={undefined} onPress={() => loggingOut()}>
               <Icon

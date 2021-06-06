@@ -5,6 +5,10 @@ import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 
+interface StageColorType {
+  [key: string]: string;
+}
+
 type Data = {
   dbId: number;
   project: {
@@ -24,7 +28,7 @@ function Component({
   data: Data;
   navigation: Navigation;
 }) {
-  const stagecolor = {
+  const stagecolor: StageColorType = {
     CREATED: "pink500",
   };
 

@@ -21,12 +21,14 @@ function Component({
   data: Data;
   navigation: Navigation;
 }) {
+  // @ts-expect-error
   const { user } = useAuth();
+
   return (
     <Div bgImg={require("../assets/images/nopicture.jpg")} h={200}>
       {user && (
         <>
-          <Notifications />
+          <Notifications navigation={navigation} />
 
           <Div position="absolute" right={0} bottom={0}>
             <TopicContainer

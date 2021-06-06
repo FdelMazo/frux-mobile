@@ -27,6 +27,7 @@ function Component({
           bg={undefined}
           onPress={() => {
             if (notificationsRef.current) {
+              // @ts-expect-error
               notificationsRef.current.open();
             }
           }}
@@ -40,6 +41,7 @@ function Component({
         </Button>
       </Div>
 
+      {/* @ts-expect-error */}
       <Drawer direction="right" ref={notificationsRef}>
         <Div my="xl" mx="lg" row justifyContent="space-between">
           <Text
