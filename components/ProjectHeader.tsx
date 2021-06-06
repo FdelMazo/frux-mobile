@@ -1,48 +1,63 @@
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/react-hooks";
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { Text, Div, Icon, Image, Drawer, Button } from "react-native-magnus";
+import { Div } from "react-native-magnus";
+import TopicContainer from "./TopicContainer";
+import Notifications from "./Notifications";
 import { useAuth } from "../auth";
-import NotificationsList from "./NotificationsList";
-import { TopicContainer } from "./TopicContainer";
 
-type Props = {
-  img: string;
-  topic: string;
+type Data = {
+  project: {
+    categoryName: string;
+  };
 };
+type Navigation = StackNavigationProp<any>;
 
-export function ProjectHeader(props: Props) {
-  const notificationsRef = React.createRef();
+function Component({
+  data,
+  navigation,
+}: {
+  data: Data;
+  navigation: Navigation;
+}) {
   const { user } = useAuth();
   return (
-    <Div
-      alignItems="center"
-      justifyContent="flex-start"
-      bgImg={{
-        uri: props.img,
-      }}
-      h={200}
-    >
-      <Drawer direction="right" ref={notificationsRef}>
-        <NotificationsList />
-      </Drawer>
-
+    <Div bgImg={require("../assets/images/nopicture.jpg")} h={200}>
       {user && (
-        <Div position="absolute" right={5} top={30}>
-          <Button
-            bg={undefined}
-            onPress={() => {
-              if (notificationsRef.current) {
-                notificationsRef.current.open();
-              }
-            }}
-          >
-            <Icon name="notifications" color="black" fontFamily="Ionicons" />
-          </Button>
-        </Div>
-      )}
+        <>
+          <Notifications />
 
-      <Div position="absolute" right={0} bottom={0}>
-        <TopicContainer name="Books" showName={false} />
-      </Div>
+          <Div position="absolute" right={0} bottom={0}>
+            <TopicContainer
+              navigation={navigation}
+              name={data.project.categoryName}
+              showName={false}
+            />
+          </Div>
+        </>
+      )}
     </Div>
   );
+}
+
+type Props = {
+  navigation: Navigation;
+  dbId: number;
+};
+
+export default function Render(props: Props) {
+  const query = gql`
+    query ProjectHeader($dbId: Int!) {
+      project(dbId: $dbId) {
+        categoryName
+      }
+    }
+  `;
+  const { loading, error, data } = useQuery(query, {
+    variables: { dbId: props.dbId },
+  });
+  if (error) alert(JSON.stringify(error));
+  if (loading) return null;
+  return <Component data={data} navigation={props.navigation} />;
 }

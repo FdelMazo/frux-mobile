@@ -2,7 +2,7 @@ import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Collapse, Div, Dropdown, Icon, Text } from "react-native-magnus";
-import { ProjectHeader } from "../components/ProjectHeader";
+import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 
@@ -11,15 +11,16 @@ function Project({ data }) {
   return (
     <View>
       <ProjectHeader
-        topic={data.topic}
-        img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg"
+        dbId={1}
+        // topic={data.topic}
+        // img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg"
       />
 
       <ScrollView>
         <MainView>
           <Div w="90%" mt={15}>
             <Div flexDir="row">
-              <UserContainer id={7} />
+              <UserContainer dbId={7} />
 
               <Div>
                 <Div row>

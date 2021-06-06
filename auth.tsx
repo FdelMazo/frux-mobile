@@ -57,6 +57,6 @@ export async function signInWithGoogle(response) {
   await firebase.auth().signInWithCredential(credential);
 }
 
-export async function resetPassword(email) {
+export async function resetPassword(email: string) {
   await firebase.auth().sendPasswordResetEmail(email);
 }

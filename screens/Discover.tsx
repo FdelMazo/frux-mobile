@@ -12,8 +12,8 @@ import {
   Fab,
   Button,
 } from "react-native-magnus";
-import { Header } from "../components/Header";
-import { TopicContainer } from "../components/TopicContainer";
+import Header from "../components/Header";
+import TopicContainer from "../components/TopicContainer";
 import ProjectContainer from "../components/ProjectContainer";
 import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
 import { gql } from "@apollo/client";

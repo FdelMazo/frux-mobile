@@ -1,14 +1,13 @@
 import * as React from "react";
-import { Text, Div, Icon, Image, Drawer, Button } from "react-native-magnus";
-import NotificationsList from "./NotificationsList";
+import { Div, Text } from "react-native-magnus";
 
-type Props = {
+export default function Component({
+  name,
+  showName,
+}: {
   name: string;
   showName: boolean;
-  img: string;
-};
-
-export function TopicContainer(props: Props) {
+}) {
   const IMG = {
     Tech: require(`../assets/images/topics/tech.png`),
     Art: require(`../assets/images/topics/art.png`),
@@ -21,25 +20,25 @@ export function TopicContainer(props: Props) {
   };
 
   return (
-    <Div flexDir="column" alignItems="center" m={4}>
+    <Div flexDir="column" alignItems="center" m="sm">
       <Div
-        p={7}
+        p="md"
         h={45}
         w={45}
-        m={7}
+        m="md"
         bg="white"
         style={{ transform: [{ rotate: "45deg" }] }}
         borderWidth={1}
       >
         <Div
           h="100%"
-          bgImg={IMG[props.name]}
+          bgImg={IMG[name]}
           style={{ transform: [{ rotate: "315deg" }] }}
         />
       </Div>
-      {props.showName && (
-        <Div>
-          <Text fontWeight="bold">{props.name}</Text>
+      {showName && (
+        <Div mt="xs">
+          <Text fontWeight="bold">{name}</Text>
         </Div>
       )}
     </Div>

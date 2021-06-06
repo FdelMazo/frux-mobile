@@ -9,7 +9,7 @@ import {
   signInWithGoogle,
   useGoogleAuth,
 } from "../auth";
-import { Header } from "../components/Header";
+import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import User from "./User";
 

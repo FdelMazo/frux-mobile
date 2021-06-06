@@ -24,6 +24,10 @@ function Component({
   data: Data;
   navigation: Navigation;
 }) {
+  const stagecolor = {
+    CREATED: "pink500",
+  };
+
   return (
     <TouchableHighlight
       onPress={() => {
@@ -31,19 +35,16 @@ function Component({
       }}
       underlayColor="white"
     >
-      <Div my={5} mr={25}>
+      <Div my="sm" mr="lg">
         <Div
           rounded="xl"
           h={150}
           w={250}
-          bgImg={{
-            uri: "https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg",
-          }}
+          bgImg={require("../assets/images/nopicture.jpg")}
         >
           <Div
-            bg="pink500"
+            bg={stagecolor[data.project.currentState]}
             rounded="md"
-            row
             flexWrap="wrap"
             px="md"
             m="lg"
@@ -63,7 +64,7 @@ function Component({
               {data.project.categoryName}
             </Text>
           </Div>
-          <Div row alignItems="center">
+          <Div row>
             <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
               {"$"}
               {data.project.amountCollected}

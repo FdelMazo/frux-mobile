@@ -13,7 +13,7 @@ import {
   Text,
 } from "react-native-magnus";
 import { resetPassword } from "../auth";
-import { Header } from "../components/Header";
+import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 
 const User = ({ data, mutations, navigation }) => {
