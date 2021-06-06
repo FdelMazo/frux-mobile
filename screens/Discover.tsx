@@ -14,10 +14,13 @@ import {
 } from "react-native-magnus";
 import { Header } from "../components/Header";
 import { TopicContainer } from "../components/TopicContainer";
-import { ProjectContainer } from "../components/ProjectContainer";
+import ProjectContainer from "../components/ProjectContainer";
 import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/react-hooks";
+import CarouselItem from "react-native-magnus/lib/typescript/src/ui/carousel/item.carousel";
 
-export default function Discover({ navigation }) {
+export function Discover({ data, navigation }) {
   const [searchLocation, setSearchLocation] = React.useState(false);
   const [progressFilters, setProgressFilters] = React.useState({
     inProgress: false,
@@ -25,48 +28,9 @@ export default function Discover({ navigation }) {
     complete: false,
   });
 
-  const DATA = [
-    {
-      name: "Sports",
-      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.ReOALncSB413CqN4o51PmQHaIM%26pid%3DApi&f=1",
-    },
-    {
-      name: "Tech",
-      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fcogwheel-gear-mechanism-icon-black-minimalist-icon-isolated-on-white-vector-id858148342%3Fk%3D6%26m%3D858148342%26s%3D170667a%26w%3D0%26h%3D9IjQ2MmVS2a0MS8qNQR-l4Gz5foaX1ILVtlYmp6DMak%3D&f=1&nofb=1",
-    },
-    {
-      name: "Art",
-      img: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpng.pngtree.com%2Fpng-vector%2F20190115%2Fourlarge%2Fpngtree-paint-brush-vector-with-one-line-art-drawing-illustration-minimalist-style-png-image_316254.jpg&f=1&nofb=1",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-    {
-      name: "Music",
-      img: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-one-line-drawing-of-music-notes-isolated-vector-object-continuous-simplicity-png-image_1987219.jpg",
-    },
-  ];
-
   return (
     <View>
-      <Header title="Discover" icon="discover" />
+      <Header navigation={navigation} title="Discover" icon="discover" />
       <ScrollView>
         <MainView>
           <Div mt={25} alignItems="center">
@@ -91,6 +55,7 @@ export default function Discover({ navigation }) {
                 />
               </TouchableHighlight>
             </Div>
+
             <Div my={15} flexDir="row">
               <TouchableHighlight
                 underlayColor="white"
@@ -153,35 +118,32 @@ export default function Discover({ navigation }) {
               </TouchableHighlight>
             </Div>
 
-            <Div w="90%" row flexWrap="wrap">
-              <FlatList
-                horizontal
-                data={DATA}
-                renderItem={({ item }) => (
-                  <TopicContainer name={item.name} img={item.img} />
-                )}
-              />
+            <Div w="90%" row my={15} flexWrap="wrap">
+              <TopicContainer showName={true} name="Art" />
+              <TopicContainer showName={true} name="Books" />
+              <TopicContainer showName={true} name="Film" />
+              <TopicContainer showName={true} name="Food" />
+              <TopicContainer showName={true} name="Games" />
+              <TopicContainer showName={true} name="Music" />
+              <TopicContainer showName={true} name="Tech" />
+              <TopicContainer showName={true} name="Other" />
             </Div>
           </Div>
-          <Div my={15}>
-            <Div row>
-              <Icon
-                color="gray800"
-                fontSize="3xl"
-                name="caretleft"
-                fontFamily="AntDesign"
-              />
-              <Div>
-                <Text fontSize="xl" fontWeight="bold" mb={5}>
-                  Recommended Seeds
-                </Text>
-                <ProjectContainer navigation={navigation} />
-              </Div>
-              <Icon
-                color="gray800"
-                fontSize="3xl"
-                name="caretright"
-                fontFamily="AntDesign"
+
+          <Div w="90%">
+            <Div>
+              <Text fontSize="xl" fontWeight="bold" mb={5}>
+                Recommended Seeds
+              </Text>
+              <FlatList
+                horizontal
+                data={data.allProjects.edges}
+                renderItem={({ item }) => (
+                  <ProjectContainer
+                    navigation={navigation}
+                    dbId={item.node.dbId}
+                  />
+                )}
               />
             </Div>
           </Div>
@@ -189,4 +151,23 @@ export default function Discover({ navigation }) {
       </ScrollView>
     </View>
   );
+}
+
+export default function RenderDiscover(props) {
+  const query = gql`
+    query Discover {
+      allProjects {
+        edges {
+          node {
+            dbId
+          }
+        }
+      }
+    }
+  `;
+
+  const { loading, error, data } = useQuery(query);
+
+  if (loading) return null;
+  return <Discover data={data} navigation={props.navigation} />;
 }

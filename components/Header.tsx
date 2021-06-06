@@ -8,6 +8,7 @@ type Props = {
   icon: string;
   title: string;
   onPress?: any;
+  navigation: any;
 };
 
 interface IconType {
@@ -70,7 +71,7 @@ export function Header(props: Props) {
               borderWidth={1}
               p={3}
               mb={5}
-              onPress={() => loggingOut()}
+              onPress={() => props.navigation.navigate("ProjectScreen")}
             >
               <Icon
                 name="add"

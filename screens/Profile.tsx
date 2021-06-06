@@ -13,11 +13,15 @@ import { Header } from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import User from "./User";
 
-const Profile = ({ data }: { data?: any }) => {
-  return data?.profile ? <User data={data} /> : <WelcomeScreen />;
+const Profile = ({ data, navigation }: { data?: any }) => {
+  return data?.profile ? (
+    <User data={data} navigation={navigation} />
+  ) : (
+    <WelcomeScreen navigation={navigation} />
+  );
 };
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -32,7 +36,7 @@ const WelcomeScreen = () => {
 
   return (
     <View>
-      <Header title="Welcome to FRUX" icon="logo" />
+      <Header navigation={navigation} title="Welcome to FRUX" icon="logo" />
       <ScrollView>
         <MainView>
           <Div w="65%" mt={25}>
@@ -154,7 +158,7 @@ const WelcomeScreen = () => {
   );
 };
 
-export default function RenderProfile() {
+export default function RenderProfile({ navigation }) {
   const query = gql`
     query Profile {
       profile {
@@ -164,5 +168,5 @@ export default function RenderProfile() {
   `;
   const { loading, data } = useQuery(query);
   if (loading) return <></>;
-  return <Profile data={data} />;
+  return <Profile data={data} navigation={navigation} />;
 }

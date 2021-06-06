@@ -61,6 +61,11 @@ function DiscoverNavigator() {
         options={{ headerShown: false }}
       />
       <DiscoverStack.Screen
+        name="UserScreen"
+        component={User}
+        options={{ headerShown: false }}
+      />
+      <DiscoverStack.Screen
         name="ProjectScreen"
         component={Project}
         options={{ headerShown: false }}
@@ -79,9 +84,14 @@ function ProfileNavigator() {
         component={Profile}
         options={{ headerShown: false }}
       />
-      <DiscoverStack.Screen
+      <ProfileStack.Screen
         name="UserScreen"
         component={User}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
+        name="ProjectScreen"
+        component={Project}
         options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>

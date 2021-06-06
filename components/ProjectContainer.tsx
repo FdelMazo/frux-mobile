@@ -1,22 +1,21 @@
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/react-hooks";
+import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Text, Div, Icon, Image, Drawer, Button } from "react-native-magnus";
-import NotificationsList from "./NotificationsList";
+import { Div, Text } from "react-native-magnus";
 
-type Props = {
-  // name: string;
-  // img: string;
-};
-
-export function ProjectContainer(props: Props) {
+type Data = any;
+type Navigation = StackNavigationProp<any>;
+function Component({ data, navigation }) {
   return (
     <TouchableHighlight
       onPress={() => {
-        props.navigation.navigate("ProjectScreen", { name: "Batman Comics" });
+        navigation.navigate("ProjectScreen", { dbId: data.dbId });
       }}
       underlayColor="white"
     >
-      <Div>
+      <Div my={5} mr={25}>
         <Div
           rounded="xl"
           h={150}
@@ -35,26 +34,53 @@ export function ProjectContainer(props: Props) {
             alignSelf="flex-start"
           >
             <Text color="white" fontSize="sm">
-              In Progress
+              {data.project.currentState}
             </Text>
           </Div>
         </Div>
         <Div row alignItems="center">
           <Div flex={1}>
             <Text fontWeight="bold" fontSize="xl" mt="sm">
-              Batman Comic
+              {data.project.name}
             </Text>
             <Text color="gray500" fontSize="sm">
-              Art
+              {data.project.categoryName}
             </Text>
           </Div>
           <Div row alignItems="center">
-            <Text color="blue500" fontWeight="bold" fontSize="xl">
-              $500
+            <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
+              {"$"}
+              {data.project.amountCollected || "0"}
+            </Text>
+            <Text color="gray500" fontWeight="bold" fontSize="lg">
+              {"  /"}
+              {data.project.goal}
             </Text>
           </Div>
         </Div>
       </Div>
     </TouchableHighlight>
   );
+}
+
+type Props = any;
+export default function Render(props: Props) {
+  const query = gql`
+    query ProjectContainer($dbId: Int!) {
+      project(dbId: $dbId) {
+        dbId
+        id
+        name
+        currentState
+        categoryName
+        goal
+      }
+    }
+  `;
+  const { loading, error, data } = useQuery(query, {
+    variables: { dbId: props.dbId },
+  });
+  if (error) alert(JSON.stringify(error));
+  if (loading) return null;
+  return <Component data={data} navigation={props.navigation} />;
 }

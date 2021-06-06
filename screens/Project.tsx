@@ -1,30 +1,19 @@
-import * as React from "react";
-import { StyleSheet } from "react-native";
-
-import { View, ScrollView, MainView } from "../components/Themed";
-import {
-  Icon,
-  Avatar,
-  Div,
-  Tag,
-  Skeleton,
-  Text,
-  Fab,
-  Button,
-  Collapse,
-  Dropdown,
-} from "react-native-magnus";
-import { ProjectHeader } from "../components/ProjectHeader";
-import UserContainer from "../components/UserContainer";
-import { TopicContainer } from "../components/TopicContainer";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { Collapse, Div, Dropdown, Icon, Text } from "react-native-magnus";
+import { ProjectHeader } from "../components/ProjectHeader";
+import { MainView, ScrollView, View } from "../components/Themed";
+import UserContainer from "../components/UserContainer";
 
-export default function Project(props) {
+function Project({ data }) {
   const dropdownRef = React.createRef();
   return (
     <View>
-      <ProjectHeader img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg" />
+      <ProjectHeader
+        topic={data.topic}
+        img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg"
+      />
 
       <ScrollView>
         <MainView>
@@ -40,7 +29,7 @@ export default function Project(props) {
                     fontFamily="latinmodernroman-bold"
                     fontWeight="bold"
                   >
-                    {props.route.params.name}
+                    {/* {props.route.params.name} */}
                   </Text>
                   <Div
                     ml={5}
@@ -192,5 +181,40 @@ export default function Project(props) {
         </Dropdown.Option>
       </Dropdown>
     </View>
+  );
+}
+
+export default function RenderProject(props) {
+  // const query = gql`
+  //   query User($dbId: Int!) {
+  //     user(dbId: $dbId) {
+  //       id
+  //       name
+  //       email
+  //     }
+  //   }
+  // `;
+
+  // const updateNameMutation = gql`
+  //   mutation mutateUpdateUser($name: String) {
+  //     mutateUpdateUser(name: $name) {
+  //       id
+  //       name
+  //     }
+  //   }
+  // `;
+  // const [mutateName] = useMutation(updateNameMutation);
+
+  // const { loading, error, data } = useQuery(query, {
+  //   variables: { dbId: props.data.profile.dbId },
+  // });
+
+  // if (loading) return null;
+  return (
+    <Project
+      // create={props.create}
+      data={{ topic: "Books" }}
+      // mutations={{ mutateName }}
+    />
   );
 }

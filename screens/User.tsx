@@ -16,7 +16,7 @@ import { resetPassword } from "../auth";
 import { Header } from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 
-const User = ({ data, mutations }) => {
+const User = ({ data, mutations, navigation }) => {
   const defaultName = data.user.name || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
@@ -35,6 +35,7 @@ const User = ({ data, mutations }) => {
     <View>
       <Header
         onPress={() => dropdownRef.current.open()}
+        navigation={navigation}
         title={defaultName}
         icon={data.user.picture || "seed"}
       />
@@ -291,5 +292,11 @@ export default function RenderUser(props) {
   });
 
   if (loading) return null;
-  return <User data={data} mutations={{ mutateName }} />;
+  return (
+    <User
+      data={data}
+      navigation={props.navigation}
+      mutations={{ mutateName }}
+    />
+  );
 }
