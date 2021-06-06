@@ -12,12 +12,16 @@ import {
   Fab,
   Button,
   Collapse,
+  Dropdown,
 } from "react-native-magnus";
 import { ProjectHeader } from "../components/ProjectHeader";
 import UserContainer from "../components/UserContainer";
 import { TopicContainer } from "../components/TopicContainer";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Project(props) {
+  const dropdownRef = React.createRef();
   return (
     <View>
       <ProjectHeader img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg" />
@@ -70,7 +74,7 @@ export default function Project(props) {
               </Div>
             </Div>
           </Div>
-          <Div row w="90%" mt={25}>
+          <Div row w="90%" mt={25} justifyContent="space-between">
             <Div>
               <Text mx={15} fontSize="5xl" color="fruxgreen">
                 $1000
@@ -85,7 +89,38 @@ export default function Project(props) {
                 Out of $500000
               </Text>
             </Div>
-            <Div></Div>
+            <TouchableHighlight
+              underlayColor="white"
+              onPress={() => dropdownRef.current.open()}
+            >
+              <Div>
+                <Div alignSelf="flex-end">
+                  <Text>
+                    <Text fontWeight="bold">Stage 3:</Text> Board
+                  </Text>
+                </Div>
+                <MultiSlider
+                  trackStyle={{ backgroundColor: "#bdc3c7" }}
+                  selectedStyle={{ backgroundColor: "#90B44B" }}
+                  touchDimensions={{
+                    height: 0,
+                    width: 0,
+                    borderRadius: 0,
+                    slipDisplacement: 0,
+                  }}
+                  markerStyle={{
+                    borderRadius: 0,
+                    width: 7,
+                    backgroundColor: "#90B44B",
+                  }}
+                  values={[5]}
+                  sliderLength={150}
+                  step={1}
+                  allowOverlap={false}
+                  snapped={true}
+                />
+              </Div>
+            </TouchableHighlight>
           </Div>
           <Div w="90%" row justifyContent="center">
             <Collapse w="50%" m={5}>
@@ -131,6 +166,31 @@ export default function Project(props) {
           </Div>
         </MainView>
       </ScrollView>
+
+      <Dropdown
+        ref={dropdownRef}
+        title={
+          <Div alignSelf="center" mb="sm">
+            <Text fontSize="2xl" fontWeight="bold">
+              Stages
+            </Text>
+          </Div>
+        }
+        showSwipeIndicator={true}
+        roundedTop="xl"
+      >
+        <Dropdown.Option py="lg" px="xl">
+          <Text fontSize="xl" fontWeight="bold">
+            Stage 1:{" "}
+          </Text>
+          <Text fontSize="xl">Detective Comics #33</Text>
+          <Div position="absolute" right={0}>
+            <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
+              $700
+            </Text>
+          </Div>
+        </Dropdown.Option>
+      </Dropdown>
     </View>
   );
 }
