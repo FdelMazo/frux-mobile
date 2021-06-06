@@ -1,94 +1,103 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { StackNavigationProp } from "@react-navigation/stack";
+import gql from "graphql-tag";
 import * as React from "react";
+import { useQuery } from "react-apollo";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Collapse, Div, Dropdown, Icon, Text } from "react-native-magnus";
+import { Div, Dropdown, Text } from "react-native-magnus";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
+import { StageColor } from "../constants/Constants";
 
-function Project({ data }) {
+type Data = {
+  project: {
+    dbId: number;
+    userId: number;
+    name: string;
+    currentState: string;
+    description: string;
+    hashtags: string[];
+    amountCollected: number;
+    goal: number;
+  };
+};
+type Navigation = StackNavigationProp<any>;
+
+function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
   const dropdownRef = React.createRef();
   return (
     <View>
-      <ProjectHeader
-        dbId={1}
-        // topic={data.topic}
-        // img="https://static2.cbrimages.com/wordpress/wp-content/uploads/2021/01/batman-1-1940-header.jpg"
-      />
+      <ProjectHeader dbId={data.project.dbId} navigation={navigation} />
 
       <ScrollView>
         <MainView>
-          <Div w="90%" mt={15}>
-            <Div flexDir="row">
-              <UserContainer dbId={7} />
+          <Div w="60%" mt="lg" alignItems="center">
+            <Div row>
+              <UserContainer
+                navigation={navigation}
+                dbId={data.project.userId}
+              />
 
               <Div>
                 <Div row>
                   <Text
-                    ml={15}
-                    fontSize="5xl"
+                    ml="lg"
+                    fontSize="4xl"
                     fontFamily="latinmodernroman-bold"
                     fontWeight="bold"
                   >
-                    {/* {props.route.params.name} */}
+                    {data.project.name}
                   </Text>
+
                   <Div
-                    ml={5}
-                    bg="pink500"
+                    alignSelf="flex-start"
+                    ml="xs"
+                    bg={StageColor[data.project.currentState]}
                     rounded="md"
-                    px="sm"
-                    alignSelf="center"
+                    px="xs"
                   >
-                    <Text color="white" fontSize="sm">
-                      In Progress
+                    <Text color="white" fontSize="xs">
+                      {data.project.currentState}
                     </Text>
                   </Div>
                 </Div>
                 <Text
-                  mx={15}
+                  mx="lg"
                   lineHeight={20}
                   fontSize="xl"
                   fontFamily="latinmodernroman-bold"
                   color="gray600"
                 >
-                  Restoration of old 1940's Batman Comics
+                  {data.project.description}
                 </Text>
-                <Text
-                  mx={15}
-                  fontSize="md"
-                  fontFamily="latinmodernroman-bold"
-                  color="blue600"
-                >
-                  #batman #comics
-                </Text>
+                {data.project.hashtags?.map((h) => (
+                  <Text
+                    mx="lg"
+                    fontSize="md"
+                    fontFamily="latinmodernroman-bold"
+                    color="blue600"
+                  >
+                    {" #"}
+                    {h}
+                  </Text>
+                ))}
               </Div>
             </Div>
           </Div>
-          <Div row w="90%" mt={25} justifyContent="space-between">
-            <Div>
-              <Text mx={15} fontSize="5xl" color="fruxgreen">
-                $1000
-              </Text>
-              <Text
-                mx={15}
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                Out of $500000
-              </Text>
-            </Div>
+          <Div row w="90%" mt="xl" justifyContent="space-between">
             <TouchableHighlight
               underlayColor="white"
+              // @ts-expect-error
               onPress={() => dropdownRef.current.open()}
             >
               <Div>
-                <Div alignSelf="flex-end">
-                  <Text>
-                    <Text fontWeight="bold">Stage 3:</Text> Board
+                <Text fontSize="lg">
+                  <Text fontSize="lg" fontWeight="bold">
+                    Stage 3:{" "}
                   </Text>
-                </Div>
+                  Detective Comics #33
+                </Text>
                 <MultiSlider
                   trackStyle={{ backgroundColor: "#bdc3c7" }}
                   selectedStyle={{ backgroundColor: "#90B44B" }}
@@ -105,70 +114,42 @@ function Project({ data }) {
                   }}
                   values={[5]}
                   sliderLength={150}
-                  step={1}
-                  allowOverlap={false}
-                  snapped={true}
                 />
               </Div>
             </TouchableHighlight>
-          </Div>
-          <Div w="90%" row justifyContent="center">
-            <Collapse w="50%" m={5}>
-              <Collapse.Header
-                active
-                color="gray900"
-                fontSize="md"
-                p="xl"
-                px="none"
-                prefix={<Icon name="wallet" mr="md" color="gray400" />}
+            <Div>
+              <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
+                {"$"}
+                {data.project.amountCollected}
+              </Text>
+              <Text
+                mx="md"
+                lineHeight={20}
+                fontSize="xl"
+                fontFamily="latinmodernroman-bold"
+                color="gray600"
               >
-                13 Sponsors
-              </Collapse.Header>
-              <Collapse.Body pb="xl">
-                <Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
-                  nobis corporis ut, ex sed aperiam. Debitis, facere! Animi quis
-                  laudantium, odio nulla recusandae labore pariatur in, vitae
-                  corporis delectus repellendus.
-                </Text>
-              </Collapse.Body>
-            </Collapse>
-            <Collapse w="50%" m={5}>
-              <Collapse.Header
-                active
-                color="gray900"
-                fontSize="md"
-                p="xl"
-                px="none"
-                prefix={<Icon name="wallet" mr="md" color="gray400" />}
-              >
-                35 Watchers
-              </Collapse.Header>
-              <Collapse.Body pb="xl">
-                <Text>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
-                  nobis corporis ut, ex sed aperiam. Debitis, facere! Animi quis
-                  laudantium, odio nulla recusandae labore pariatur in, vitae
-                  corporis delectus repellendus.
-                </Text>
-              </Collapse.Body>
-            </Collapse>
+                Out of ${data.project.goal}
+              </Text>
+            </Div>
           </Div>
         </MainView>
       </ScrollView>
 
       <Dropdown
+        // @ts-expect-error
         ref={dropdownRef}
         title={
           <Div alignSelf="center" mb="sm">
             <Text fontSize="2xl" fontWeight="bold">
-              Stages
+              {data.project.name} - Stages
             </Text>
           </Div>
         }
         showSwipeIndicator={true}
         roundedTop="xl"
       >
+        {/* @ts-expect-error */}
         <Dropdown.Option py="lg" px="xl">
           <Text fontSize="xl" fontWeight="bold">
             Stage 1:{" "}
@@ -185,37 +166,31 @@ function Project({ data }) {
   );
 }
 
-export default function RenderProject(props) {
-  // const query = gql`
-  //   query User($dbId: Int!) {
-  //     user(dbId: $dbId) {
-  //       id
-  //       name
-  //       email
-  //     }
-  //   }
-  // `;
+type Props = {
+  navigation: Navigation;
+  route: { params: { dbId: number } };
+};
 
-  // const updateNameMutation = gql`
-  //   mutation mutateUpdateUser($name: String) {
-  //     mutateUpdateUser(name: $name) {
-  //       id
-  //       name
-  //     }
-  //   }
-  // `;
-  // const [mutateName] = useMutation(updateNameMutation);
+export default function Render(props: Props) {
+  const query = gql`
+    query Project($dbId: Int!) {
+      project(dbId: $dbId) {
+        dbId
+        name
+        userId
+        name
+        currentState
+        description
+        amountCollected
+        goal
+      }
+    }
+  `;
 
-  // const { loading, error, data } = useQuery(query, {
-  //   variables: { dbId: props.data.profile.dbId },
-  // });
-
-  // if (loading) return null;
-  return (
-    <Project
-      // create={props.create}
-      data={{ topic: "Books" }}
-      // mutations={{ mutateName }}
-    />
-  );
+  const { loading, error, data } = useQuery(query, {
+    variables: { dbId: props.route.params.dbId },
+  });
+  if (error) alert(JSON.stringify(error));
+  if (loading) return null;
+  return <Screen data={data} navigation={props.navigation} />;
 }

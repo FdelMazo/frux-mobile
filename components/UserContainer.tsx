@@ -20,9 +20,11 @@ function Component({
 }) {
   return (
     <Div alignItems="center" m="sm">
-      <Div h={50} w={50} rounded="circle" borderWidth={1} />
+      <Div h={45} w={45} rounded="circle" borderWidth={1} />
       <Div mt="xs">
-        <Text fontWeight="bold">{data.user.name}</Text>
+        <Text fontSize="xs" fontWeight="bold">
+          {data.user.name}
+        </Text>
       </Div>
     </Div>
   );

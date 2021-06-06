@@ -13,7 +13,7 @@ export default function Component({
   navigation: StackNavigationProp<any>;
 }) {
   return (
-    <Div flexDir="column" alignItems="center" m="sm">
+    <Div alignItems="center" m="sm">
       <Div
         p="md"
         h={45}

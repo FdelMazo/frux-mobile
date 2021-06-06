@@ -1,3 +1,4 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import gql from "graphql-tag";
 import * as React from "react";
 import { useQuery } from "react-apollo";
@@ -13,15 +14,23 @@ import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import User from "./User";
 
-const Profile = ({ data, navigation }: { data?: any }) => {
+type Data = {
+  profile: {
+    dbId: number;
+  };
+};
+
+type Navigation = StackNavigationProp<any>;
+
+function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
   return data?.profile ? (
     <User dbId={data.profile.dbId} navigation={navigation} />
   ) : (
     <WelcomeScreen navigation={navigation} />
   );
-};
+}
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -29,6 +38,7 @@ const WelcomeScreen = ({ navigation }) => {
   const [response, googleSignIn] = useGoogleAuth();
 
   React.useEffect(() => {
+    // @ts-expect-error
     if (response?.type === "success") {
       signInWithGoogle(response);
     }
@@ -39,7 +49,7 @@ const WelcomeScreen = ({ navigation }) => {
       <Header navigation={navigation} title="Welcome to FRUX" icon="logo" />
       <ScrollView>
         <MainView>
-          <Div w="65%" mt={25}>
+          <Div w="65%" mt="xl">
             <Input
               value={email}
               onChangeText={setEmail}
@@ -49,7 +59,7 @@ const WelcomeScreen = ({ navigation }) => {
             />
 
             <Input
-              mt={8}
+              mt="sm"
               value={password}
               onChangeText={setPassword}
               placeholder="Password"
@@ -58,11 +68,11 @@ const WelcomeScreen = ({ navigation }) => {
               secureTextEntry
             />
 
-            <Text my={8} color="red">
+            <Text my="md" color="red">
               {errors}
             </Text>
             <Button
-              mt={8}
+              mt="md"
               onPress={async () => {
                 setErrors("");
                 setLoading(true);
@@ -82,7 +92,7 @@ const WelcomeScreen = ({ navigation }) => {
             </Button>
 
             <Button
-              mt={8}
+              mt="md"
               bg="white"
               onPress={async () => {
                 setErrors("");
@@ -104,7 +114,7 @@ const WelcomeScreen = ({ navigation }) => {
             </Button>
           </Div>
 
-          <Div w="65%" mt={25}>
+          <Div w="65%" mt="2xl">
             <Button
               block
               bg="white"
@@ -112,6 +122,7 @@ const WelcomeScreen = ({ navigation }) => {
                 setErrors("");
                 setLoading(true);
                 try {
+                  // @ts-expect-error
                   await googleSignIn();
                 } catch (err) {
                   setErrors(err.message);
@@ -158,7 +169,11 @@ const WelcomeScreen = ({ navigation }) => {
   );
 };
 
-export default function RenderProfile({ navigation }) {
+type Props = {
+  dbId: number;
+  navigation: Navigation;
+};
+export default function Render(props: Props) {
   const query = gql`
     query Profile {
       profile {
@@ -166,7 +181,10 @@ export default function RenderProfile({ navigation }) {
       }
     }
   `;
-  const { loading, data } = useQuery(query);
-  if (loading) return <></>;
-  return <Profile data={data} navigation={navigation} />;
+
+  const { loading, error, data } = useQuery(query, {
+    variables: { dbId: props.dbId },
+  });
+  if (loading) return null;
+  return <Screen data={data} navigation={props.navigation} />;
 }

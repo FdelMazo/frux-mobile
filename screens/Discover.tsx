@@ -1,26 +1,23 @@
-import * as React from "react";
-import { StyleSheet } from "react-native";
-
-import { View, ScrollView, MainView } from "../components/Themed";
-import {
-  Icon,
-  Input,
-  Div,
-  Tag,
-  Skeleton,
-  Text,
-  Fab,
-  Button,
-} from "react-native-magnus";
-import Header from "../components/Header";
-import TopicContainer from "../components/TopicContainer";
-import ProjectContainer from "../components/ProjectContainer";
-import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
-import CarouselItem from "react-native-magnus/lib/typescript/src/ui/carousel/item.carousel";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as React from "react";
+import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
+import { Div, Icon, Input, Tag, Text } from "react-native-magnus";
+import Header from "../components/Header";
+import ProjectContainer from "../components/ProjectContainer";
+import { MainView, ScrollView, View } from "../components/Themed";
+import TopicContainer from "../components/TopicContainer";
 
-export function Discover({ data, navigation }) {
+type Data = {
+  allProjects: {
+    edges: { node: { dbId: number } }[];
+  };
+};
+
+type Navigation = StackNavigationProp<any>;
+
+function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
   const [searchLocation, setSearchLocation] = React.useState(false);
   const [progressFilters, setProgressFilters] = React.useState({
     inProgress: false,
@@ -33,8 +30,8 @@ export function Discover({ data, navigation }) {
       <Header navigation={navigation} title="Discover" icon="discover" />
       <ScrollView>
         <MainView>
-          <Div mt={25} alignItems="center">
-            <Div w="65%" flexDir="row" alignItems="center">
+          <Div mt="xl" alignItems="center">
+            <Div w="65%" row alignItems="center">
               <Input
                 placeholder="Search"
                 focusBorderColor="blue700"
@@ -47,7 +44,7 @@ export function Discover({ data, navigation }) {
                 onPress={() => setSearchLocation(!searchLocation)}
               >
                 <Icon
-                  m={5}
+                  m="sm"
                   fontSize="3xl"
                   name={searchLocation ? "location-sharp" : "location-outline"}
                   color="gray900"
@@ -56,7 +53,7 @@ export function Discover({ data, navigation }) {
               </TouchableHighlight>
             </Div>
 
-            <Div my={15} flexDir="row">
+            <Div my="lg" flexDir="row">
               <TouchableHighlight
                 underlayColor="white"
                 onPress={() =>
@@ -68,7 +65,7 @@ export function Discover({ data, navigation }) {
                 }
               >
                 <Tag
-                  mx={5}
+                  mx="sm"
                   bg={progressFilters.inProgress ? "pink300" : "pink100"}
                   borderColor="pink700"
                   borderWidth={1}
@@ -88,7 +85,7 @@ export function Discover({ data, navigation }) {
                 }
               >
                 <Tag
-                  mx={5}
+                  mx="sm"
                   bg={progressFilters.almostDone ? "blue300" : "blue100"}
                   borderColor="blue700"
                   borderWidth={1}
@@ -108,7 +105,7 @@ export function Discover({ data, navigation }) {
                 }
               >
                 <Tag
-                  mx={5}
+                  mx="sm"
                   bg={progressFilters.complete ? "green300" : "green100"}
                   borderColor="green700"
                   borderWidth={1}
@@ -118,21 +115,53 @@ export function Discover({ data, navigation }) {
               </TouchableHighlight>
             </Div>
 
-            <Div w="90%" row my={15} flexWrap="wrap">
-              <TopicContainer showName={true} name="Art" />
-              <TopicContainer showName={true} name="Books" />
-              <TopicContainer showName={true} name="Film" />
-              <TopicContainer showName={true} name="Food" />
-              <TopicContainer showName={true} name="Games" />
-              <TopicContainer showName={true} name="Music" />
-              <TopicContainer showName={true} name="Tech" />
-              <TopicContainer showName={true} name="Other" />
+            <Div w="90%" row my="md" flexWrap="wrap">
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Art"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Books"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Film"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Food"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Games"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Music"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Tech"
+              />
+              <TopicContainer
+                navigation={navigation}
+                showName={true}
+                name="Other"
+              />
             </Div>
           </Div>
 
           <Div w="90%">
             <Div>
-              <Text fontSize="xl" fontWeight="bold" mb={5}>
+              <Text fontSize="xl" fontWeight="bold">
                 Recommended Seeds
               </Text>
               <FlatList
@@ -153,7 +182,11 @@ export function Discover({ data, navigation }) {
   );
 }
 
-export default function RenderDiscover(props) {
+type Props = {
+  navigation: Navigation;
+};
+
+export default function Render(props: Props) {
   const query = gql`
     query Discover {
       allProjects {
@@ -167,7 +200,7 @@ export default function RenderDiscover(props) {
   `;
 
   const { loading, error, data } = useQuery(query);
-
+  if (error) alert(JSON.stringify(error));
   if (loading) return null;
-  return <Discover data={data} navigation={props.navigation} />;
+  return <Screen data={data} navigation={props.navigation} />;
 }

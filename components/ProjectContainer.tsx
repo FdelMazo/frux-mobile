@@ -7,7 +7,6 @@ import { Div, Text } from "react-native-magnus";
 import { StageColor } from "../constants/Constants";
 
 type Data = {
-  dbId: number;
   project: {
     currentState: string;
     name: string;
@@ -28,7 +27,7 @@ function Component({
   return (
     <TouchableHighlight
       onPress={() => {
-        navigation.navigate("ProjectScreen", { dbId: data.dbId });
+        navigation.navigate("ProjectScreen", { dbId: data.project.dbId });
       }}
       underlayColor="white"
     >
