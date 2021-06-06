@@ -12,15 +12,10 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Profile from "../screens/Profile";
 import Discover from "../screens/Discover";
-import {
-  BottomTabParamList,
-  ProfileParamList,
-  DiscoverParamList,
-} from "../types";
 import Project from "../screens/Project";
 import User from "../screens/User";
 
-const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+const BottomTab = createBottomTabNavigator<any>();
 
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
@@ -50,7 +45,7 @@ export default function BottomTabNavigator() {
   );
 }
 
-const DiscoverStack = createStackNavigator<DiscoverParamList>();
+const DiscoverStack = createStackNavigator<any>();
 
 function DiscoverNavigator() {
   return (
@@ -74,7 +69,7 @@ function DiscoverNavigator() {
   );
 }
 
-const ProfileStack = createStackNavigator<ProfileParamList>();
+const ProfileStack = createStackNavigator<any>();
 
 function ProfileNavigator() {
   return (
