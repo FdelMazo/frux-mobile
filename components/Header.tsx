@@ -4,10 +4,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { loggingOut, useAuth } from "../auth";
 import Notifications from "./Notifications";
-
-interface IconType {
-  [key: string]: { name: string; fontFamily: any };
-}
+import { AppIcons } from "../constants/Constants";
 
 export default function Component({
   navigation,
@@ -20,11 +17,6 @@ export default function Component({
   onPress?: any;
   navigation: StackNavigationProp<any>;
 }) {
-  const icons: IconType = {
-    projects: { name: "trees", fontFamily: "Foundation" },
-    seed: { name: "seed-outline", fontFamily: "MaterialCommunityIcons" },
-    discover: { name: "seedling", fontFamily: "FontAwesome5" },
-  };
   // @ts-expect-error
   const { user } = useAuth();
 
@@ -87,11 +79,11 @@ export default function Component({
             h={50}
             w={50}
             rounded="circle"
-            name={icons[icon].name}
+            name={AppIcons[icon].name}
             color="fruxgreen"
             borderWidth={2}
             fontSize="2xl"
-            fontFamily={icons[icon].fontFamily}
+            fontFamily={AppIcons[icon].fontFamily}
           />
         )}
       </TouchableHighlight>

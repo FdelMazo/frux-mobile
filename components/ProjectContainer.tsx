@@ -4,10 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
-
-interface StageColorType {
-  [key: string]: string;
-}
+import { StageColor } from "../constants/Constants";
 
 type Data = {
   dbId: number;
@@ -28,10 +25,6 @@ function Component({
   data: Data;
   navigation: Navigation;
 }) {
-  const stagecolor: StageColorType = {
-    CREATED: "pink500",
-  };
-
   return (
     <TouchableHighlight
       onPress={() => {
@@ -47,7 +40,7 @@ function Component({
           bgImg={require("../assets/images/nopicture.jpg")}
         >
           <Div
-            bg={stagecolor[data.project.currentState]}
+            bg={StageColor[data.project.currentState]}
             rounded="md"
             flexWrap="wrap"
             px="md"

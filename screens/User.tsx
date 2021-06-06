@@ -1,8 +1,8 @@
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as Location from "expo-location";
 import gql from "graphql-tag";
 import * as React from "react";
-import { useMutation, useQuery } from "react-apollo";
-import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
+import { MutationFunction, useMutation, useQuery } from "react-apollo";
 import {
   Button,
   Div,
@@ -12,11 +12,30 @@ import {
   Overlay,
   Text,
 } from "react-native-magnus";
+import MapView, { Marker } from "react-native-maps";
 import { resetPassword } from "../auth";
 import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
+import { UserIcons } from "../constants/Constants";
 
-const User = ({ data, mutations, navigation }) => {
+type Data = {
+  user: {
+    name: string;
+    email: string;
+    imagePath: string;
+  };
+};
+type Navigation = StackNavigationProp<any>;
+
+function Screen({
+  data,
+  navigation,
+  mutations,
+}: {
+  data: Data;
+  navigation: Navigation;
+  mutations: { mutateName: MutationFunction<any> };
+}) {
   const defaultName = data.user.name || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
@@ -27,17 +46,21 @@ const User = ({ data, mutations, navigation }) => {
   const [locationOverlay, setLocationOverlay] = React.useState(false);
   const useCurrentLocation = async () => {
     await Location.requestForegroundPermissionsAsync();
-    const userLocation = await Location.getCurrentPositionAsync({});
+    const userLocation = await Location.getCurrentPositionAsync();
+    // @ts-expect-error
     setLocation(userLocation.coords);
   };
 
   return (
     <View>
       <Header
-        onPress={() => dropdownRef.current.open()}
+        onPress={() =>
+          // @ts-expect-error
+          dropdownRef.current.open()
+        }
         navigation={navigation}
         title={defaultName}
-        icon={data.user.picture || "seed"}
+        icon={data.user.imagePath || "seed"}
       />
 
       <ScrollView>
@@ -45,20 +68,20 @@ const User = ({ data, mutations, navigation }) => {
       </ScrollView>
 
       <Dropdown
+        // @ts-expect-error
         ref={dropdownRef}
         title={
           <Div alignSelf="center">
-            <Div flexDir="row" justifyContent="space-between">
-              <Text mb={5} fontSize="sm">
+            <Div row justifyContent="space-between">
+              <Text mb="sm" fontSize="sm">
                 {data.user.email}
               </Text>
               <Text
-                mb={5}
+                mb="sm"
                 onPress={() => {
                   if (emailSent) return;
                   resetPassword(data.user.email).then(() => setEmailSent(true));
                 }}
-                textAlign="right"
                 color={emailSent ? "black" : "fruxgreen"}
                 fontSize="sm"
               >
@@ -80,7 +103,7 @@ const User = ({ data, mutations, navigation }) => {
                       onPress={() => {
                         mutations.mutateName({
                           variables: {
-                            name: name,
+                            name,
                           },
                         });
                       }}
@@ -91,10 +114,9 @@ const User = ({ data, mutations, navigation }) => {
                 </>
               }
             />
-            <Div flexDir="row" justifyContent="space-between">
-              <Div></Div>
+            <Div row justifyContent="flex-end">
               <Button
-                py={5}
+                py="sm"
                 px={0}
                 bg={undefined}
                 color="blue500"
@@ -120,93 +142,54 @@ const User = ({ data, mutations, navigation }) => {
         showSwipeIndicator={true}
         roundedTop="xl"
       >
+        {/*@ts-expect-error*/}
         <Dropdown.Option justifyContent="space-evenly">
-          <Button bg={undefined}>
-            <Icon
-              bg="fruxbrown"
-              h={40}
-              w={40}
-              rounded="circle"
-              name={"seed-outline"}
-              color="fruxgreen"
-              borderWidth={2}
-              borderColor="fruxgreen"
-              fontSize="2xl"
-              fontFamily={"MaterialCommunityIcons"}
-            />
-          </Button>
-          <Button bg={undefined}>
-            <Icon
-              bg="fruxbrown"
-              h={40}
-              w={40}
-              rounded="circle"
-              name={"seedling"}
-              color="fruxgreen"
-              borderWidth={2}
-              fontSize="2xl"
-              fontFamily={"FontAwesome5"}
-            />
-          </Button>
-          <Button bg={undefined}>
-            <Icon
-              bg="fruxbrown"
-              h={40}
-              w={40}
-              rounded="circle"
-              name={"tree"}
-              color="fruxgreen"
-              borderWidth={2}
-              fontSize="2xl"
-              fontFamily={"Entypo"}
-            />
-          </Button>
-          <Button bg={undefined}>
-            <Icon
-              bg="fruxbrown"
-              h={40}
-              w={40}
-              rounded="circle"
-              name={"seed"}
-              color="fruxgreen"
-              borderWidth={2}
-              fontSize="2xl"
-              fontFamily={"MaterialCommunityIcons"}
-            />
-          </Button>
-          <Button bg={undefined}>
-            <Icon
-              bg="fruxbrown"
-              h={40}
-              w={40}
-              rounded="circle"
-              name={"tree-outline"}
-              color="fruxgreen"
-              borderWidth={2}
-              fontSize="2xl"
-              fontFamily={"MaterialCommunityIcons"}
-            />
-          </Button>
+          {UserIcons.map((item) => (
+            <Button bg={undefined}>
+              <Icon
+                bg="fruxbrown"
+                h={40}
+                w={40}
+                rounded="circle"
+                name={item.name}
+                color="fruxgreen"
+                borderWidth={2}
+                borderColor={
+                  item.name === data.user.imagePath ? "fruxgreen" : "black"
+                }
+                fontSize="2xl"
+                fontFamily={item.fontFamily}
+              />
+            </Button>
+          ))}
         </Dropdown.Option>
       </Dropdown>
 
       <Overlay visible={locationOverlay}>
         <MapView
           initialRegion={{
+            // @ts-expect-error
             latitude: location?.latitude || -34.5723074,
+            // @ts-expect-error
             longitude: location?.longitude || -58.4346815,
             latitudeDelta: 0.015,
             longitudeDelta: 0.015,
           }}
           style={{ height: 400 }}
           showsUserLocation={true}
+          // @ts-expect-error
           onLongPress={(e) => setLocation(e.nativeEvent.coordinate)}
         >
-          {location && <Marker coordinate={location} />}
+          {location && (
+            <Marker
+              // @ts-expect-error
+              coordinate={location}
+            />
+          )}
         </MapView>
 
-        <Div my={10} row justifyContent="space-between">
-          <Div alignSelf="flex-end">
+        <Div my="md" row justifyContent="space-between">
+          <Div alignSelf="center">
             <Button
               py={0}
               px={0}
@@ -232,11 +215,11 @@ const User = ({ data, mutations, navigation }) => {
             </Button>
           </Div>
 
-          <Div row alignSelf="flex-end">
+          <Div row>
             <Button
-              mx={5}
+              mx="sm"
               fontSize="sm"
-              p={8}
+              p="md"
               bg={undefined}
               borderWidth={1}
               borderColor="fruxgreen"
@@ -251,9 +234,9 @@ const User = ({ data, mutations, navigation }) => {
               onPress={() => {
                 setLocationOverlay(false);
               }}
-              mx={5}
+              mx="sm"
               fontSize="sm"
-              p={8}
+              p="md"
               bg="fruxgreen"
               color="white"
             >
@@ -264,15 +247,21 @@ const User = ({ data, mutations, navigation }) => {
       </Overlay>
     </View>
   );
+}
+
+type Props = {
+  navigation: Navigation;
+  dbId: number;
 };
 
-export default function RenderUser(props) {
+export default function Render(props: Props) {
   const query = gql`
     query User($dbId: Int!) {
       user(dbId: $dbId) {
         id
         name
         email
+        imagePath
       }
     }
   `;
@@ -288,12 +277,12 @@ export default function RenderUser(props) {
   const [mutateName] = useMutation(updateNameMutation);
 
   const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.data.profile.dbId },
+    variables: { dbId: props.dbId },
   });
-
+  if (error) alert(JSON.stringify(error));
   if (loading) return null;
   return (
-    <User
+    <Screen
       data={data}
       navigation={props.navigation}
       mutations={{ mutateName }}

@@ -15,7 +15,7 @@ import User from "./User";
 
 const Profile = ({ data, navigation }: { data?: any }) => {
   return data?.profile ? (
-    <User data={data} navigation={navigation} />
+    <User dbId={data.profile.dbId} navigation={navigation} />
   ) : (
     <WelcomeScreen navigation={navigation} />
   );
