@@ -5,9 +5,25 @@ import * as React from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 
-type Data = any;
+type Data = {
+  dbId: number;
+  project: {
+    currentState: string;
+    name: string;
+    categoryName: string;
+    amountCollected: number;
+    goal: number;
+  };
+};
 type Navigation = StackNavigationProp<any>;
-function Component({ data, navigation }) {
+
+function Component({
+  data,
+  navigation,
+}: {
+  data: Data;
+  navigation: Navigation;
+}) {
   return (
     <TouchableHighlight
       onPress={() => {
@@ -50,7 +66,7 @@ function Component({ data, navigation }) {
           <Div row alignItems="center">
             <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
               {"$"}
-              {data.project.amountCollected || "0"}
+              {data.project.amountCollected}
             </Text>
             <Text color="gray500" fontWeight="bold" fontSize="lg">
               {"  /"}
@@ -63,7 +79,11 @@ function Component({ data, navigation }) {
   );
 }
 
-type Props = any;
+type Props = {
+  navigation: Navigation;
+  dbId: number;
+};
+
 export default function Render(props: Props) {
   const query = gql`
     query ProjectContainer($dbId: Int!) {
@@ -73,6 +93,7 @@ export default function Render(props: Props) {
         name
         currentState
         categoryName
+        amountCollected
         goal
       }
     }
