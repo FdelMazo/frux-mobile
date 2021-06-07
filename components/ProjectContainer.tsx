@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 import { StageColor } from "../constants/Constants";
 
@@ -26,11 +26,10 @@ function Component({
   navigation: Navigation;
 }) {
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       onPress={() => {
         navigation.navigate("ProjectScreen", { dbId: data.project.dbId });
       }}
-      underlayColor="white"
     >
       <Div my="sm" mr="lg">
         <Div
@@ -73,7 +72,7 @@ function Component({
           </Div>
         </Div>
       </Div>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
 

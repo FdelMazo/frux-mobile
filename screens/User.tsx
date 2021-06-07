@@ -18,7 +18,7 @@ import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import { Topics, UserIcons } from "../constants/Constants";
 import TopicContainer from "../components/TopicContainer";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type Data = {
   user: {
@@ -84,10 +84,7 @@ function Screen({
         <MainView>
           <Div w="90%" mt="xl">
             {myTopics.length ? (
-              <TouchableHighlight
-                underlayColor="gray"
-                onPress={() => setMyTopicsOverlay(true)}
-              >
+              <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
                 <>
                   <Div alignSelf="flex-start">
                     <Text fontSize="xl" fontWeight="bold">
@@ -104,7 +101,7 @@ function Screen({
                     ))}
                   </Div>
                 </>
-              </TouchableHighlight>
+              </TouchableOpacity>
             ) : (
               <Div row alignItems="center">
                 <TopicContainer active showName={false} name="Other" />
@@ -316,7 +313,7 @@ function Screen({
             <Button
               bg={undefined}
               p={0}
-              underlayColor="white"
+              underlayColor="fruxgreen"
               onPress={() => {
                 toggleTopic(t);
               }}

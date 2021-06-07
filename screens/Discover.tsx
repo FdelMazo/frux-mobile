@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Icon, Input, Tag, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import ProjectContainer from "../components/ProjectContainer";
@@ -40,8 +40,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                   <Icon name="search" color="gray900" fontFamily="Feather" />
                 }
               />
-              <TouchableHighlight
-                underlayColor="white"
+              <TouchableOpacity
                 onPress={() => setSearchLocation(!searchLocation)}
               >
                 <Icon
@@ -51,12 +50,11 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                   color="gray900"
                   fontFamily="Ionicons"
                 />
-              </TouchableHighlight>
+              </TouchableOpacity>
             </Div>
 
             <Div my="lg" flexDir="row">
-              <TouchableHighlight
-                underlayColor="white"
+              <TouchableOpacity
                 onPress={() =>
                   setProgressFilters({
                     inProgress: !progressFilters.inProgress,
@@ -73,10 +71,9 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                 >
                   In Progress
                 </Tag>
-              </TouchableHighlight>
+              </TouchableOpacity>
 
-              <TouchableHighlight
-                underlayColor="white"
+              <TouchableOpacity
                 onPress={() =>
                   setProgressFilters({
                     inProgress: progressFilters.inProgress,
@@ -93,10 +90,9 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                 >
                   Almost Done!
                 </Tag>
-              </TouchableHighlight>
+              </TouchableOpacity>
 
-              <TouchableHighlight
-                underlayColor="white"
+              <TouchableOpacity
                 onPress={() =>
                   setProgressFilters({
                     inProgress: progressFilters.inProgress,
@@ -113,7 +109,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                 >
                   Complete
                 </Tag>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </Div>
 
             <Div w="90%" row my="md" flexWrap="wrap">

@@ -3,7 +3,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import gql from "graphql-tag";
 import * as React from "react";
 import { useQuery } from "react-apollo";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Dropdown, Text } from "react-native-magnus";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
@@ -86,8 +86,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
             </Div>
           </Div>
           <Div row w="90%" mt="xl" justifyContent="space-between">
-            <TouchableHighlight
-              underlayColor="white"
+            <TouchableOpacity
               // @ts-expect-error
               onPress={() => dropdownRef.current.open()}
             >
@@ -116,7 +115,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                   sliderLength={150}
                 />
               </Div>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <Div>
               <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
                 {"$"}

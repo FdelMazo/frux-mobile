@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { loggingOut, useAuth } from "../auth";
 import Notifications from "./Notifications";
@@ -62,7 +62,7 @@ export default function Component({
       <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
         {title}
       </Text>
-      <TouchableHighlight onPress={onPress}>
+      <TouchableOpacity onPress={onPress}>
         {icon === "logo" ? (
           <Image
             h={50}
@@ -86,7 +86,7 @@ export default function Component({
             fontFamily={AppIcons[icon].fontFamily}
           />
         )}
-      </TouchableHighlight>
+      </TouchableOpacity>
     </Div>
   );
 }
