@@ -18,7 +18,8 @@ import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import { Topics, UserIcons } from "../constants/Constants";
 import TopicContainer from "../components/TopicContainer";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import ProjectContainer from "../components/ProjectContainer";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
 type Data = {
   user: {
@@ -27,6 +28,14 @@ type Data = {
     imagePath: string;
     latitude: string;
     longitude: string;
+    projectInvestments: {
+      edges: {
+        node: {
+          projectId: number;
+          investedAmount: number;
+        };
+      }[];
+    };
   };
 };
 type Navigation = StackNavigationProp<any>;
@@ -123,6 +132,27 @@ function Screen({
                     </Button>
                   </Div>
                 )}
+              </>
+            )}
+          </Div>
+
+          <Div w="90%" mt="xl">
+            {data.user.projectInvestments.edges.length !== 0 && (
+              <>
+                <Text fontSize="xl" fontWeight="bold">
+                  Seeding
+                </Text>
+                <FlatList
+                  horizontal
+                  data={data.user.projectInvestments.edges}
+                  renderItem={({ item }) => (
+                    <ProjectContainer
+                      navigation={navigation}
+                      dbId={item.node.projectId}
+                      seeding={item.node.investedAmount}
+                    />
+                  )}
+                />
               </>
             )}
           </Div>
@@ -387,6 +417,14 @@ export default function Render(props: Props) {
         imagePath
         latitude
         longitude
+        projectInvestments {
+          edges {
+            node {
+              projectId
+              investedAmount
+            }
+          }
+        }
       }
       profile {
         dbId

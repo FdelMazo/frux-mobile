@@ -21,9 +21,11 @@ type Navigation = StackNavigationProp<any>;
 function Component({
   data,
   navigation,
+  seeding,
 }: {
   data: Data;
   navigation: Navigation;
+  seeding: number;
 }) {
   return (
     <TouchableOpacity
@@ -63,12 +65,14 @@ function Component({
           <Div row>
             <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
               {"$"}
-              {data.project.amountCollected}
+              {seeding || data.project.amountCollected}
             </Text>
-            <Text color="gray500" fontWeight="bold" fontSize="lg">
-              {"  /"}
-              {data.project.goal}
-            </Text>
+            {!seeding && (
+              <Text color="gray500" fontWeight="bold" fontSize="lg">
+                {"  /"}
+                {data.project.goal}
+              </Text>
+            )}
           </Div>
         </Div>
       </Div>
@@ -79,6 +83,7 @@ function Component({
 type Props = {
   navigation: Navigation;
   dbId: number;
+  seeding: number;
 };
 
 export default function Render(props: Props) {
@@ -100,5 +105,11 @@ export default function Render(props: Props) {
   });
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
-  return <Component data={data} navigation={props.navigation} />;
+  return (
+    <Component
+      data={data}
+      navigation={props.navigation}
+      seeding={props.seeding}
+    />
+  );
 }
