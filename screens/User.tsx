@@ -43,12 +43,12 @@ type Navigation = StackNavigationProp<any>;
 function Screen({
   data,
   navigation,
-  mutations,
+  mutateEntity,
   isViewer,
 }: {
   data: Data;
   navigation: Navigation;
-  mutations: Record<string, MutationFunction<any>>;
+  mutateEntity: MutationFunction<any>;
   isViewer: boolean;
 }) {
   const defaultName = data.user.name || data.user.email.split("@")[0];
@@ -193,7 +193,7 @@ function Screen({
                       bg={undefined}
                       p={0}
                       onPress={() => {
-                        mutations.mutateName({
+                        mutateEntity({
                           variables: {
                             name,
                           },
@@ -241,7 +241,7 @@ function Screen({
               bg={undefined}
               underlayColor="fruxgreen"
               onPress={() => {
-                mutations.mutateImage({ variables: { imagePath: item.name } });
+                mutateEntity({ variables: { imagePath: item.name } });
               }}
             >
               <Icon
@@ -330,7 +330,7 @@ function Screen({
             </Button>
             <Button
               onPress={() => {
-                mutations.mutateLocation({
+                mutateEntity({
                   variables: {
                     latitude: location.latitude,
                     longitude: location.longitude,
@@ -377,7 +377,7 @@ function Screen({
           <Div row>
             <Button
               onPress={() => {
-                mutations.mutateLocation({
+                mutateEntity({
                   variables: {
                     latitude: location.latitude,
                     longitude: location.longitude,
@@ -432,36 +432,28 @@ export default function Render(props: Props) {
     }
   `;
 
-  const updateNameMutation = gql`
-    mutation updateNameMutation($name: String) {
-      mutateUpdateUser(name: $name) {
+  const updateMutation = gql`
+    mutation updateMutation(
+      $name: String
+      $imagePath: String
+      $latitude: String
+      $longitude: String
+    ) {
+      mutateUpdateUser(
+        name: $name
+        imagePath: $imagePath
+        latitude: $latitude
+        longitude: $longitude
+      ) {
         id
         name
-      }
-    }
-  `;
-  const [mutateName] = useMutation(updateNameMutation);
-
-  const updateLocationMutation = gql`
-    mutation updateLocationMutation($latitude: String, $longitude: String) {
-      mutateUpdateUser(latitude: $latitude, longitude: $longitude) {
-        id
+        imagePath
         latitude
         longitude
       }
     }
   `;
-  const [mutateLocation] = useMutation(updateLocationMutation);
-
-  const updateImage = gql`
-    mutation updateImage($imagePath: String) {
-      mutateUpdateUser(imagePath: $imagePath) {
-        id
-        imagePath
-      }
-    }
-  `;
-  const [mutateImage] = useMutation(updateImage);
+  const [mutateEntity] = useMutation(updateMutation);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
@@ -472,7 +464,7 @@ export default function Render(props: Props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateName, mutateLocation, mutateImage }}
+      mutateEntity={mutateEntity}
       isViewer={data.profile.dbId === data.user.dbId}
     />
   );
