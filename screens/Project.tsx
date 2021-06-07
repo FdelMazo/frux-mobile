@@ -2,9 +2,17 @@ import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { StackNavigationProp } from "@react-navigation/stack";
 import gql from "graphql-tag";
 import * as React from "react";
-import { useQuery } from "react-apollo";
+import { MutationFunction, useMutation, useQuery } from "react-apollo";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Div, Dropdown, Text } from "react-native-magnus";
+import {
+  Button,
+  Div,
+  Dropdown,
+  Fab,
+  Icon,
+  Text,
+  Overlay,
+} from "react-native-magnus";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
@@ -24,7 +32,17 @@ type Data = {
 };
 type Navigation = StackNavigationProp<any>;
 
-function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
+function Screen({
+  data,
+  navigation,
+  mutations,
+}: {
+  data: Data;
+  navigation: Navigation;
+  mutations: Record<string, MutationFunction<any>>;
+}) {
+  const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
+  const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
   const dropdownRef = React.createRef();
   return (
     <View>
@@ -111,7 +129,9 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
                     width: 7,
                     backgroundColor: "#90B44B",
                   }}
-                  values={[5]}
+                  values={[
+                    (data.project.amountCollected / data.project.goal) * 10,
+                  ]}
                   sliderLength={150}
                 />
               </Div>
@@ -161,6 +181,140 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
           </Div>
         </Dropdown.Option>
       </Dropdown>
+
+      <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
+        <Button
+          p={0}
+          bg={undefined}
+          underlayColor="gray"
+          alignSelf="flex-end"
+          onPress={() => setSponsorOverlay(true)}
+        >
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Seed</Text>
+          </Div>
+          <Icon
+            name="wallet"
+            color="fruxgreen"
+            fontFamily="AntDesign"
+            h={45}
+            w={45}
+            fontSize="xl"
+            rounded="circle"
+            ml="lg"
+            bg="white"
+          />
+        </Button>
+        <Button p={0} bg={undefined} underlayColor="gray" alignSelf="flex-end">
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Fav</Text>
+          </Div>
+          <Icon
+            name="hearto"
+            color="fruxgreen"
+            fontSize="xl"
+            fontFamily="AntDesign"
+            h={45}
+            w={45}
+            rounded="circle"
+            ml="lg"
+            bg="white"
+          />
+        </Button>
+      </Fab>
+
+      <Overlay visible={sponsorOverlay}>
+        <Text fontSize="xl" fontWeight="bold">
+          How much do you want to chip in?
+        </Text>
+        <Div alignSelf="center">
+          <MultiSlider
+            trackStyle={{ backgroundColor: "#bdc3c7" }}
+            selectedStyle={{ backgroundColor: "#90B44B" }}
+            enabledOne={false}
+            markerStyle={{
+              borderRadius: 0,
+              width: 7,
+              backgroundColor: "#90B44B",
+            }}
+            values={[
+              Math.floor(
+                (data.project.amountCollected / data.project.goal) * 10
+              ),
+              Math.floor(
+                ((data.project.amountCollected + toSponsor) /
+                  data.project.goal) *
+                  10
+              ),
+            ]}
+            onValuesChange={(v) => {
+              setToSponsor(
+                Math.floor(
+                  v[1] * 0.1 * data.project.goal - data.project.amountCollected
+                )
+              );
+            }}
+            step={0.5}
+            sliderLength={250}
+          />
+        </Div>
+        <Div>
+          <Div row>
+            <Text mx="md" fontSize="5xl" color="gray600">
+              {"$"}
+              {data.project.amountCollected}
+            </Text>
+            <Text mx="md" fontSize="5xl" color="fruxgreen">
+              {"+ $"}
+              {toSponsor}
+            </Text>
+          </Div>
+
+          <Text
+            mx="md"
+            lineHeight={20}
+            fontSize="xl"
+            fontFamily="latinmodernroman-bold"
+            color="gray600"
+          >
+            With a goal of ${data.project.goal}
+          </Text>
+        </Div>
+        <Div row alignSelf="flex-end">
+          <Button
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg={undefined}
+            borderWidth={1}
+            borderColor="fruxgreen"
+            color="fruxgreen"
+            onPress={() => {
+              setSponsorOverlay(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={() => {
+              mutations.invest({
+                variables: {
+                  investedAmount: toSponsor,
+                  idProject: data.project.dbId,
+                },
+              });
+              setSponsorOverlay(false);
+            }}
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg="fruxgreen"
+            color="white"
+          >
+            Seed
+          </Button>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -186,10 +340,24 @@ export default function Render(props: Props) {
     }
   `;
 
+  const investMutation = gql`
+    mutation Invest($idProject: Int!, $investedAmount: Float!) {
+      mutateInvestProject(
+        idProject: $idProject
+        investedAmount: $investedAmount
+      ) {
+        id
+      }
+    }
+  `;
+  const [invest] = useMutation(investMutation);
+
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.route.params.dbId },
   });
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
-  return <Screen data={data} navigation={props.navigation} />;
+  return (
+    <Screen data={data} navigation={props.navigation} mutations={{ invest }} />
+  );
 }
