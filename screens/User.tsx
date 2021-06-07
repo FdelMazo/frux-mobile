@@ -82,11 +82,14 @@ function Screen({
   return (
     <View>
       <Header
-        onPress={() => {
-          if (!isViewer) return;
-          // @ts-expect-error
-          dropdownRef.current.open();
-        }}
+        onPress={
+          isViewer
+            ? () => {
+                // @ts-expect-error
+                dropdownRef.current.open();
+              }
+            : undefined
+        }
         navigation={navigation}
         title={defaultName}
         icon={data.user.imagePath || "seed"}

@@ -12,6 +12,7 @@ import {
   Icon,
   Text,
   Overlay,
+  Input,
 } from "react-native-magnus";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
@@ -29,6 +30,9 @@ type Data = {
     amountCollected: number;
     goal: number;
   };
+  profile: {
+    dbId: number;
+  };
 };
 type Navigation = StackNavigationProp<any>;
 
@@ -36,13 +40,21 @@ function Screen({
   data,
   navigation,
   mutations,
+  created,
 }: {
   data: Data;
   navigation: Navigation;
   mutations: Record<string, MutationFunction<any>>;
+  created: boolean;
 }) {
+  const [dataOverlay, setDataOverlay] = React.useState(false);
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
+  const [name, setName] = React.useState(data.project.name);
+  const [description, setDescription] = React.useState(
+    data.project.description
+  );
+
   const dropdownRef = React.createRef();
   return (
     <View>
@@ -50,57 +62,64 @@ function Screen({
 
       <ScrollView>
         <MainView>
-          <Div w="60%" mt="lg" alignItems="center">
+          <Div w="90%" mt="lg">
             <Div row>
               <UserContainer
                 navigation={navigation}
                 dbId={data.project.userId}
               />
 
-              <Div>
-                <Div row>
-                  <Text
-                    ml="lg"
-                    fontSize="4xl"
-                    fontFamily="latinmodernroman-bold"
-                    fontWeight="bold"
-                  >
-                    {data.project.name}
-                  </Text>
-
-                  <Div
-                    alignSelf="flex-start"
-                    ml="xs"
-                    bg={StageColor[data.project.currentState]}
-                    rounded="md"
-                    px="xs"
-                  >
-                    <Text color="white" fontSize="xs">
-                      {data.project.currentState}
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setDataOverlay(true);
+                      }
+                    : undefined
+                }
+              >
+                <Div flex={1} ml="lg">
+                  <Div row justifyContent="flex-start">
+                    <Text
+                      fontSize="4xl"
+                      fontFamily="latinmodernroman-bold"
+                      fontWeight="bold"
+                    >
+                      {data.project.name}
                     </Text>
+
+                    <Div
+                      alignSelf="flex-start"
+                      bg={StageColor[data.project.currentState]}
+                      rounded="md"
+                      px="xs"
+                    >
+                      <Text color="white" fontSize="xs">
+                        {data.project.currentState}
+                      </Text>
+                    </Div>
                   </Div>
-                </Div>
-                <Text
-                  mx="lg"
-                  lineHeight={20}
-                  fontSize="xl"
-                  fontFamily="latinmodernroman-bold"
-                  color="gray600"
-                >
-                  {data.project.description}
-                </Text>
-                {data.project.hashtags?.map((h) => (
                   <Text
-                    mx="lg"
-                    fontSize="md"
+                    lineHeight={20}
+                    fontSize="xl"
                     fontFamily="latinmodernroman-bold"
-                    color="blue600"
+                    color="gray600"
                   >
-                    {" #"}
-                    {h}
+                    {data.project.description}
                   </Text>
-                ))}
-              </Div>
+                  {data.project.hashtags?.map((h) => (
+                    <Text
+                      fontSize="md"
+                      fontFamily="latinmodernroman-bold"
+                      color="blue600"
+                    >
+                      {" #"}
+                      {h}
+                    </Text>
+                  ))}
+                </Div>
+              </TouchableOpacity>
             </Div>
           </Div>
           <Div row w="90%" mt="xl" justifyContent="space-between">
@@ -315,6 +334,53 @@ function Screen({
           </Button>
         </Div>
       </Overlay>
+
+      <Overlay visible={dataOverlay}>
+        <Input value={name} onChangeText={setName} placeholder="Name" />
+
+        <Input
+          mt="sm"
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Description"
+        />
+
+        <Div row alignSelf="flex-end" mt="md">
+          <Button
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg={undefined}
+            borderWidth={1}
+            borderColor="fruxgreen"
+            color="fruxgreen"
+            onPress={() => {
+              setDataOverlay(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={() => {
+              mutations.mutateEntity({
+                variables: {
+                  idProject: data.project.dbId,
+                  description,
+                  name,
+                },
+              });
+              setDataOverlay(false);
+            }}
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg="fruxgreen"
+            color="white"
+          >
+            Save
+          </Button>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -328,6 +394,7 @@ export default function Render(props: Props) {
   const query = gql`
     query Project($dbId: Int!) {
       project(dbId: $dbId) {
+        id
         dbId
         name
         userId
@@ -337,9 +404,31 @@ export default function Render(props: Props) {
         amountCollected
         goal
       }
+      profile {
+        dbId
+      }
     }
   `;
 
+  const updateMutation = gql`
+    mutation updateMutation(
+      $idProject: Int!
+      $name: String
+      $description: String
+    ) {
+      mutateUpdateProject(
+        idProject: $idProject
+        name: $name
+        description: $description
+      ) {
+        id
+        name
+        description
+      }
+    }
+  `;
+  const [mutateEntity, { error: mutError }] = useMutation(updateMutation);
+  if (mutError) alert(JSON.stringify(mutError));
   const investMutation = gql`
     mutation Invest($idProject: Int!, $investedAmount: Float!) {
       mutateInvestProject(
@@ -358,6 +447,11 @@ export default function Render(props: Props) {
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
   return (
-    <Screen data={data} navigation={props.navigation} mutations={{ invest }} />
+    <Screen
+      data={data}
+      navigation={props.navigation}
+      mutations={{ invest, mutateEntity }}
+      created={data.project.userId === data.profile.dbId}
+    />
   );
 }

@@ -5,18 +5,22 @@ import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { loggingOut, useAuth } from "../auth";
 import Notifications from "./Notifications";
 import { AppIcons } from "../constants/Constants";
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/react-hooks";
+import { MutationFunction } from "@apollo/react-common";
 
-export default function Component({
-  navigation,
-  title,
-  icon,
-  onPress,
-}: {
+type Props = {
   icon: string;
   title: string;
   onPress?: any;
+  mutations?: Record<string, MutationFunction<any>>;
+  data?: any;
   navigation: StackNavigationProp<any>;
-}) {
+};
+
+function Component(props: Props) {
+  const { icon, title, onPress, mutations, navigation, data } = props;
+
   // @ts-expect-error
   const { user } = useAuth();
 
@@ -47,7 +51,19 @@ export default function Component({
               borderWidth={1}
               p="xs"
               mb="sm"
-              onPress={() => navigation.navigate("ProjectScreen")}
+              onPress={async () => {
+                await mutations?.createProject({
+                  variables: {
+                    name: "New Project",
+                    goal: 1000,
+                    description: "Description",
+                  },
+                });
+
+                navigation.navigate("ProjectScreen", {
+                  dbId: data.mutateProject.dbId,
+                });
+              }}
             >
               <Icon
                 name="add"
@@ -62,7 +78,7 @@ export default function Component({
       <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
         {title}
       </Text>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity activeOpacity={onPress ? 0.2 : 1} onPress={onPress}>
         {icon === "logo" ? (
           <Image
             h={50}
@@ -89,4 +105,21 @@ export default function Component({
       </TouchableOpacity>
     </Div>
   );
+}
+
+export default function Render(props: Props) {
+  const createProjectMutation = gql`
+    mutation createProjectMutation(
+      $description: String!
+      $goal: Int!
+      $name: String!
+    ) {
+      mutateProject(description: $description, goal: $goal, name: $name) {
+        dbId
+      }
+    }
+  `;
+  const [createProject, { data, error }] = useMutation(createProjectMutation);
+
+  return <Component mutations={{ createProject }} {...props} data={data} />;
 }
