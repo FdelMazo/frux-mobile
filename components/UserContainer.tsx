@@ -3,12 +3,14 @@ import { useQuery } from "@apollo/react-hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Div, Text } from "react-native-magnus";
+import { Div, Icon, Text } from "react-native-magnus";
+import { AppIcons } from "../constants/Constants";
 
 type Data = {
   user: {
     name: string;
     dbId: number;
+    imagePath: string;
   };
 };
 type Navigation = StackNavigationProp<any>;
@@ -20,6 +22,8 @@ function Component({
   data: Data;
   navigation: Navigation;
 }) {
+  const userPicture = data.user.imagePath || "seed";
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -27,7 +31,17 @@ function Component({
       }
     >
       <Div alignItems="center" m="sm">
-        <Div h={45} w={45} rounded="circle" borderWidth={1} />
+        <Icon
+          bg="fruxbrown"
+          h={45}
+          w={45}
+          rounded="circle"
+          name={AppIcons[userPicture].name}
+          color="fruxgreen"
+          borderWidth={1}
+          fontSize="2xl"
+          fontFamily={AppIcons[userPicture].fontFamily}
+        />
         <Div mt="xs">
           <Text fontSize="xs" fontWeight="bold">
             {data.user.name}
@@ -49,6 +63,7 @@ export default function Render(props: Props) {
       user(dbId: $dbId) {
         dbId
         name
+        imagePath
       }
     }
   `;

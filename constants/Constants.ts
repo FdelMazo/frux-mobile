@@ -7,8 +7,18 @@ interface AppIconType {
 }
 export const AppIcons: AppIconType = {
   projects: { name: "trees", fontFamily: "Foundation" },
-  seed: { name: "seed-outline", fontFamily: "MaterialCommunityIcons" },
   discover: { name: "seedling", fontFamily: "FontAwesome5" },
+  "seed-outline": {
+    name: "seed-outline",
+    fontFamily: "MaterialCommunityIcons",
+  },
+  seedling: { name: "seedling", fontFamily: "FontAwesome5" },
+  tree: { name: "tree", fontFamily: "Entypo" },
+  seed: { name: "seed", fontFamily: "MaterialCommunityIcons" },
+  "tree-outline": {
+    name: "tree-outline",
+    fontFamily: "MaterialCommunityIcons",
+  },
 };
 
 export const UserIcons: IconType[] = [

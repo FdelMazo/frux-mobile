@@ -207,7 +207,13 @@ function Screen({
         {/*@ts-expect-error*/}
         <Dropdown.Option justifyContent="space-evenly">
           {UserIcons.map((item) => (
-            <Button bg={undefined}>
+            <Button
+              bg={undefined}
+              underlayColor="fruxgreen"
+              onPress={() => {
+                mutations.mutateImage({ variables: { imagePath: item.name } });
+              }}
+            >
               <Icon
                 bg="fruxbrown"
                 h={40}
@@ -389,7 +395,7 @@ export default function Render(props: Props) {
   `;
 
   const updateNameMutation = gql`
-    mutation mutateUpdateUser($name: String) {
+    mutation updateNameMutation($name: String) {
       mutateUpdateUser(name: $name) {
         id
         name
@@ -399,7 +405,7 @@ export default function Render(props: Props) {
   const [mutateName] = useMutation(updateNameMutation);
 
   const updateLocationMutation = gql`
-    mutation mutateUpdateUser($latitude: String, $longitude: String) {
+    mutation updateLocationMutation($latitude: String, $longitude: String) {
       mutateUpdateUser(latitude: $latitude, longitude: $longitude) {
         id
         latitude
@@ -408,6 +414,16 @@ export default function Render(props: Props) {
     }
   `;
   const [mutateLocation] = useMutation(updateLocationMutation);
+
+  const updateImage = gql`
+    mutation updateImage($imagePath: String) {
+      mutateUpdateUser(imagePath: $imagePath) {
+        id
+        imagePath
+      }
+    }
+  `;
+  const [mutateImage] = useMutation(updateImage);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
@@ -418,7 +434,7 @@ export default function Render(props: Props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateName, mutateLocation }}
+      mutations={{ mutateName, mutateLocation, mutateImage }}
       isViewer={data.profile.dbId === data.user.dbId}
     />
   );
