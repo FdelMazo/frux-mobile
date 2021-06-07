@@ -23,6 +23,8 @@ type Data = {
     name: string;
     email: string;
     imagePath: string;
+    latitude: string;
+    longitude: string;
   };
 };
 type Navigation = StackNavigationProp<any>;
@@ -34,14 +36,17 @@ function Screen({
 }: {
   data: Data;
   navigation: Navigation;
-  mutations: { mutateName: MutationFunction<any> };
+  mutations: Record<string, MutationFunction<any>>;
 }) {
   const defaultName = data.user.name || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
 
-  const [location, setLocation] = React.useState(null);
+  const [location, setLocation] = React.useState({
+    latitude: data.user.latitude,
+    longitude: data.user.longitude,
+  });
   const [locationLoading, setLocationLoading] = React.useState(false);
   const [locationOverlay, setLocationOverlay] = React.useState(false);
   const useCurrentLocation = async () => {
@@ -134,7 +139,7 @@ function Screen({
                   />
                 }
               >
-                {location ? "Change Location" : "Set Location"}
+                {location.longitude ? "Change Location" : "Set Location"}
               </Button>
             </Div>
           </Div>
@@ -168,10 +173,8 @@ function Screen({
       <Overlay visible={locationOverlay}>
         <MapView
           initialRegion={{
-            // @ts-expect-error
-            latitude: location?.latitude || -34.5723074,
-            // @ts-expect-error
-            longitude: location?.longitude || -58.4346815,
+            latitude: parseFloat(location.latitude) || -34.5723074,
+            longitude: parseFloat(location.longitude) || -58.4346815,
             latitudeDelta: 0.015,
             longitudeDelta: 0.015,
           }}
@@ -180,10 +183,12 @@ function Screen({
           // @ts-expect-error
           onLongPress={(e) => setLocation(e.nativeEvent.coordinate)}
         >
-          {location && (
+          {location.latitude && (
             <Marker
-              // @ts-expect-error
-              coordinate={location}
+              coordinate={{
+                latitude: parseFloat(location.latitude),
+                longitude: parseFloat(location.longitude),
+              }}
             />
           )}
         </MapView>
@@ -232,6 +237,12 @@ function Screen({
             </Button>
             <Button
               onPress={() => {
+                mutations.mutateLocation({
+                  variables: {
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  },
+                });
                 setLocationOverlay(false);
               }}
               mx="sm"
@@ -262,6 +273,8 @@ export default function Render(props: Props) {
         name
         email
         imagePath
+        latitude
+        longitude
       }
     }
   `;
@@ -276,6 +289,17 @@ export default function Render(props: Props) {
   `;
   const [mutateName] = useMutation(updateNameMutation);
 
+  const updateLocationMutation = gql`
+    mutation mutateUpdateUser($latitude: String, $longitude: String) {
+      mutateUpdateUser(latitude: $latitude, longitude: $longitude) {
+        id
+        latitude
+        longitude
+      }
+    }
+  `;
+  const [mutateLocation] = useMutation(updateLocationMutation);
+
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId },
   });
@@ -285,7 +309,7 @@ export default function Render(props: Props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateName }}
+      mutations={{ mutateName, mutateLocation }}
     />
   );
 }

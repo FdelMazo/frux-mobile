@@ -13,6 +13,7 @@ type Data = {
     categoryName: string;
     amountCollected: number;
     goal: number;
+    dbId: number;
   };
 };
 type Navigation = StackNavigationProp<any>;
@@ -51,7 +52,7 @@ function Component({
             </Text>
           </Div>
         </Div>
-        <Div row alignItems="center">
+        <Div mx="sm" row alignItems="center">
           <Div flex={1}>
             <Text fontWeight="bold" fontSize="xl" mt="sm">
               {data.project.name}
