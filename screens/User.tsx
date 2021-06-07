@@ -16,7 +16,9 @@ import MapView, { Marker } from "react-native-maps";
 import { resetPassword } from "../auth";
 import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
-import { UserIcons } from "../constants/Constants";
+import { Topics, UserIcons } from "../constants/Constants";
+import TopicContainer from "../components/TopicContainer";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 type Data = {
   user: {
@@ -56,6 +58,16 @@ function Screen({
     setLocation(userLocation.coords);
   };
 
+  const [myTopics, setMyTopics] = React.useState<string[]>([]);
+  const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
+
+  const toggleTopic = (t: string) => {
+    let newMyTopics = [];
+    if (myTopics.includes(t)) newMyTopics = myTopics.filter((to) => t !== to);
+    else newMyTopics = [...myTopics, t];
+    setMyTopics(newMyTopics);
+  };
+
   return (
     <View>
       <Header
@@ -69,7 +81,48 @@ function Screen({
       />
 
       <ScrollView>
-        <MainView></MainView>
+        <MainView>
+          <Div w="90%" mt="xl">
+            {myTopics.length ? (
+              <TouchableHighlight
+                underlayColor="gray"
+                onPress={() => setMyTopicsOverlay(true)}
+              >
+                <>
+                  <Div alignSelf="flex-start">
+                    <Text fontSize="xl" fontWeight="bold">
+                      My Topics
+                    </Text>
+                  </Div>
+                  <Div row my="md" flexWrap="wrap" justifyContent="center">
+                    {myTopics.map((t) => (
+                      <TopicContainer
+                        navigation={navigation}
+                        showName={true}
+                        name={t}
+                      />
+                    ))}
+                  </Div>
+                </>
+              </TouchableHighlight>
+            ) : (
+              <Div row alignItems="center">
+                <TopicContainer active showName={false} name="Other" />
+                <Button
+                  bg="white"
+                  fontWeight="bold"
+                  color="fruxgreen"
+                  alignSelf="center"
+                  onPress={() => {
+                    setMyTopicsOverlay(true);
+                  }}
+                >
+                  Choose Your Favourite Topics
+                </Button>
+              </Div>
+            )}
+          </Div>
+        </MainView>
       </ScrollView>
 
       <Dropdown
@@ -252,6 +305,53 @@ function Screen({
               color="white"
             >
               Save
+            </Button>
+          </Div>
+        </Div>
+      </Overlay>
+
+      <Overlay visible={myTopicsOverlay}>
+        <Div justifyContent="center" row flexWrap="wrap">
+          {Topics.map((t) => (
+            <Button
+              bg={undefined}
+              p={0}
+              underlayColor="white"
+              onPress={() => {
+                toggleTopic(t);
+              }}
+            >
+              <TopicContainer
+                active={myTopics.includes(t)}
+                navigation={navigation}
+                showName={true}
+                name={t}
+              />
+            </Button>
+          ))}
+        </Div>
+
+        <Div my="md" row justifyContent="space-between">
+          <Div alignSelf="center"></Div>
+
+          <Div row>
+            <Button
+              onPress={() => {
+                mutations.mutateLocation({
+                  variables: {
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  },
+                });
+                setMyTopicsOverlay(false);
+              }}
+              mx="sm"
+              fontSize="sm"
+              p="md"
+              bg="fruxgreen"
+              color="white"
+            >
+              Done
             </Button>
           </Div>
         </Div>

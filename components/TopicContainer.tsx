@@ -7,10 +7,12 @@ export default function Component({
   name,
   showName,
   navigation,
+  active,
 }: {
   name: string;
   showName: boolean;
-  navigation: StackNavigationProp<any>;
+  navigation?: StackNavigationProp<any>;
+  active?: boolean;
 }) {
   return (
     <Div alignItems="center" m="sm">
@@ -21,7 +23,8 @@ export default function Component({
         m="md"
         bg="white"
         style={{ transform: [{ rotate: "45deg" }] }}
-        borderWidth={1}
+        borderWidth={active ? 2 : 1}
+        borderColor={active ? "fruxgreen" : "black"}
       >
         <Div
           h="100%"

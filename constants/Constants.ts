@@ -39,3 +39,14 @@ export const TopicImage: ImgType = {
   Music: require(`../assets/images/topics/music.png`),
   Other: require(`../assets/images/topics/other.png`),
 };
+
+export const Topics: string[] = [
+  "Art",
+  "Books",
+  "Film",
+  "Food",
+  "Games",
+  "Music",
+  "Tech",
+  "Other",
+];

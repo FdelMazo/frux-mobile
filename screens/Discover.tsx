@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, ScrollView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
+import { Topics } from "../constants/Constants";
 
 type Data = {
   allProjects: {
@@ -116,46 +117,13 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
             </Div>
 
             <Div w="90%" row my="md" flexWrap="wrap">
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Art"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Books"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Film"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Food"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Games"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Music"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Tech"
-              />
-              <TopicContainer
-                navigation={navigation}
-                showName={true}
-                name="Other"
-              />
+              {Topics.map((t) => (
+                <TopicContainer
+                  navigation={navigation}
+                  showName={true}
+                  name={t}
+                />
+              ))}
             </Div>
           </Div>
 
