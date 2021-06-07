@@ -35,10 +35,12 @@ function Screen({
   data,
   navigation,
   mutations,
+  isViewer,
 }: {
   data: Data;
   navigation: Navigation;
   mutations: Record<string, MutationFunction<any>>;
+  isViewer: boolean;
 }) {
   const defaultName = data.user.name || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
@@ -71,10 +73,11 @@ function Screen({
   return (
     <View>
       <Header
-        onPress={() =>
+        onPress={() => {
+          if (!isViewer) return;
           // @ts-expect-error
-          dropdownRef.current.open()
-        }
+          dropdownRef.current.open();
+        }}
         navigation={navigation}
         title={defaultName}
         icon={data.user.imagePath || "seed"}
@@ -88,7 +91,7 @@ function Screen({
                 <>
                   <Div alignSelf="flex-start">
                     <Text fontSize="xl" fontWeight="bold">
-                      My Topics
+                      {isViewer ? "My Topics" : "Favourite Topics"}
                     </Text>
                   </Div>
                   <Div row my="md" flexWrap="wrap" justifyContent="center">
@@ -103,20 +106,24 @@ function Screen({
                 </>
               </TouchableOpacity>
             ) : (
-              <Div row alignItems="center">
-                <TopicContainer active showName={false} name="Other" />
-                <Button
-                  bg="white"
-                  fontWeight="bold"
-                  color="fruxgreen"
-                  alignSelf="center"
-                  onPress={() => {
-                    setMyTopicsOverlay(true);
-                  }}
-                >
-                  Choose Your Favourite Topics
-                </Button>
-              </Div>
+              <>
+                {isViewer && (
+                  <Div row alignItems="center">
+                    <TopicContainer active showName={false} name="Other" />
+                    <Button
+                      bg="white"
+                      fontWeight="bold"
+                      color="fruxgreen"
+                      alignSelf="center"
+                      onPress={() => {
+                        setMyTopicsOverlay(true);
+                      }}
+                    >
+                      Choose Your Favourite Topics
+                    </Button>
+                  </Div>
+                )}
+              </>
             )}
           </Div>
         </MainView>
@@ -359,19 +366,24 @@ function Screen({
 
 type Props = {
   navigation: Navigation;
-  dbId: number;
+  dbId?: number;
+  route?: { params: { dbId: number } };
 };
 
 export default function Render(props: Props) {
   const query = gql`
     query User($dbId: Int!) {
       user(dbId: $dbId) {
+        dbId
         id
         name
         email
         imagePath
         latitude
         longitude
+      }
+      profile {
+        dbId
       }
     }
   `;
@@ -398,7 +410,7 @@ export default function Render(props: Props) {
   const [mutateLocation] = useMutation(updateLocationMutation);
 
   const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.dbId },
+    variables: { dbId: props.dbId || props.route?.params.dbId },
   });
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
@@ -407,6 +419,7 @@ export default function Render(props: Props) {
       data={data}
       navigation={props.navigation}
       mutations={{ mutateName, mutateLocation }}
+      isViewer={data.profile.dbId === data.user.dbId}
     />
   );
 }

@@ -2,11 +2,13 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 
 type Data = {
   user: {
     name: string;
+    dbId: number;
   };
 };
 type Navigation = StackNavigationProp<any>;
@@ -19,14 +21,20 @@ function Component({
   navigation: Navigation;
 }) {
   return (
-    <Div alignItems="center" m="sm">
-      <Div h={45} w={45} rounded="circle" borderWidth={1} />
-      <Div mt="xs">
-        <Text fontSize="xs" fontWeight="bold">
-          {data.user.name}
-        </Text>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("UserScreen", { dbId: data.user.dbId })
+      }
+    >
+      <Div alignItems="center" m="sm">
+        <Div h={45} w={45} rounded="circle" borderWidth={1} />
+        <Div mt="xs">
+          <Text fontSize="xs" fontWeight="bold">
+            {data.user.name}
+          </Text>
+        </Div>
       </Div>
-    </Div>
+    </TouchableOpacity>
   );
 }
 
@@ -39,6 +47,7 @@ export default function Render(props: Props) {
   const query = gql`
     query UserContainer($dbId: Int!) {
       user(dbId: $dbId) {
+        dbId
         name
       }
     }
