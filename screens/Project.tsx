@@ -110,6 +110,7 @@ function Screen({
                   </Text>
                   {data.project.hashtags?.map((h) => (
                     <Text
+                      key={h}
                       fontSize="md"
                       fontFamily="latinmodernroman-bold"
                       color="blue600"
@@ -435,7 +436,10 @@ export default function Render(props: Props) {
         idProject: $idProject
         investedAmount: $investedAmount
       ) {
-        id
+        project {
+          id
+          amountCollected
+        }
       }
     }
   `;

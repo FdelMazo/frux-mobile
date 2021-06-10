@@ -115,6 +115,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
             <Div w="90%" row my="md" flexWrap="wrap">
               {Topics.map((t) => (
                 <TopicContainer
+                  key={t}
                   navigation={navigation}
                   showName={true}
                   name={t}
@@ -131,6 +132,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
               <FlatList
                 horizontal
                 data={data.allProjects.edges}
+                keyExtractor={(item) => item.node.dbId.toString()}
                 renderItem={({ item }) => (
                   <ProjectContainer
                     navigation={navigation}

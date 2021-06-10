@@ -112,6 +112,7 @@ function Screen({
                         navigation={navigation}
                         showName={true}
                         name={t}
+                        key={t}
                       />
                     ))}
                   </Div>
@@ -147,6 +148,7 @@ function Screen({
                 </Text>
                 <FlatList
                   horizontal
+                  keyExtractor={(item) => item.node.id}
                   data={data.user.projectInvestments.edges}
                   renderItem={({ item }) => (
                     <ProjectContainer
@@ -241,6 +243,7 @@ function Screen({
         <Dropdown.Option justifyContent="space-evenly">
           {UserIcons.map((item) => (
             <Button
+              key={item.name}
               bg={undefined}
               underlayColor="fruxgreen"
               onPress={() => {
@@ -357,6 +360,7 @@ function Screen({
         <Div justifyContent="center" row flexWrap="wrap">
           {Topics.map((t) => (
             <Button
+              key={t}
               bg={undefined}
               p={0}
               underlayColor="fruxgreen"
@@ -423,6 +427,7 @@ export default function Render(props: Props) {
         projectInvestments {
           edges {
             node {
+              id
               projectId
               investedAmount
             }

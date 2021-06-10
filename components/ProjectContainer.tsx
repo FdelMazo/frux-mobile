@@ -83,7 +83,7 @@ function Component({
 type Props = {
   navigation: Navigation;
   dbId: number;
-  seeding: number;
+  seeding?: number;
 };
 
 export default function Render(props: Props) {

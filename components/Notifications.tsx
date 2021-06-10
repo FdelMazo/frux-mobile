@@ -60,7 +60,7 @@ function Component({
         </Div>
         <Div mx="lg">
           {data.notifications.map((n) => (
-            <Div>
+            <Div key={n.title}>
               <Collapse>
                 <Collapse.Header
                   bg={undefined}
