@@ -29,11 +29,10 @@ export const UserIcons: IconType[] = [
   { name: "tree-outline", fontFamily: "MaterialCommunityIcons" },
 ];
 
-interface StageColorType {
-  [key: string]: string;
-}
-export const StageColor: StageColorType = {
-  CREATED: "pink500",
+export const States = {
+  CREATED: { name: "Created", color: "pink" },
+  IN_PROGRESS: { name: "In Progress", color: "blue" },
+  COMPLETE: { name: "Complete", color: "green" },
 };
 
 interface ImgType {
@@ -50,13 +49,12 @@ export const TopicImage: ImgType = {
   Other: require(`../assets/images/topics/other.png`),
 };
 
-export const Topics: string[] = [
-  "Art",
-  "Books",
-  "Film",
-  "Food",
-  "Games",
-  "Music",
-  "Tech",
-  "Other",
-];
+export const toggler = (arr, setArr, item) => {
+  let newArr = [];
+  if (arr.includes(item)) {
+    newArr = arr.filter((i) => i !== item);
+  } else {
+    newArr = [...arr, item];
+  }
+  setArr(newArr);
+};

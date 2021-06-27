@@ -62,7 +62,7 @@ export default function Render(props: Props) {
     query UserContainer($dbId: Int!) {
       user(dbId: $dbId) {
         dbId
-        name
+        username
         imagePath
       }
     }

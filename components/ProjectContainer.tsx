@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
-import { StageColor } from "../constants/Constants";
+import { States } from "../constants/Constants";
 
 type Data = {
   project: {
@@ -41,7 +41,7 @@ function Component({
           bgImg={require("../assets/images/nopicture.jpg")}
         >
           <Div
-            bg={StageColor[data.project.currentState]}
+            bg={States[data.project.currentState].color + "500"}
             rounded="md"
             flexWrap="wrap"
             px="md"

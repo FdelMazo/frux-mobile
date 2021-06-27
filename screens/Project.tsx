@@ -17,7 +17,7 @@ import {
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
-import { StageColor } from "../constants/Constants";
+import { States } from "../constants/Constants";
 
 type Data = {
   project: {
@@ -91,7 +91,7 @@ function Screen({
 
                     <Div
                       alignSelf="flex-start"
-                      bg={StageColor[data.project.currentState]}
+                      bg={States[data.project.currentState].color + "500"}
                       rounded="md"
                       px="xs"
                     >

@@ -16,7 +16,7 @@ import MapView, { Marker } from "react-native-maps";
 import { resetPassword } from "../auth";
 import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
-import { Topics, UserIcons } from "../constants/Constants";
+import { toggler, UserIcons } from "../constants/Constants";
 import TopicContainer from "../components/TopicContainer";
 import ProjectContainer from "../components/ProjectContainer";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
@@ -51,7 +51,7 @@ function Screen({
   mutateEntity: MutationFunction<any>;
   isViewer: boolean;
 }) {
-  const defaultName = data.user.name || data.user.email.split("@")[0];
+  const defaultName = data.user.username || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
@@ -69,15 +69,10 @@ function Screen({
     setLocation(userLocation.coords);
   };
 
-  const [myTopics, setMyTopics] = React.useState<string[]>([]);
+  const [myTopics, setMyTopics] = React.useState<string[]>(
+    data.user.interests.edges.map((n) => n.name) || []
+  );
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
-
-  const toggleTopic = (t: string) => {
-    let newMyTopics = [];
-    if (myTopics.includes(t)) newMyTopics = myTopics.filter((to) => t !== to);
-    else newMyTopics = [...myTopics, t];
-    setMyTopics(newMyTopics);
-  };
 
   return (
     <View>
@@ -358,21 +353,21 @@ function Screen({
 
       <Overlay visible={myTopicsOverlay}>
         <Div justifyContent="center" row flexWrap="wrap">
-          {Topics.map((t) => (
+          {data.allCategories.edges.map((item) => (
             <Button
-              key={t}
+              key={item.node.name}
               bg={undefined}
               p={0}
               underlayColor="fruxgreen"
               onPress={() => {
-                toggleTopic(t);
+                toggler(myTopics, setMyTopics, item.node.name);
               }}
             >
               <TopicContainer
-                active={myTopics.includes(t)}
+                active={myTopics.includes(item.node.name)}
                 navigation={navigation}
                 showName={true}
-                name={t}
+                name={item.node.name}
               />
             </Button>
           ))}
@@ -386,8 +381,7 @@ function Screen({
               onPress={() => {
                 mutateEntity({
                   variables: {
-                    latitude: location.latitude,
-                    longitude: location.longitude,
+                    interests: myTopics,
                   },
                 });
                 setMyTopicsOverlay(false);
@@ -419,7 +413,7 @@ export default function Render(props: Props) {
       user(dbId: $dbId) {
         dbId
         id
-        name
+        username
         email
         imagePath
         latitude
@@ -433,31 +427,54 @@ export default function Render(props: Props) {
             }
           }
         }
+        interests {
+          edges {
+            node {
+              name
+            }
+          }
+        }
       }
       profile {
         dbId
+      }
+      allCategories {
+        edges {
+          node {
+            name
+          }
+        }
       }
     }
   `;
 
   const updateMutation = gql`
     mutation updateMutation(
-      $name: String
+      $username: String
       $imagePath: String
       $latitude: String
       $longitude: String
+      $interests: [String]
     ) {
       mutateUpdateUser(
-        name: $name
+        username: $username
         imagePath: $imagePath
         latitude: $latitude
         longitude: $longitude
+        interests: $interests
       ) {
         id
-        name
+        username
         imagePath
         latitude
         longitude
+        interests {
+          edges {
+            node {
+              name
+            }
+          }
+        }
       }
     }
   `;

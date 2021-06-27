@@ -1,14 +1,14 @@
 import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { Div, Icon, Input, Tag, Text } from "react-native-magnus";
+import { Div, Icon, Input, Button, Tag, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, ScrollView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
-import { Topics } from "../constants/Constants";
+import { States, toggler } from "../constants/Constants";
 
 type Data = {
   allProjects: {
@@ -21,13 +21,29 @@ type Data = {
 
 type Navigation = StackNavigationProp<any>;
 
-function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
+function Screen({
+  data,
+  refetch,
+  navigation,
+}: {
+  data: Data;
+  navigation: Navigation;
+}) {
+  const [searchText, setSearchText] = React.useState("");
   const [searchLocation, setSearchLocation] = React.useState(false);
-  const [progressFilters, setProgressFilters] = React.useState({
-    inProgress: false,
-    almostDone: false,
-    complete: false,
-  });
+  const [progressFilters, setProgressFilters] = React.useState([]);
+  const [topicsFilter, setTopicsFilter] = React.useState([]);
+  const [filters, setFilters] = React.useState({});
+
+  React.useEffect(() => {
+    topicsFilter.length
+      ? setFilters({ categoryNameIn: topicsFilter })
+      : setFilters({});
+  }, [searchText, searchLocation, progressFilters, topicsFilter]);
+
+  React.useEffect(() => {
+    refetch({ filters });
+  }, [filters]);
 
   return (
     <View>
@@ -39,6 +55,8 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
               <Input
                 placeholder="Search"
                 focusBorderColor="blue700"
+                value={searchText}
+                onChangeText={setSearchText}
                 suffix={
                   <Icon name="search" color="gray900" fontFamily="Feather" />
                 }
@@ -57,72 +75,51 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
             </Div>
 
             <Div my="lg" flexDir="row">
-              <TouchableOpacity
-                onPress={() =>
-                  setProgressFilters({
-                    inProgress: !progressFilters.inProgress,
-                    almostDone: progressFilters.almostDone,
-                    complete: progressFilters.complete,
-                  })
-                }
-              >
-                <Tag
-                  mx="sm"
-                  bg={progressFilters.inProgress ? "pink300" : "pink100"}
-                  borderColor="pink700"
-                  borderWidth={1}
-                >
-                  In Progress
-                </Tag>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() =>
-                  setProgressFilters({
-                    inProgress: progressFilters.inProgress,
-                    almostDone: !progressFilters.almostDone,
-                    complete: progressFilters.complete,
-                  })
-                }
-              >
-                <Tag
-                  mx="sm"
-                  bg={progressFilters.almostDone ? "blue300" : "blue100"}
-                  borderColor="blue700"
-                  borderWidth={1}
-                >
-                  Almost Done!
-                </Tag>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() =>
-                  setProgressFilters({
-                    inProgress: progressFilters.inProgress,
-                    almostDone: progressFilters.almostDone,
-                    complete: !progressFilters.complete,
-                  })
-                }
-              >
-                <Tag
-                  mx="sm"
-                  bg={progressFilters.complete ? "green300" : "green100"}
-                  borderColor="green700"
-                  borderWidth={1}
-                >
-                  Complete
-                </Tag>
-              </TouchableOpacity>
+              {Object.keys(States).map((k) => {
+                const { name, color } = States[k];
+                return (
+                  <TouchableOpacity
+                    key={name}
+                    onPress={() =>
+                      toggler(progressFilters, setProgressFilters, name)
+                    }
+                  >
+                    <Tag
+                      mx="sm"
+                      bg={
+                        progressFilters.includes(name)
+                          ? color + 300
+                          : color + 100
+                      }
+                      borderColor={color + 700}
+                      borderWidth={1}
+                    >
+                      {name}
+                    </Tag>
+                  </TouchableOpacity>
+                );
+              })}
             </Div>
 
             <Div w="90%" row my="md" flexWrap="wrap">
               {data.allCategories.edges.map((item) => (
-                <TopicContainer
+                <Button
                   key={item.node.name}
-                  navigation={navigation}
-                  showName={true}
-                  name={item.node.name}
-                />
+                  bg={undefined}
+                  p={0}
+                  underlayColor="fruxgreen"
+                  onPress={() => {
+                    toggler(topicsFilter, setTopicsFilter, item.node.name);
+                  }}
+                >
+                  <TopicContainer
+                    active={topicsFilter.includes(item.node.name)}
+                    key={item.node.name}
+                    navigation={navigation}
+                    showName={true}
+                    name={item.node.name}
+                  />
+                </Button>
               ))}
             </Div>
           </Div>
@@ -130,7 +127,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
           <Div w="90%">
             <Div>
               <Text fontSize="xl" fontWeight="bold">
-                Recommended Seeds
+                Seeds
               </Text>
               <FlatList
                 horizontal
@@ -157,7 +154,7 @@ type Props = {
 
 export default function Render(props: Props) {
   const query = gql`
-    query Discover {
+    query Discover($filters: ProjectFilter) {
       allCategories {
         edges {
           node {
@@ -165,7 +162,7 @@ export default function Render(props: Props) {
           }
         }
       }
-      allProjects {
+      allProjects(filters: $filters) {
         edges {
           node {
             dbId
@@ -175,8 +172,15 @@ export default function Render(props: Props) {
     }
   `;
 
-  const { loading, error, data } = useQuery(query);
+  const [fetchData, { loading, error, data, refetch }] = useLazyQuery(query, {
+    variables: {
+      filters: {},
+    },
+  });
+  React.useEffect(() => {
+    fetchData();
+  }, []);
   if (error) alert(JSON.stringify(error));
-  if (loading) return null;
-  return <Screen data={data} navigation={props.navigation} />;
+  if (loading || !data) return null;
+  return <Screen data={data} refetch={refetch} navigation={props.navigation} />;
 }
