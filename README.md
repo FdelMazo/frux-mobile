@@ -1,8 +1,8 @@
 # frux-mobile
 
-Android Client for Frux
+Android Client for Frux.
 
-![Logo](docs/logo.png)
+<img src="docs/logo.png" alt="Logo" width="500px">
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
