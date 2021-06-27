@@ -14,6 +14,9 @@ type Data = {
   allProjects: {
     edges: { node: { dbId: number } }[];
   };
+  allCategories: {
+    edges: { node: { name: string } }[];
+  };
 };
 
 type Navigation = StackNavigationProp<any>;
@@ -113,12 +116,12 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
             </Div>
 
             <Div w="90%" row my="md" flexWrap="wrap">
-              {Topics.map((t) => (
+              {data.allCategories.edges.map((item) => (
                 <TopicContainer
-                  key={t}
+                  key={item.node.name}
                   navigation={navigation}
                   showName={true}
-                  name={t}
+                  name={item.node.name}
                 />
               ))}
             </Div>
@@ -155,6 +158,13 @@ type Props = {
 export default function Render(props: Props) {
   const query = gql`
     query Discover {
+      allCategories {
+        edges {
+          node {
+            name
+          }
+        }
+      }
       allProjects {
         edges {
           node {
