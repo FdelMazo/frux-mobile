@@ -17,4 +17,5 @@ jobs:
           expo-version: 4.4.3
           token: ${{ secrets.EXPO_TOKEN }}
       - run: yarn install
-      - run: expo build:android -t apk
+      - run: expo publish
+      # - run: expo build:android -t apk

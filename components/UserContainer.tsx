@@ -44,7 +44,7 @@ function Component({
         />
         <Div mt="xs">
           <Text fontSize="xs" fontWeight="bold">
-            {data.user.name}
+            {data.user.username || data.user.email.split("@")[0]}
           </Text>
         </Div>
       </Div>
@@ -63,6 +63,7 @@ export default function Render(props: Props) {
       user(dbId: $dbId) {
         dbId
         username
+        email
         imagePath
       }
     }
