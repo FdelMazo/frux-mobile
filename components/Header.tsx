@@ -1,13 +1,22 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, Div, Icon, Image, Text } from "react-native-magnus";
+import {
+  Button,
+  Div,
+  Icon,
+  Input,
+  Image,
+  Text,
+  Overlay,
+} from "react-native-magnus";
 import { loggingOut, useAuth } from "../auth";
 import Notifications from "./Notifications";
 import { AppIcons } from "../constants/Constants";
 import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/react-hooks";
 import { MutationFunction } from "@apollo/react-common";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 type Props = {
   icon: string;
@@ -20,6 +29,18 @@ type Props = {
 
 function Component(props: Props) {
   const { icon, title, onPress, mutations, navigation, data } = props;
+  const [createProjectOverlay, setCreateProjectOverlay] = React.useState(false);
+  const [newProjectName, setNewProjectName] = React.useState("");
+  const [newProjectDescription, setNewProjectDescription] = React.useState("");
+  const [projectError, setProjectError] = React.useState("");
+  const [newProjectGoal, setNewProjectGoal] = React.useState(500);
+
+  React.useEffect(() => {
+    if (data?.mutateProject?.dbId)
+      navigation.navigate("ProjectScreen", {
+        dbId: data.mutateProject.dbId,
+      });
+  }, [data?.mutateProject?.dbId]);
 
   // @ts-expect-error
   const { user } = useAuth();
@@ -51,18 +72,8 @@ function Component(props: Props) {
               borderWidth={1}
               p="xs"
               mb="sm"
-              onPress={async () => {
-                await mutations?.createProject({
-                  variables: {
-                    name: "New Project",
-                    goal: 1000,
-                    description: "Description",
-                  },
-                });
-
-                navigation.navigate("ProjectScreen", {
-                  dbId: data.mutateProject.dbId,
-                });
+              onPress={() => {
+                setCreateProjectOverlay(true);
               }}
             >
               <Icon
@@ -75,6 +86,96 @@ function Component(props: Props) {
           </Div>
         </>
       )}
+
+      <Overlay visible={createProjectOverlay}>
+        <Text fontSize="xl" fontWeight="bold">
+          Create New Project
+        </Text>
+        <Div>
+          <Input
+            w="65%"
+            mt="md"
+            value={newProjectName}
+            onChangeText={setNewProjectName}
+            placeholder="Name"
+          />
+          <Input
+            w="65%"
+            mt="md"
+            value={newProjectDescription}
+            onChangeText={setNewProjectDescription}
+            placeholder="Description"
+          />
+
+          <Div m="md">
+            <Text fontSize="5xl" color="fruxgreen">
+              {"$"}
+              {newProjectGoal}
+            </Text>
+            <MultiSlider
+              trackStyle={{ backgroundColor: "#bdc3c7" }}
+              selectedStyle={{ backgroundColor: "#90B44B" }}
+              markerStyle={{
+                backgroundColor: "#90B44B",
+              }}
+              values={[newProjectGoal]}
+              sliderLength={200}
+              onValuesChange={(v) => {
+                setNewProjectGoal(Math.floor(v));
+              }}
+              step={50}
+              max={5000}
+            />
+          </Div>
+        </Div>
+        {projectError !== "" && (
+          <Text color="red" textAlign="right" m="md">
+            {projectError}
+          </Text>
+        )}
+        <Div row alignSelf="flex-end">
+          <Button
+            mx="sm"
+            p="md"
+            bg={undefined}
+            borderWidth={1}
+            borderColor="fruxgreen"
+            color="fruxgreen"
+            onPress={() => {
+              setCreateProjectOverlay(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={async () => {
+              if (
+                !newProjectName ||
+                !newProjectDescription ||
+                !newProjectGoal
+              ) {
+                return setProjectError("You must specify all fields!");
+              }
+
+              setCreateProjectOverlay(false);
+              await mutations?.createProject({
+                variables: {
+                  name: newProjectName,
+                  goal: newProjectGoal,
+                  description: newProjectDescription,
+                },
+              });
+            }}
+            mx="sm"
+            p="md"
+            bg="fruxgreen"
+            color="white"
+          >
+            Create
+          </Button>
+        </Div>
+      </Overlay>
+
       <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
         {title}
       </Text>
@@ -119,7 +220,9 @@ export default function Render(props: Props) {
       }
     }
   `;
-  const [createProject, { data, error }] = useMutation(createProjectMutation);
+  const [createProject, { data, loading, error }] = useMutation(
+    createProjectMutation
+  );
 
   return <Component mutations={{ createProject }} {...props} data={data} />;
 }
