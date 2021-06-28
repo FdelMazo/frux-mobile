@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import * as Location from "expo-location";
+import googleMapsConfig from "../config/googlemaps";
 import gql from "graphql-tag";
 import * as React from "react";
 import { MutationFunction, useMutation, useQuery } from "react-apollo";
@@ -63,6 +64,7 @@ function Screen({
   const [locationLoading, setLocationLoading] = React.useState(false);
   const [locationOverlay, setLocationOverlay] = React.useState(false);
   const useCurrentLocation = async () => {
+    await Location.setGoogleApiKey(googleMapsConfig.GOOGLE_APIKEY);
     await Location.requestForegroundPermissionsAsync();
     const userLocation = await Location.getCurrentPositionAsync();
     // @ts-expect-error
