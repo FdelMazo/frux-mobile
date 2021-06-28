@@ -12,6 +12,7 @@ import {
   Input,
   Overlay,
   Text,
+  Tag,
 } from "react-native-magnus";
 import MapView, { Marker } from "react-native-maps";
 import { resetPassword } from "../auth";
@@ -33,7 +34,20 @@ type Data = {
       edges: {
         node: {
           projectId: number;
-          investedAmount: number;
+        };
+      }[];
+    };
+    favoritedProjects: {
+      edges: {
+        node: {
+          projectId: number;
+        };
+      }[];
+    };
+    createdProjects: {
+      edges: {
+        node: {
+          dbId: number;
         };
       }[];
     };
@@ -74,6 +88,13 @@ function Screen({
   const [myTopics, setMyTopics] = React.useState<string[]>(
     data.user.interests.edges.map((n) => n.name) || []
   );
+
+  const [projectsShown, setProjectsShown] = React.useState(
+    data.user.projectInvestments ||
+      data.user.favoritedProjects ||
+      data.user.createdProjects
+  );
+
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
 
   return (
@@ -138,25 +159,78 @@ function Screen({
           </Div>
 
           <Div w="90%" mt="xl">
-            {data.user.projectInvestments.edges.length !== 0 && (
-              <>
-                <Text fontSize="xl" fontWeight="bold">
-                  Seeding
-                </Text>
-                <FlatList
-                  horizontal
-                  keyExtractor={(item) => item.node.id}
-                  data={data.user.projectInvestments.edges}
-                  renderItem={({ item }) => (
-                    <ProjectContainer
-                      navigation={navigation}
-                      dbId={item.node.projectId}
-                      seeding={item.node.investedAmount}
-                    />
-                  )}
-                />
-              </>
-            )}
+            <Div row>
+              {data.user.projectInvestments.edges.length !== 0 && (
+                <TouchableOpacity
+                  onPress={() => setProjectsShown(data.user.projectInvestments)}
+                >
+                  <Tag
+                    fontSize="sm"
+                    rounded="circle"
+                    mx="sm"
+                    bg={
+                      projectsShown === data.user.projectInvestments
+                        ? "blue400"
+                        : "blue200"
+                    }
+                  >
+                    Seeding
+                  </Tag>
+                </TouchableOpacity>
+              )}
+
+              {data.user.favoritedProjects.edges.length !== 0 && (
+                <TouchableOpacity
+                  onPress={() => setProjectsShown(data.user.favoritedProjects)}
+                >
+                  <Tag
+                    mx="sm"
+                    rounded="circle"
+                    fontSize="sm"
+                    bg={
+                      projectsShown === data.user.favoritedProjects
+                        ? "blue400"
+                        : "blue200"
+                    }
+                  >
+                    Favourites
+                  </Tag>
+                </TouchableOpacity>
+              )}
+
+              {data.user.createdProjects.edges.length !== 0 && (
+                <TouchableOpacity
+                  onPress={() => setProjectsShown(data.user.createdProjects)}
+                >
+                  <Tag
+                    fontSize="sm"
+                    rounded="circle"
+                    mx="sm"
+                    bg={
+                      projectsShown === data.user.createdProjects
+                        ? "blue400"
+                        : "blue200"
+                    }
+                  >
+                    Created
+                  </Tag>
+                </TouchableOpacity>
+              )}
+            </Div>
+
+            <Div mt="sm">
+              <FlatList
+                horizontal
+                keyExtractor={(item) => item.node.id}
+                data={projectsShown.edges}
+                renderItem={({ item }) => (
+                  <ProjectContainer
+                    navigation={navigation}
+                    dbId={item.node.projectId || item.node.dbId}
+                  />
+                )}
+              />
+            </Div>
           </Div>
         </MainView>
       </ScrollView>
@@ -425,7 +499,22 @@ export default function Render(props: Props) {
             node {
               id
               projectId
-              investedAmount
+            }
+          }
+        }
+        favoritedProjects {
+          edges {
+            node {
+              id
+              projectId
+            }
+          }
+        }
+        createdProjects {
+          edges {
+            node {
+              id
+              dbId
             }
           }
         }

@@ -25,7 +25,6 @@ function Component({
 }: {
   data: Data;
   navigation: Navigation;
-  seeding: number;
 }) {
   return (
     <TouchableOpacity
@@ -65,14 +64,12 @@ function Component({
           <Div row>
             <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
               {"$"}
-              {seeding || data.project.amountCollected}
+              {data.project.amountCollected}
             </Text>
-            {!seeding && (
-              <Text color="gray500" fontWeight="bold" fontSize="lg">
-                {"  /"}
-                {data.project.goal}
-              </Text>
-            )}
+            <Text color="gray500" fontWeight="bold" fontSize="lg">
+              {"  /"}
+              {data.project.goal}
+            </Text>
           </Div>
         </Div>
       </Div>
