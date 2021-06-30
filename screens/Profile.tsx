@@ -12,6 +12,7 @@ import {
 } from "../auth";
 import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
+import Loading from "../components/Loading";
 import User from "./User";
 
 type Data = {
@@ -185,6 +186,6 @@ export default function Render(props: Props) {
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId },
   });
-  if (loading) return null;
+  if (loading) return <Loading />;
   return <Screen data={data} navigation={props.navigation} />;
 }

@@ -18,6 +18,7 @@ import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import { States } from "../constants/Constants";
+import Loading from "../components/Loading";
 
 type Data = {
   project: {
@@ -449,7 +450,7 @@ export default function Render(props: Props) {
     variables: { dbId: props.route.params.dbId },
   });
   if (error) alert(JSON.stringify(error));
-  if (loading) return null;
+  if (loading) return <Loading />;
   return (
     <Screen
       data={data}

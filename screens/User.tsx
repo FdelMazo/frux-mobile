@@ -22,6 +22,7 @@ import { toggler, UserIcons } from "../constants/Constants";
 import TopicContainer from "../components/TopicContainer";
 import ProjectContainer from "../components/ProjectContainer";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import Loading from "../components/Loading";
 
 type Data = {
   user: {
@@ -575,7 +576,7 @@ export default function Render(props: Props) {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
   if (error) alert(JSON.stringify(error));
-  if (loading) return null;
+  if (loading) return <Loading />;
   return (
     <Screen
       data={data}

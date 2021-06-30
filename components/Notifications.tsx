@@ -108,12 +108,6 @@ type Props = {
 };
 
 export default function Render(props: Props) {
-  // const query = gql``;
-  // const { loading, error, data } = useQuery(query, {
-  //   variables: { dbId: props.dbId },
-  // });
-  // if (error) alert(JSON.stringify(error));
-  // if (loading) return null;
   const data = {
     notifications: [
       {
