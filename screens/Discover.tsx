@@ -129,17 +129,38 @@ function Screen({
               <Text fontSize="xl" fontWeight="bold">
                 Seeds
               </Text>
-              <FlatList
-                horizontal
-                data={data.allProjects.edges}
-                keyExtractor={(item) => item.node.dbId.toString()}
-                renderItem={({ item }) => (
-                  <ProjectContainer
-                    navigation={navigation}
-                    dbId={item.node.dbId}
+              {data.allProjects.edges?.length ? (
+                <FlatList
+                  horizontal
+                  data={data.allProjects.edges}
+                  keyExtractor={(item) => item.node.dbId.toString()}
+                  renderItem={({ item }) => (
+                    <ProjectContainer
+                      navigation={navigation}
+                      dbId={item.node.dbId}
+                    />
+                  )}
+                />
+              ) : (
+                <Div my="sm" mr="lg">
+                  <Div
+                    rounded="xl"
+                    h={150}
+                    w={250}
+                    borderWidth={1}
+                    borderStyle="dashed"
+                    borderColor="gray500"
                   />
-                )}
-              />
+                  <Div mx="sm">
+                    <Text color="gray500" fontSize="sm">
+                      We couldn't find any seeds
+                    </Text>
+                    <Text color="gray500" fontSize="sm">
+                      Try a different set of filters!
+                    </Text>
+                  </Div>
+                </Div>
+              )}
             </Div>
           </Div>
         </MainView>

@@ -21,7 +21,6 @@ type Navigation = StackNavigationProp<any>;
 function Component({
   data,
   navigation,
-  seeding,
 }: {
   data: Data;
   navigation: Navigation;
@@ -80,7 +79,6 @@ function Component({
 type Props = {
   navigation: Navigation;
   dbId: number;
-  seeding?: number;
 };
 
 export default function Render(props: Props) {
@@ -102,11 +100,5 @@ export default function Render(props: Props) {
   });
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
-  return (
-    <Component
-      data={data}
-      navigation={props.navigation}
-      seeding={props.seeding}
-    />
-  );
+  return <Component data={data} navigation={props.navigation} />;
 }
