@@ -27,11 +27,11 @@ Frux is currently being developed by
 
 ## Tech Stack
 
-This mobile app is developed in [React Native](https://reactnative.dev/) with tremendous help from [Expo](https://expo.io/). The UI framework used is [Magnus](https://magnus-ui.com/), and is truly one of the best mobile UI frameworks out there, check it out.
+This mobile app is developed in [React Native](https://reactnative.dev/) with tremendous help from [Expo](https://expo.io/). The UI framework used is [Magnus](https://magnus-ui.com/), and is truly one of the best mobile UI frameworks out there.
 
 ## Try it out!
 
-Go to your favourite Android device and download the [Expo Go](https://expo.io/client) app. After that you can either input the Expo link or scan the Expo QR and thanks to some Github CI magic, you'll get instant access to the latest build
+Go to your favourite Android device and download the [Expo Go](https://expo.io/client) app. After that you can either input the Expo link or scan the Expo QR to try out the latest build (thanks to some Github CI magic)
 
 [`exp://exp.host/@fdelmazo/frux-mobile`](https://expo.io/@fdelmazo/frux-mobile)
 
