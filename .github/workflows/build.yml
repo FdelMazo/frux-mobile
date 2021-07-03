@@ -17,5 +17,14 @@ jobs:
           expo-version: 4.4.3
           token: ${{ secrets.EXPO_TOKEN }}
       - run: yarn install
-      - run: expo publish
-      # - run: expo build:android -t apk
+      - run: expo build:android -t apk
+        env:
+          FIREBASE_APIKEY: ${{secrets.FIREBASE_APIKEY}}
+          FIREBASE_AUTHDOMAIN: ${{secrets.FIREBASE_AUTHDOMAIN}}
+          FIREBASE_PROJECTID: ${{secrets.FIREBASE_PROJECTID}}
+          FIREBASE_STORAGEBUCKET: ${{secrets.FIREBASE_STORAGEBUCKET}}
+          FIREBASE_MESSAGINGSENDERID: ${{secrets.FIREBASE_MESSAGINGSENDERID}}
+          FIREBASE_APPID: ${{secrets.FIREBASE_APPID}}
+          FIREBASE_WEB_CLIENT_ID: ${{secrets.FIREBASE_WEB_CLIENT_ID}}
+          GRAPHQL_ENDPOINT: ${{secrets.GRAPHQL_ENDPOINT}}
+          GOOGLE_APIKEY: ${{secrets.GOOGLE_APIKEY}}

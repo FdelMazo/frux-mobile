@@ -37,7 +37,7 @@ Go to your favourite Android device and download the [Expo Go](https://expo.io/c
 
 ![](docs/expo.png)
 
-<!-- If you prefer to use the latest build in APK form, just go over to the [Github Actions tab](https://github.com/FdelMazo/frux-mobile/actions) of this repo and click on the latest workflow run. In there you'll see the different build steps of the app, and on the last line of the build command you'll find the link to download the latest APK. -->
+If you prefer to use the latest build in APK form, just go over to the [Github Actions tab](https://github.com/FdelMazo/frux-mobile/actions) of this repo and click on the latest workflow run. In there you'll see the different build steps of the app, and on the last line of the build command you'll find the link to download the latest APK.
 
 Even though this app is only developed for Android devices, Expo makes it pretty easy to port it to iOS too. If you are feeling risky, feel free to try it out on an iOS device with the Expo Go client installed.
 
@@ -47,4 +47,4 @@ For development you'll need to have the Expo CLI installed in your system. You c
 
 After cloning this repository, install the dependencies with `npm install` and then you'll be free to start developing right away with `expo start`
 
-For lots of users actions you'll need a properly set up environment with the Firebase credentials. Just ask one of the original developers for their own `.env` file and copy it into the root directory of the project. Make sure to never check that file into our vcs!
+For some users actions you'll need a properly set up environment with the Firebase credentials. Just ask one of the original developers for their own `.env` file and copy it into the root directory of the project.
