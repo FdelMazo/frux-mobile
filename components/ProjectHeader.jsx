@@ -13,11 +13,7 @@ function Component({ data, navigation }) {
     <Div bgImg={require("../assets/images/nopicture.jpg")} h={200}>
       {user && <Notifications navigation={navigation} />}
       <Div position="absolute" right={0} bottom={0}>
-        <TopicContainer
-          navigation={navigation}
-          name={data.project.categoryName}
-          showName={false}
-        />
+        <TopicContainer name={data.project.categoryName} showName={false} />
       </Div>
     </Div>
   );

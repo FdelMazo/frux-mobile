@@ -44,7 +44,11 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <ApolloProvider client={client}>
-          <ThemeProvider theme={Colors.theme}>
+          <ThemeProvider
+            theme={{
+              colors: Colors,
+            }}
+          >
             <Navigation colorScheme="light" />
             <StatusBar />
           </ThemeProvider>

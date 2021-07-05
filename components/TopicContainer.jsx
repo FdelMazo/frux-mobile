@@ -2,7 +2,7 @@ import * as React from "react";
 import { Div, Text } from "react-native-magnus";
 import { TopicImage } from "../constants/Constants";
 
-export default function Component({ name, showName, navigation, active }) {
+export default function Component({ name, showName, active }) {
   return (
     <Div alignItems="center" m="sm">
       <Div

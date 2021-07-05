@@ -19,7 +19,7 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Discover"
-      tabBarOptions={{ activeTintColor: Colors["light"].tint }}
+      tabBarOptions={{ activeTintColor: Colors.tint }}
     >
       <BottomTab.Screen
         name="Discover"

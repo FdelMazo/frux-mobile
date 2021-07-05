@@ -95,7 +95,6 @@ function Screen({ data, refetch, navigation }) {
                 <TopicContainer
                   active={topicsFilter.includes(item.node.name)}
                   key={item.node.name}
-                  navigation={navigation}
                   showName={true}
                   name={item.node.name}
                 />

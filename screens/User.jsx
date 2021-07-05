@@ -21,8 +21,8 @@ import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { googleMapsConfig } from "../constants/Config";
 import { UserIcons } from "../constants/Constants";
-import { toggler } from "../services/helpers";
 import { resetPassword } from "../services/auth";
+import { toggler } from "../services/helpers";
 
 function Screen({ data, navigation, mutateEntity, isViewer }) {
   const defaultName = data.user.username || data.user.email.split("@")[0];
@@ -83,12 +83,7 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
                 </Div>
                 <Div row my="md" flexWrap="wrap" justifyContent="center">
                   {myTopics.map((t) => (
-                    <TopicContainer
-                      navigation={navigation}
-                      showName={true}
-                      name={t}
-                      key={t}
-                    />
+                    <TopicContainer showName={true} name={t} key={t} />
                   ))}
                 </Div>
               </>
@@ -394,7 +389,6 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
             >
               <TopicContainer
                 active={myTopics.includes(item.node.name)}
-                navigation={navigation}
                 showName={true}
                 name={item.node.name}
               />
