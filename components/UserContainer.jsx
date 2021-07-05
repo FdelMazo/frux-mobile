@@ -1,27 +1,11 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Icon, Text } from "react-native-magnus";
 import { AppIcons } from "../constants/Constants";
 
-type Data = {
-  user: {
-    name: string;
-    dbId: number;
-    imagePath: string;
-  };
-};
-type Navigation = StackNavigationProp<any>;
-
-function Component({
-  data,
-  navigation,
-}: {
-  data: Data;
-  navigation: Navigation;
-}) {
+function Component({ data, navigation }) {
   const userPicture = data.user.imagePath || "seed";
 
   return (
@@ -52,12 +36,7 @@ function Component({
   );
 }
 
-type Props = {
-  navigation: Navigation;
-  dbId: number;
-};
-
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query UserContainer($dbId: Int!) {
       user(dbId: $dbId) {

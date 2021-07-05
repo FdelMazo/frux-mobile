@@ -1,9 +1,9 @@
+import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "@env";
 import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import React from "react";
-import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "@env";
 
 export const useAuth = () => {
   const [state, setState] = React.useState(async () => {
@@ -44,7 +44,7 @@ export const useGithubAuth = () => {
   return [response, promptAsync];
 };
 
-export async function registration(email: string, password: string) {
+export async function registration(email, password) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
   const currentUser = firebase.auth().currentUser;
   if (!currentUser) return;
@@ -55,7 +55,7 @@ export async function registration(email: string, password: string) {
   });
 }
 
-export async function signIn(email: string, password: string) {
+export async function signIn(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
 }
 
@@ -83,6 +83,6 @@ export async function signInWithGithub(response) {
   await firebase.auth().signInWithCredential(credential);
 }
 
-export async function resetPassword(email: string) {
+export async function resetPassword(email) {
   await firebase.auth().sendPasswordResetEmail(email);
 }

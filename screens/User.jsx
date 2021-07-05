@@ -1,9 +1,8 @@
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as Location from "expo-location";
-import googleMapsConfig from "../config/googlemaps";
 import gql from "graphql-tag";
 import * as React from "react";
-import { MutationFunction, useMutation, useQuery } from "react-apollo";
+import { useMutation, useQuery } from "react-apollo";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
   Div,
@@ -11,62 +10,21 @@ import {
   Icon,
   Input,
   Overlay,
-  Text,
   Tag,
+  Text,
 } from "react-native-magnus";
 import MapView, { Marker } from "react-native-maps";
-import { resetPassword } from "../auth";
 import Header from "../components/Header";
-import { MainView, ScrollView, View } from "../components/Themed";
-import { toggler, UserIcons } from "../constants/Constants";
-import TopicContainer from "../components/TopicContainer";
-import ProjectContainer from "../components/ProjectContainer";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Loading from "../components/Loading";
+import ProjectContainer from "../components/ProjectContainer";
+import { MainView, ScrollView, View } from "../components/Themed";
+import TopicContainer from "../components/TopicContainer";
+import { googleMapsConfig } from "../constants/Config";
+import { UserIcons } from "../constants/Constants";
+import { toggler } from "../constants/Helpers";
+import { resetPassword } from "../services/auth";
 
-type Data = {
-  user: {
-    name: string;
-    email: string;
-    imagePath: string;
-    latitude: string;
-    longitude: string;
-    projectInvestments: {
-      edges: {
-        node: {
-          projectId: number;
-        };
-      }[];
-    };
-    favoritedProjects: {
-      edges: {
-        node: {
-          projectId: number;
-        };
-      }[];
-    };
-    createdProjects: {
-      edges: {
-        node: {
-          dbId: number;
-        };
-      }[];
-    };
-  };
-};
-type Navigation = StackNavigationProp<any>;
-
-function Screen({
-  data,
-  navigation,
-  mutateEntity,
-  isViewer,
-}: {
-  data: Data;
-  navigation: Navigation;
-  mutateEntity: MutationFunction<any>;
-  isViewer: boolean;
-}) {
+function Screen({ data, navigation, mutateEntity, isViewer }) {
   const defaultName = data.user.username || data.user.email.split("@")[0];
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
@@ -82,11 +40,11 @@ function Screen({
     await Location.setGoogleApiKey(googleMapsConfig.GOOGLE_APIKEY);
     await Location.requestForegroundPermissionsAsync();
     const userLocation = await Location.getCurrentPositionAsync();
-    // @ts-expect-error
+
     setLocation(userLocation.coords);
   };
 
-  const [myTopics, setMyTopics] = React.useState<string[]>(
+  const [myTopics, setMyTopics] = React.useState(
     data.user.interests.edges.map((n) => n.name) || []
   );
 
@@ -104,7 +62,6 @@ function Screen({
         onPress={
           isViewer
             ? () => {
-                // @ts-expect-error
                 dropdownRef.current.open();
               }
             : undefined
@@ -237,7 +194,6 @@ function Screen({
       </ScrollView>
 
       <Dropdown
-        // @ts-expect-error
         ref={dropdownRef}
         title={
           <Div alignSelf="center">
@@ -311,7 +267,6 @@ function Screen({
         showSwipeIndicator={true}
         roundedTop="xl"
       >
-        {/*@ts-expect-error*/}
         <Dropdown.Option justifyContent="space-evenly">
           {UserIcons.map((item) => (
             <Button
@@ -351,7 +306,6 @@ function Screen({
           }}
           style={{ height: 400 }}
           showsUserLocation={true}
-          // @ts-expect-error
           onLongPress={(e) => setLocation(e.nativeEvent.coordinate)}
         >
           {location.latitude && (
@@ -477,12 +431,6 @@ function Screen({
     </View>
   );
 }
-
-type Props = {
-  navigation: Navigation;
-  dbId?: number;
-  route?: { params: { dbId: number } };
-};
 
 export default function Render(props: Props) {
   const query = gql`

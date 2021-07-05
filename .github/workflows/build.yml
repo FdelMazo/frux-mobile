@@ -16,7 +16,7 @@ jobs:
         with:
           expo-version: 4.4.3
           token: ${{ secrets.EXPO_TOKEN }}
-      - run: yarn install
+      - run: npm install
       - run: expo build:android -t apk
         env:
           FIREBASE_APIKEY: ${{secrets.FIREBASE_APIKEY}}

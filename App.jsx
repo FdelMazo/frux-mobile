@@ -1,19 +1,17 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import firebase from "firebase/app";
-import { AppRegistry } from "react-native";
-import { ThemeProvider } from "react-native-magnus";
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { ApolloProvider } from "react-apollo";
 import { GRAPHQL_ENDPOINT } from "@env";
-
+import { StatusBar } from "expo-status-bar";
+import firebase from "firebase/app";
+import React from "react";
+import { ApolloProvider } from "react-apollo";
+import { AppRegistry } from "react-native";
+import { ThemeProvider } from "react-native-magnus";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { firebaseConfig } from "./constants/Config";
 import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
-import firebaseConfig from "./config/firebase";
-import { useAuth } from "./auth";
+import { useAuth } from "./services/auth";
 
 const theme = {
   colors: {
@@ -47,7 +45,6 @@ export default function App() {
     cache: new InMemoryCache(),
   });
 
-  const colorScheme = useColorScheme();
   if (!isLoadingComplete) {
     return null;
   } else {
@@ -55,7 +52,7 @@ export default function App() {
       <SafeAreaProvider>
         <ApolloProvider client={client}>
           <ThemeProvider theme={theme}>
-            <Navigation colorScheme={colorScheme} />
+            <Navigation colorScheme="light" />
             <StatusBar />
           </ThemeProvider>
         </ApolloProvider>

@@ -1,30 +1,11 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 import { States } from "../constants/Constants";
 
-type Data = {
-  project: {
-    currentState: string;
-    name: string;
-    categoryName: string;
-    amountCollected: number;
-    goal: number;
-    dbId: number;
-  };
-};
-type Navigation = StackNavigationProp<any>;
-
-function Component({
-  data,
-  navigation,
-}: {
-  data: Data;
-  navigation: Navigation;
-}) {
+function Component({ data, navigation }) {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -76,12 +57,7 @@ function Component({
   );
 }
 
-type Props = {
-  navigation: Navigation;
-  dbId: number;
-};
-
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query ProjectContainer($dbId: Int!) {
       project(dbId: $dbId) {

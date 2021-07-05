@@ -1,23 +1,7 @@
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Button, Collapse, Div, Drawer, Icon, Text } from "react-native-magnus";
 
-type Data = {
-  notifications: {
-    title: string;
-    timestamp: string;
-    body: string;
-  }[];
-};
-type Navigation = StackNavigationProp<any>;
-
-function Component({
-  data,
-  navigation,
-}: {
-  data: Data;
-  navigation: Navigation;
-}) {
+function Component({ data, navigation }) {
   const notificationsRef = React.createRef();
 
   return (
@@ -27,7 +11,6 @@ function Component({
           bg={undefined}
           onPress={() => {
             if (notificationsRef.current) {
-              // @ts-expect-error
               notificationsRef.current.open();
             }
           }}
@@ -41,7 +24,6 @@ function Component({
         </Button>
       </Div>
 
-      {/* @ts-expect-error */}
       <Drawer direction="right" ref={notificationsRef}>
         <Div my="xl" mx="lg" row justifyContent="space-between">
           <Text
@@ -103,11 +85,7 @@ function Component({
   );
 }
 
-type Props = {
-  navigation: Navigation;
-};
-
-export default function Render(props: Props) {
+export default function Render(props) {
   const data = {
     notifications: [
       {

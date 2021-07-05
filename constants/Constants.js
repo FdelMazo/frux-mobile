@@ -1,11 +1,4 @@
-import { ImageSourcePropType } from "react-native";
-
-type IconType = { name: string; fontFamily: any };
-
-interface AppIconType {
-  [key: string]: IconType;
-}
-export const AppIcons: AppIconType = {
+export const AppIcons = {
   projects: { name: "trees", fontFamily: "Foundation" },
   discover: { name: "seedling", fontFamily: "FontAwesome5" },
   "seed-outline": {
@@ -21,7 +14,7 @@ export const AppIcons: AppIconType = {
   },
 };
 
-export const UserIcons: IconType[] = [
+export const UserIcons = [
   { name: "seed-outline", fontFamily: "MaterialCommunityIcons" },
   { name: "seedling", fontFamily: "FontAwesome5" },
   { name: "tree", fontFamily: "Entypo" },
@@ -35,10 +28,7 @@ export const States = {
   COMPLETE: { name: "Complete", color: "green" },
 };
 
-interface ImgType {
-  [key: string]: ImageSourcePropType;
-}
-export const TopicImage: ImgType = {
+export const TopicImage = {
   Tech: require(`../assets/images/topics/tech.png`),
   Art: require(`../assets/images/topics/art.png`),
   Books: require(`../assets/images/topics/books.png`),
@@ -47,14 +37,4 @@ export const TopicImage: ImgType = {
   Games: require(`../assets/images/topics/games.png`),
   Music: require(`../assets/images/topics/music.png`),
   Other: require(`../assets/images/topics/other.png`),
-};
-
-export const toggler = (arr, setArr, item) => {
-  let newArr = [];
-  if (arr.includes(item)) {
-    newArr = arr.filter((i) => i !== item);
-  } else {
-    newArr = [...arr, item];
-  }
-  setArr(newArr);
 };

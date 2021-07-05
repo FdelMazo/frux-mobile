@@ -1,8 +1,7 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { StackNavigationProp } from "@react-navigation/stack";
 import gql from "graphql-tag";
 import * as React from "react";
-import { MutationFunction, useMutation, useQuery } from "react-apollo";
+import { useMutation, useQuery } from "react-apollo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
@@ -10,44 +9,17 @@ import {
   Dropdown,
   Fab,
   Icon,
-  Text,
-  Overlay,
   Input,
+  Overlay,
+  Text,
 } from "react-native-magnus";
+import Loading from "../components/Loading";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, ScrollView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import { States } from "../constants/Constants";
-import Loading from "../components/Loading";
 
-type Data = {
-  project: {
-    dbId: number;
-    userId: number;
-    name: string;
-    currentState: string;
-    description: string;
-    hashtags: string[];
-    amountCollected: number;
-    goal: number;
-  };
-  profile: {
-    dbId: number;
-  };
-};
-type Navigation = StackNavigationProp<any>;
-
-function Screen({
-  data,
-  navigation,
-  mutations,
-  created,
-}: {
-  data: Data;
-  navigation: Navigation;
-  mutations: Record<string, MutationFunction<any>>;
-  created: boolean;
-}) {
+function Screen({ data, navigation, mutations, created }) {
   const [dataOverlay, setDataOverlay] = React.useState(false);
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
@@ -125,10 +97,7 @@ function Screen({
             </Div>
           </Div>
           <Div row w="90%" mt="xl" justifyContent="space-between">
-            <TouchableOpacity
-              // @ts-expect-error
-              onPress={() => dropdownRef.current.open()}
-            >
+            <TouchableOpacity onPress={() => dropdownRef.current.open()}>
               <Div>
                 <Text fontSize="lg">
                   <Text fontSize="lg" fontWeight="bold">
@@ -177,7 +146,6 @@ function Screen({
       </ScrollView>
 
       <Dropdown
-        // @ts-expect-error
         ref={dropdownRef}
         title={
           <Div alignSelf="center" mb="sm">
@@ -189,7 +157,6 @@ function Screen({
         showSwipeIndicator={true}
         roundedTop="xl"
       >
-        {/* @ts-expect-error */}
         <Dropdown.Option py="lg" px="xl">
           <Text fontSize="xl" fontWeight="bold">
             Stage 1:{" "}
@@ -387,12 +354,7 @@ function Screen({
   );
 }
 
-type Props = {
-  navigation: Navigation;
-  route: { params: { dbId: number } };
-};
-
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query Project($dbId: Int!) {
       project(dbId: $dbId) {

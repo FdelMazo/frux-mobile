@@ -1,19 +1,8 @@
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Div, Text } from "react-native-magnus";
 import { TopicImage } from "../constants/Constants";
 
-export default function Component({
-  name,
-  showName,
-  navigation,
-  active,
-}: {
-  name: string;
-  showName: boolean;
-  navigation?: StackNavigationProp<any>;
-  active?: boolean;
-}) {
+export default function Component({ name, showName, navigation, active }) {
   return (
     <Div alignItems="center" m="sm">
       <Div

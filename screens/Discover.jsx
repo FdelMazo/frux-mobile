@@ -1,35 +1,17 @@
 import { gql } from "@apollo/client";
-import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { useLazyQuery } from "@apollo/react-hooks";
 import * as React from "react";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { Div, Icon, Input, Button, Tag, Text } from "react-native-magnus";
+import { Button, Div, Icon, Input, Tag, Text } from "react-native-magnus";
 import Header from "../components/Header";
+import Loading from "../components/Loading";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, ScrollView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
-import { States, toggler } from "../constants/Constants";
-import Loading from "../components/Loading";
+import { States } from "../constants/Constants";
+import { toggler } from "../constants/Helpers";
 
-type Data = {
-  allProjects: {
-    edges: { node: { dbId: number } }[];
-  };
-  allCategories: {
-    edges: { node: { name: string } }[];
-  };
-};
-
-type Navigation = StackNavigationProp<any>;
-
-function Screen({
-  data,
-  refetch,
-  navigation,
-}: {
-  data: Data;
-  navigation: Navigation;
-}) {
+function Screen({ data, refetch, navigation }) {
   const [searchText, setSearchText] = React.useState("");
   const [searchLocation, setSearchLocation] = React.useState(false);
   const [progressFilters, setProgressFilters] = React.useState([]);
@@ -170,11 +152,7 @@ function Screen({
   );
 }
 
-type Props = {
-  navigation: Navigation;
-};
-
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query Discover($filters: ProjectFilter) {
       allCategories {

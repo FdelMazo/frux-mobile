@@ -1,33 +1,22 @@
-import { StackNavigationProp } from "@react-navigation/stack";
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/react-hooks";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
   Div,
   Icon,
-  Input,
   Image,
-  Text,
+  Input,
   Overlay,
+  Text,
 } from "react-native-magnus";
-import { loggingOut, useAuth } from "../auth";
-import Notifications from "./Notifications";
 import { AppIcons } from "../constants/Constants";
-import { gql } from "@apollo/client";
-import { useMutation } from "@apollo/react-hooks";
-import { MutationFunction } from "@apollo/react-common";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { loggingOut, useAuth } from "../services/auth";
+import Notifications from "./Notifications";
 
-type Props = {
-  icon: string;
-  title: string;
-  onPress?: any;
-  mutations?: Record<string, MutationFunction<any>>;
-  data?: any;
-  navigation: StackNavigationProp<any>;
-};
-
-function Component(props: Props) {
+function Component(props) {
   const { icon, title, onPress, mutations, navigation, data } = props;
   const [createProjectOverlay, setCreateProjectOverlay] = React.useState(false);
   const [newProjectName, setNewProjectName] = React.useState("");
@@ -42,7 +31,6 @@ function Component(props: Props) {
       });
   }, [data?.mutateProject?.dbId]);
 
-  // @ts-expect-error
   const { user } = useAuth();
 
   return (
@@ -208,7 +196,7 @@ function Component(props: Props) {
   );
 }
 
-export default function Render(props: Props) {
+export default function Render(props) {
   const createProjectMutation = gql`
     mutation createProjectMutation(
       $description: String!

@@ -1,27 +1,12 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/react-hooks";
-import { StackNavigationProp } from "@react-navigation/stack";
 import * as React from "react";
 import { Div } from "react-native-magnus";
-import TopicContainer from "./TopicContainer";
+import { useAuth } from "../services/auth";
 import Notifications from "./Notifications";
-import { useAuth } from "../auth";
+import TopicContainer from "./TopicContainer";
 
-type Data = {
-  project: {
-    categoryName: string;
-  };
-};
-type Navigation = StackNavigationProp<any>;
-
-function Component({
-  data,
-  navigation,
-}: {
-  data: Data;
-  navigation: Navigation;
-}) {
-  // @ts-expect-error
+function Component({ data, navigation }) {
   const { user } = useAuth();
 
   return (
@@ -37,11 +22,6 @@ function Component({
     </Div>
   );
 }
-
-type Props = {
-  navigation: Navigation;
-  dbId: number;
-};
 
 export default function Render(props: Props) {
   const query = gql`

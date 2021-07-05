@@ -1,17 +1,22 @@
 import {
   FIREBASE_APIKEY,
+  FIREBASE_APPID,
   FIREBASE_AUTHDOMAIN,
+  FIREBASE_MESSAGINGSENDERID,
   FIREBASE_PROJECTID,
   FIREBASE_STORAGEBUCKET,
-  FIREBASE_MESSAGINGSENDERID,
-  FIREBASE_APPID,
+  GOOGLE_APIKEY,
 } from "@env";
 
-export default {
+export const firebaseConfig = {
   apiKey: FIREBASE_APIKEY,
   authDomain: FIREBASE_AUTHDOMAIN,
   projectId: FIREBASE_PROJECTID,
   storageBucket: FIREBASE_STORAGEBUCKET,
   messagingSenderId: FIREBASE_MESSAGINGSENDERID,
   appId: FIREBASE_APPID,
+};
+
+export const googleMapsConfig = {
+  apiKey: GOOGLE_APIKEY,
 };

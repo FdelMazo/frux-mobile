@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Linking, TouchableOpacity } from "react-native";
-import { Button, Div, Icon, Input, Text, Image } from "react-native-magnus";
+import { Div, Image, Text } from "react-native-magnus";
 
 const Component = () => {
   const [wakeup, setWakeup] = React.useState(false);

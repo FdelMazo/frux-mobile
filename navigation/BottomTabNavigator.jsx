@@ -7,23 +7,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { Icon } from "react-native-magnus";
-
 import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
-import Profile from "../screens/Profile";
 import Discover from "../screens/Discover";
+import Profile from "../screens/Profile";
 import Project from "../screens/Project";
 import User from "../screens/User";
 
-const BottomTab = createBottomTabNavigator<any>();
+const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="Discover"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+      tabBarOptions={{ activeTintColor: Colors["light"].tint }}
     >
       <BottomTab.Screen
         name="Discover"
@@ -45,7 +41,7 @@ export default function BottomTabNavigator() {
   );
 }
 
-const DiscoverStack = createStackNavigator<any>();
+const DiscoverStack = createStackNavigator();
 
 function DiscoverNavigator() {
   return (
@@ -69,7 +65,7 @@ function DiscoverNavigator() {
   );
 }
 
-const ProfileStack = createStackNavigator<any>();
+const ProfileStack = createStackNavigator();
 
 function ProfileNavigator() {
   return (

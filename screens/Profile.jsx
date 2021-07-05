@@ -1,30 +1,21 @@
-import { StackNavigationProp } from "@react-navigation/stack";
+import { makeRedirectUri } from "expo-auth-session";
 import gql from "graphql-tag";
 import * as React from "react";
 import { useQuery } from "react-apollo";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
+import Header from "../components/Header";
+import Loading from "../components/Loading";
+import { MainView, ScrollView, View } from "../components/Themed";
 import {
   registration,
   resetPassword,
   signIn,
   signInWithGithub,
   useGithubAuth,
-} from "../auth";
-import Header from "../components/Header";
-import { MainView, ScrollView, View } from "../components/Themed";
-import Loading from "../components/Loading";
+} from "../services/auth";
 import User from "./User";
-import { makeRedirectUri } from "expo-auth-session";
 
-type Data = {
-  profile: {
-    dbId: number;
-  };
-};
-
-type Navigation = StackNavigationProp<any>;
-
-function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
+function Screen({ data, navigation }) {
   return data?.profile ? (
     <User dbId={data.profile.dbId} navigation={navigation} />
   ) : (
@@ -32,7 +23,7 @@ function Screen({ data, navigation }: { data: Data; navigation: Navigation }) {
   );
 }
 
-const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
+const WelcomeScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -40,7 +31,6 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
   const [response, promptAsync] = useGithubAuth();
 
   React.useEffect(() => {
-    // @ts-expect-error
     if (response?.type === "success") {
       signInWithGithub(response);
     }
@@ -124,7 +114,6 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
                 setErrors("");
                 setLoading(true);
                 try {
-                  // @ts-expect-error
                   await promptAsync({
                     useProxy: true,
                     redirectUri: makeRedirectUri({
@@ -176,11 +165,7 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
   );
 };
 
-type Props = {
-  dbId: number;
-  navigation: Navigation;
-};
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query Profile {
       profile {

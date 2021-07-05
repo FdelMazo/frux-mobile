@@ -1,12 +1,36 @@
 export default ({ config }) => {
   return {
-    ...config,
-    android: {
-      ...config.android,
-      config: {
-        googleMaps: {
-          apiKey: process.env.GOOGLE_APIKEY,
+    expo: {
+      name: "Frux",
+      slug: "frux-mobile",
+      version: "1.0.0",
+      orientation: "portrait",
+      icon: "./assets/images/favicon.png",
+      scheme: "frux",
+      userInterfaceStyle: "automatic",
+      splash: {
+        image: "./assets/images/splash.png",
+        resizeMode: "contain",
+        backgroundColor: "#ffffff",
+      },
+      updates: {
+        fallbackToCacheTimeout: 0,
+      },
+      assetBundlePatterns: ["**/*"],
+      android: {
+        adaptiveIcon: {
+          foregroundImage: "./assets/images/favicon.png",
+          backgroundColor: "#ffffff",
         },
+        package: "com.fdelmazo.fruxmobile",
+        config: {
+          googleMaps: {
+            apiKey: process.env.GOOGLE_APIKEY,
+          },
+        },
+      },
+      web: {
+        favicon: "./assets/images/favicon.png",
       },
     },
   };
