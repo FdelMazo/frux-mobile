@@ -8,4 +8,10 @@ export default {
     tabIconDefault: "#ccc",
     tabIconSelected: tintColorLight,
   },
+  theme: {
+    colors: {
+      fruxgreen: "#90B44B",
+      fruxbrown: "#896C39",
+    },
+  },
 };

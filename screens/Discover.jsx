@@ -9,7 +9,7 @@ import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
-import { toggler } from "../constants/Helpers";
+import { toggler } from "../services/helpers";
 
 function Screen({ data, refetch, navigation }) {
   const [searchText, setSearchText] = React.useState("");

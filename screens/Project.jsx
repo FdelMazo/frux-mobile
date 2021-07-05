@@ -1,4 +1,6 @@
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import gql from "graphql-tag";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {

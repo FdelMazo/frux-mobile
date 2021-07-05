@@ -21,7 +21,7 @@ import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { googleMapsConfig } from "../constants/Config";
 import { UserIcons } from "../constants/Constants";
-import { toggler } from "../constants/Helpers";
+import { toggler } from "../services/helpers";
 import { resetPassword } from "../services/auth";
 
 function Screen({ data, navigation, mutateEntity, isViewer }) {

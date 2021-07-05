@@ -8,17 +8,11 @@ import { ApolloProvider } from "react-apollo";
 import { AppRegistry } from "react-native";
 import { ThemeProvider } from "react-native-magnus";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Colors from "./constants/Colors";
 import { firebaseConfig } from "./constants/Config";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
 import { useAuth } from "./services/auth";
-
-const theme = {
-  colors: {
-    fruxgreen: "#90B44B",
-    fruxbrown: "#896C39",
-  },
-};
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -31,7 +25,6 @@ export default function App() {
     uri: GRAPHQL_ENDPOINT,
   });
   const authLink = setContext((_, { headers }) => {
-    // return the headers to the context so httpLink can read them
     return {
       headers: {
         ...headers,
@@ -51,7 +44,7 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <ApolloProvider client={client}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={Colors.theme}>
             <Navigation colorScheme="light" />
             <StatusBar />
           </ThemeProvider>
