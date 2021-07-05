@@ -1,10 +1,14 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { GRAPHQL_ENDPOINT } from "@env";
 import { StatusBar } from "expo-status-bar";
 import firebase from "firebase/app";
 import React from "react";
-import { ApolloProvider } from "react-apollo";
 import { AppRegistry } from "react-native";
 import { ThemeProvider } from "react-native-magnus";
 import { SafeAreaProvider } from "react-native-safe-area-context";

@@ -1,5 +1,4 @@
-import { gql } from "@apollo/client";
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";

@@ -1,7 +1,6 @@
+import { gql, useMutation, useQuery } from "@apollo/client";
 import * as Location from "expo-location";
-import gql from "graphql-tag";
 import * as React from "react";
-import { useMutation, useQuery } from "react-apollo";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,

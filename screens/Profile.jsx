@@ -1,7 +1,6 @@
+import { gql, useQuery } from "@apollo/client";
 import { makeRedirectUri } from "expo-auth-session";
-import gql from "graphql-tag";
 import * as React from "react";
-import { useQuery } from "react-apollo";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import Loading from "../components/Loading";

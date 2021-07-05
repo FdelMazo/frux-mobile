@@ -1,5 +1,4 @@
-import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/react-hooks";
+import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
 import { Div } from "react-native-magnus";
 import { useAuth } from "../services/auth";

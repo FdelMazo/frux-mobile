@@ -1,5 +1,4 @@
-import { gql } from "@apollo/client";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Icon, Input, Tag, Text } from "react-native-magnus";
@@ -167,14 +166,11 @@ export default function Render(props) {
     }
   `;
 
-  const [fetchData, { loading, error, data, refetch }] = useLazyQuery(query, {
+  const { loading, error, data, refetch } = useQuery(query, {
     variables: {
       filters: {},
     },
   });
-  React.useEffect(() => {
-    fetchData();
-  }, []);
   if (error) alert(JSON.stringify(error));
   if (loading || !data) return <Loading />;
   return <Screen data={data} refetch={refetch} navigation={props.navigation} />;
