@@ -7,13 +7,14 @@ import {
   registration,
   resetPassword,
   signIn,
-  signInWithGoogle,
-  useGoogleAuth,
+  signInWithGithub,
+  useGithubAuth,
 } from "../auth";
 import Header from "../components/Header";
 import { MainView, ScrollView, View } from "../components/Themed";
 import Loading from "../components/Loading";
 import User from "./User";
+import { makeRedirectUri } from "expo-auth-session";
 
 type Data = {
   profile: {
@@ -36,12 +37,12 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState("");
-  const [response, googleSignIn] = useGoogleAuth();
+  const [response, promptAsync] = useGithubAuth();
 
   React.useEffect(() => {
     // @ts-expect-error
     if (response?.type === "success") {
-      signInWithGoogle(response);
+      signInWithGithub(response);
     }
   }, [response]);
 
@@ -124,7 +125,12 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
                 setLoading(true);
                 try {
                   // @ts-expect-error
-                  await googleSignIn();
+                  await promptAsync({
+                    useProxy: true,
+                    redirectUri: makeRedirectUri({
+                      useProxy: true,
+                    }),
+                  });
                 } catch (err) {
                   setErrors(err.message);
                 }
@@ -139,12 +145,12 @@ const WelcomeScreen = ({ navigation }: { navigation: Navigation }) => {
                 <Icon
                   right={8}
                   position="absolute"
-                  name="google"
+                  name="github"
                   fontFamily="AntDesign"
                 />
               }
             >
-              Sign In with Google
+              Sign In with Github
             </Button>
 
             <Button
