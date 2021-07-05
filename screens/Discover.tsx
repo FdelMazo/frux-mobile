@@ -9,6 +9,7 @@ import ProjectContainer from "../components/ProjectContainer";
 import { MainView, ScrollView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { States, toggler } from "../constants/Constants";
+import Loading from "../components/Loading";
 
 type Data = {
   allProjects: {
@@ -202,6 +203,6 @@ export default function Render(props: Props) {
     fetchData();
   }, []);
   if (error) alert(JSON.stringify(error));
-  if (loading || !data) return null;
+  if (loading || !data) return <Loading />;
   return <Screen data={data} refetch={refetch} navigation={props.navigation} />;
 }
