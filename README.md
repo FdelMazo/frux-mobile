@@ -48,3 +48,5 @@ For development you'll need to have the Expo CLI installed in your system. You c
 After cloning this repository, install the dependencies with `npm install` and then you'll be free to start developing right away with `expo start`
 
 For some users actions you'll need a properly set up environment with the Firebase credentials. Just ask one of the original developers for their own `.env` file and copy it into the root directory of the project.
+
+Dev note: keep in mind, there are four places where you should add any new env variable: your own personal `.env` (of course), the `.env.example` file, the `.github/workflows/build.yml` file, and most importantly, the [gh actions secrets page of this repo](https://github.com/FdelMazo/frux-mobile/settings/secrets/actions)
