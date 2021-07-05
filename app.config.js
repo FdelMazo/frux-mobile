@@ -1,4 +1,4 @@
-export default ({ config }) => {
+export default () => {
   return {
     expo: {
       name: "Frux",
@@ -7,7 +7,6 @@ export default ({ config }) => {
       orientation: "portrait",
       icon: "./assets/images/favicon.png",
       scheme: "frux",
-      userInterfaceStyle: "automatic",
       splash: {
         image: "./assets/images/splash.png",
         resizeMode: "contain",

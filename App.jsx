@@ -49,7 +49,7 @@ export default function App() {
               colors: Colors,
             }}
           >
-            <Navigation colorScheme="light" />
+            <Navigation />
             <StatusBar />
           </ThemeProvider>
         </ApolloProvider>
