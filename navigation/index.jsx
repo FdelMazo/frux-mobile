@@ -9,7 +9,7 @@ import * as React from "react";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
-export default function Navigation({ colorScheme }) {
+export default function Navigation() {
   return (
     <NavigationContainer linking={LinkingConfiguration} theme={DefaultTheme}>
       <RootNavigator />

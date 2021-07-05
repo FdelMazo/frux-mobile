@@ -7,6 +7,7 @@ export default () => {
       orientation: "portrait",
       icon: "./assets/images/favicon.png",
       scheme: "frux",
+      userInterfaceStyle: "light",
       splash: {
         image: "./assets/images/splash.png",
         resizeMode: "contain",
@@ -17,6 +18,7 @@ export default () => {
       },
       assetBundlePatterns: ["**/*"],
       android: {
+        userInterfaceStyle: "light",
         adaptiveIcon: {
           foregroundImage: "./assets/images/favicon.png",
           backgroundColor: "#ffffff",
