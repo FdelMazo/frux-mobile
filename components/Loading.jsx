@@ -6,9 +6,13 @@ const Component = () => {
   const [wakeup, setWakeup] = React.useState(false);
 
   React.useEffect(() => {
+    let isMounted = true;
     setTimeout(() => {
-      setWakeup(true);
+      if (isMounted) setWakeup(true);
     }, 3000);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return wakeup ? (
