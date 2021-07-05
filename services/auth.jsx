@@ -36,7 +36,10 @@ export const useGithubAuth = () => {
     {
       clientId: GITHUB_CLIENT_ID,
       scopes: ["identity"],
-      redirectUri: makeRedirectUri({ useProxy: true }),
+      redirectUri: makeRedirectUri({
+        scheme: "frux",
+        path: "oauth",
+      }),
     },
     discovery
   );

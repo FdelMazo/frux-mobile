@@ -115,7 +115,8 @@ const WelcomeScreen = ({ navigation }) => {
                 await promptAsync({
                   useProxy: true,
                   redirectUri: makeRedirectUri({
-                    useProxy: true,
+                    scheme: "frux",
+                    path: "oauth",
                   }),
                 });
               } catch (err) {
