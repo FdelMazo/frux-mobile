@@ -1,7 +1,5 @@
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import gql from "graphql-tag";
 import * as React from "react";
-import { useMutation, useQuery } from "react-apollo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
@@ -15,7 +13,7 @@ import {
 } from "react-native-magnus";
 import Loading from "../components/Loading";
 import ProjectHeader from "../components/ProjectHeader";
-import { MainView, ScrollView, View } from "../components/Themed";
+import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import { States } from "../constants/Constants";
 
@@ -32,118 +30,112 @@ function Screen({ data, navigation, mutations, created }) {
   return (
     <View>
       <ProjectHeader dbId={data.project.dbId} navigation={navigation} />
+      <MainView>
+        <Div w="90%" mt="lg">
+          <Div row>
+            <UserContainer navigation={navigation} dbId={data.project.userId} />
 
-      <ScrollView>
-        <MainView>
-          <Div w="90%" mt="lg">
-            <Div row>
-              <UserContainer
-                navigation={navigation}
-                dbId={data.project.userId}
-              />
-
-              <TouchableOpacity
-                activeOpacity={created ? 0.2 : 1}
-                onPress={
-                  created
-                    ? () => {
-                        setDataOverlay(true);
-                      }
-                    : undefined
-                }
-              >
-                <Div flex={1} ml="lg">
-                  <Div row justifyContent="flex-start">
-                    <Text
-                      fontSize="4xl"
-                      fontFamily="latinmodernroman-bold"
-                      fontWeight="bold"
-                    >
-                      {data.project.name}
-                    </Text>
-
-                    <Div
-                      alignSelf="flex-start"
-                      bg={States[data.project.currentState].color + "500"}
-                      rounded="md"
-                      px="xs"
-                    >
-                      <Text color="white" fontSize="xs">
-                        {data.project.currentState}
-                      </Text>
-                    </Div>
-                  </Div>
+            <TouchableOpacity
+              activeOpacity={created ? 0.2 : 1}
+              onPress={
+                created
+                  ? () => {
+                      setDataOverlay(true);
+                    }
+                  : undefined
+              }
+            >
+              <Div flex={1} ml="lg">
+                <Div row justifyContent="flex-start">
                   <Text
-                    lineHeight={20}
-                    fontSize="xl"
+                    fontSize="4xl"
                     fontFamily="latinmodernroman-bold"
-                    color="gray600"
+                    fontWeight="bold"
                   >
-                    {data.project.description}
+                    {data.project.name}
                   </Text>
-                  {data.project.hashtags?.map((h) => (
-                    <Text
-                      key={h}
-                      fontSize="md"
-                      fontFamily="latinmodernroman-bold"
-                      color="blue600"
-                    >
-                      {" #"}
-                      {h}
+
+                  <Div
+                    alignSelf="flex-start"
+                    bg={States[data.project.currentState].color + "500"}
+                    rounded="md"
+                    px="xs"
+                  >
+                    <Text color="white" fontSize="xs">
+                      {data.project.currentState}
                     </Text>
-                  ))}
+                  </Div>
                 </Div>
-              </TouchableOpacity>
-            </Div>
-          </Div>
-          <Div row w="90%" mt="xl" justifyContent="space-between">
-            <TouchableOpacity onPress={() => dropdownRef.current.open()}>
-              <Div>
-                <Text fontSize="lg">
-                  <Text fontSize="lg" fontWeight="bold">
-                    Stage 3:{" "}
-                  </Text>
-                  Detective Comics #33
+                <Text
+                  lineHeight={20}
+                  fontSize="xl"
+                  fontFamily="latinmodernroman-bold"
+                  color="gray600"
+                >
+                  {data.project.description}
                 </Text>
-                <MultiSlider
-                  trackStyle={{ backgroundColor: "#bdc3c7" }}
-                  selectedStyle={{ backgroundColor: "#90B44B" }}
-                  touchDimensions={{
-                    height: 0,
-                    width: 0,
-                    borderRadius: 0,
-                    slipDisplacement: 0,
-                  }}
-                  markerStyle={{
-                    borderRadius: 0,
-                    width: 7,
-                    backgroundColor: "#90B44B",
-                  }}
-                  values={[
-                    (data.project.amountCollected / data.project.goal) * 10,
-                  ]}
-                  sliderLength={150}
-                />
+                {data.project.hashtags?.map((h) => (
+                  <Text
+                    key={h}
+                    fontSize="md"
+                    fontFamily="latinmodernroman-bold"
+                    color="blue600"
+                  >
+                    {" #"}
+                    {h}
+                  </Text>
+                ))}
               </Div>
             </TouchableOpacity>
-            <Div>
-              <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
-                {"$"}
-                {data.project.amountCollected}
-              </Text>
-              <Text
-                mx="md"
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                Out of ${data.project.goal}
-              </Text>
-            </Div>
           </Div>
-        </MainView>
-      </ScrollView>
+        </Div>
+        <Div row w="90%" mt="xl" justifyContent="space-between">
+          <TouchableOpacity onPress={() => dropdownRef.current.open()}>
+            <Div>
+              <Text fontSize="lg">
+                <Text fontSize="lg" fontWeight="bold">
+                  Stage 3:{" "}
+                </Text>
+                Detective Comics #33
+              </Text>
+              <MultiSlider
+                trackStyle={{ backgroundColor: "#bdc3c7" }}
+                selectedStyle={{ backgroundColor: "#90B44B" }}
+                touchDimensions={{
+                  height: 0,
+                  width: 0,
+                  borderRadius: 0,
+                  slipDisplacement: 0,
+                }}
+                markerStyle={{
+                  borderRadius: 0,
+                  width: 7,
+                  backgroundColor: "#90B44B",
+                }}
+                values={[
+                  (data.project.amountCollected / data.project.goal) * 10,
+                ]}
+                sliderLength={150}
+              />
+            </Div>
+          </TouchableOpacity>
+          <Div>
+            <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
+              {"$"}
+              {data.project.amountCollected}
+            </Text>
+            <Text
+              mx="md"
+              lineHeight={20}
+              fontSize="xl"
+              fontFamily="latinmodernroman-bold"
+              color="gray600"
+            >
+              Out of ${data.project.goal}
+            </Text>
+          </Div>
+        </Div>
+      </MainView>
 
       <Dropdown
         ref={dropdownRef}

@@ -17,7 +17,7 @@ import MapView, { Marker } from "react-native-maps";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import ProjectContainer from "../components/ProjectContainer";
-import { MainView, ScrollView, View } from "../components/Themed";
+import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { googleMapsConfig } from "../constants/Config";
 import { UserIcons } from "../constants/Constants";
@@ -71,127 +71,125 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
         icon={data.user.imagePath || "seed"}
       />
 
-      <ScrollView>
-        <MainView>
-          <Div w="90%" mt="xl">
-            {myTopics.length ? (
-              <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
-                <>
-                  <Div alignSelf="flex-start">
-                    <Text fontSize="xl" fontWeight="bold">
-                      {isViewer ? "My Topics" : "Favourite Topics"}
-                    </Text>
-                  </Div>
-                  <Div row my="md" flexWrap="wrap" justifyContent="center">
-                    {myTopics.map((t) => (
-                      <TopicContainer
-                        navigation={navigation}
-                        showName={true}
-                        name={t}
-                        key={t}
-                      />
-                    ))}
-                  </Div>
-                </>
-              </TouchableOpacity>
-            ) : (
+      <MainView>
+        <Div w="90%" mt="xl">
+          {myTopics.length ? (
+            <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
               <>
-                {isViewer && (
-                  <Div row alignItems="center">
-                    <TopicContainer active showName={false} name="Other" />
-                    <Button
-                      bg="white"
-                      fontWeight="bold"
-                      color="fruxgreen"
-                      alignSelf="center"
-                      onPress={() => {
-                        setMyTopicsOverlay(true);
-                      }}
-                    >
-                      Choose Your Favourite Topics
-                    </Button>
-                  </Div>
-                )}
+                <Div alignSelf="flex-start">
+                  <Text fontSize="xl" fontWeight="bold">
+                    {isViewer ? "My Topics" : "Favourite Topics"}
+                  </Text>
+                </Div>
+                <Div row my="md" flexWrap="wrap" justifyContent="center">
+                  {myTopics.map((t) => (
+                    <TopicContainer
+                      navigation={navigation}
+                      showName={true}
+                      name={t}
+                      key={t}
+                    />
+                  ))}
+                </Div>
               </>
+            </TouchableOpacity>
+          ) : (
+            <>
+              {isViewer && (
+                <Div row alignItems="center">
+                  <TopicContainer active showName={false} name="Other" />
+                  <Button
+                    bg="white"
+                    fontWeight="bold"
+                    color="fruxgreen"
+                    alignSelf="center"
+                    onPress={() => {
+                      setMyTopicsOverlay(true);
+                    }}
+                  >
+                    Choose Your Favourite Topics
+                  </Button>
+                </Div>
+              )}
+            </>
+          )}
+        </Div>
+
+        <Div w="90%" mt="xl">
+          <Div row>
+            {data.user.projectInvestments.edges.length !== 0 && (
+              <TouchableOpacity
+                onPress={() => setProjectsShown(data.user.projectInvestments)}
+              >
+                <Tag
+                  fontSize="sm"
+                  rounded="circle"
+                  mx="sm"
+                  bg={
+                    projectsShown === data.user.projectInvestments
+                      ? "blue400"
+                      : "blue200"
+                  }
+                >
+                  Seeding
+                </Tag>
+              </TouchableOpacity>
+            )}
+
+            {data.user.favoritedProjects.edges.length !== 0 && (
+              <TouchableOpacity
+                onPress={() => setProjectsShown(data.user.favoritedProjects)}
+              >
+                <Tag
+                  mx="sm"
+                  rounded="circle"
+                  fontSize="sm"
+                  bg={
+                    projectsShown === data.user.favoritedProjects
+                      ? "blue400"
+                      : "blue200"
+                  }
+                >
+                  Favourites
+                </Tag>
+              </TouchableOpacity>
+            )}
+
+            {data.user.createdProjects.edges.length !== 0 && (
+              <TouchableOpacity
+                onPress={() => setProjectsShown(data.user.createdProjects)}
+              >
+                <Tag
+                  fontSize="sm"
+                  rounded="circle"
+                  mx="sm"
+                  bg={
+                    projectsShown === data.user.createdProjects
+                      ? "blue400"
+                      : "blue200"
+                  }
+                >
+                  Created
+                </Tag>
+              </TouchableOpacity>
             )}
           </Div>
 
-          <Div w="90%" mt="xl">
-            <Div row>
-              {data.user.projectInvestments.edges.length !== 0 && (
-                <TouchableOpacity
-                  onPress={() => setProjectsShown(data.user.projectInvestments)}
-                >
-                  <Tag
-                    fontSize="sm"
-                    rounded="circle"
-                    mx="sm"
-                    bg={
-                      projectsShown === data.user.projectInvestments
-                        ? "blue400"
-                        : "blue200"
-                    }
-                  >
-                    Seeding
-                  </Tag>
-                </TouchableOpacity>
+          <Div mt="sm">
+            <FlatList
+              horizontal
+              keyExtractor={(item) => item.node.id}
+              data={projectsShown.edges}
+              renderItem={({ item }) => (
+                <ProjectContainer
+                  navigation={navigation}
+                  dbId={item.node.projectId || item.node.dbId}
+                />
               )}
-
-              {data.user.favoritedProjects.edges.length !== 0 && (
-                <TouchableOpacity
-                  onPress={() => setProjectsShown(data.user.favoritedProjects)}
-                >
-                  <Tag
-                    mx="sm"
-                    rounded="circle"
-                    fontSize="sm"
-                    bg={
-                      projectsShown === data.user.favoritedProjects
-                        ? "blue400"
-                        : "blue200"
-                    }
-                  >
-                    Favourites
-                  </Tag>
-                </TouchableOpacity>
-              )}
-
-              {data.user.createdProjects.edges.length !== 0 && (
-                <TouchableOpacity
-                  onPress={() => setProjectsShown(data.user.createdProjects)}
-                >
-                  <Tag
-                    fontSize="sm"
-                    rounded="circle"
-                    mx="sm"
-                    bg={
-                      projectsShown === data.user.createdProjects
-                        ? "blue400"
-                        : "blue200"
-                    }
-                  >
-                    Created
-                  </Tag>
-                </TouchableOpacity>
-              )}
-            </Div>
-
-            <Div mt="sm">
-              <FlatList
-                horizontal
-                keyExtractor={(item) => item.node.id}
-                data={projectsShown.edges}
-                renderItem={({ item }) => (
-                  <ProjectContainer
-                    navigation={navigation}
-                    dbId={item.node.projectId || item.node.dbId}
-                  />
-                )}
-              />
-            </Div>
+            />
           </Div>
-        </MainView>
-      </ScrollView>
+        </Div>
+      </MainView>
 
       <Dropdown
         ref={dropdownRef}
@@ -432,7 +430,7 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
   );
 }
 
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query User($dbId: Int!) {
       user(dbId: $dbId) {

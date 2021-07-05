@@ -23,7 +23,7 @@ function Component({ data, navigation }) {
   );
 }
 
-export default function Render(props: Props) {
+export default function Render(props) {
   const query = gql`
     query ProjectHeader($dbId: Int!) {
       project(dbId: $dbId) {
