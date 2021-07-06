@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
+import Colors from "../constants/Colors";
 
 function Component(props) {
   const { mutations, navigation, data } = props;
@@ -59,10 +60,9 @@ function Component(props) {
               {newProjectGoal}
             </Text>
             <MultiSlider
-              trackStyle={{ backgroundColor: "#bdc3c7" }}
-              selectedStyle={{ backgroundColor: "#90B44B" }}
+              selectedStyle={{ backgroundColor: Colors.fruxgreen }}
               markerStyle={{
-                backgroundColor: "#90B44B",
+                backgroundColor: Colors.fruxgreen,
               }}
               values={[newProjectGoal]}
               sliderLength={200}

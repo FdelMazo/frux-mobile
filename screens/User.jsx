@@ -1,5 +1,4 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import * as Location from "expo-location";
 import * as React from "react";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -12,19 +11,19 @@ import {
   Tag,
   Text,
 } from "react-native-magnus";
-import MapView, { Marker } from "react-native-maps";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
+import LocationOverlay from "../components/LocationOverlay";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
-import { googleMapsConfig } from "../constants/Config";
 import { UserIcons } from "../constants/Constants";
-import { resetPassword } from "../services/user";
 import { toggler } from "../services/helpers";
+import { resetPassword } from "../services/user";
 
-function Screen({ data, navigation, mutateEntity, isViewer }) {
+function Screen({ data, navigation, mutateEntity }) {
   const defaultName = data.user.username || data.user.email.split("@")[0];
+  const isViewer = data.profile.dbId === data.user.dbId;
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
@@ -33,27 +32,26 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
     latitude: data.user.latitude,
     longitude: data.user.longitude,
   });
-  const [locationLoading, setLocationLoading] = React.useState(false);
   const [locationOverlay, setLocationOverlay] = React.useState(false);
-  const useCurrentLocation = async () => {
-    await Location.setGoogleApiKey(googleMapsConfig.GOOGLE_APIKEY);
-    await Location.requestForegroundPermissionsAsync();
-    const userLocation = await Location.getCurrentPositionAsync();
-
-    setLocation(userLocation.coords);
-  };
+  React.useEffect(() => {
+    mutateEntity({
+      variables: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+    });
+  }, [location]);
 
   const [myTopics, setMyTopics] = React.useState(
     data.user.interests.edges.map((n) => n.name) || []
   );
+  const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
 
   const [projectsShown, setProjectsShown] = React.useState(
     data.user.projectInvestments ||
       data.user.favoritedProjects ||
       data.user.createdProjects
   );
-
-  const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
 
   return (
     <View>
@@ -288,91 +286,12 @@ function Screen({ data, navigation, mutateEntity, isViewer }) {
         </Dropdown.Option>
       </Dropdown>
 
-      <Overlay visible={locationOverlay}>
-        <MapView
-          initialRegion={{
-            latitude: parseFloat(location.latitude) || -34.5723074,
-            longitude: parseFloat(location.longitude) || -58.4346815,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.015,
-          }}
-          style={{ height: 400 }}
-          showsUserLocation={true}
-          onLongPress={(e) => setLocation(e.nativeEvent.coordinate)}
-        >
-          {location.latitude && (
-            <Marker
-              coordinate={{
-                latitude: parseFloat(location.latitude),
-                longitude: parseFloat(location.longitude),
-              }}
-            />
-          )}
-        </MapView>
-
-        <Div my="md" row justifyContent="space-between">
-          <Div alignSelf="center">
-            <Button
-              py={0}
-              px={0}
-              bg={undefined}
-              color="gray800"
-              fontSize="md"
-              disabled={locationLoading}
-              onPress={async () => {
-                setLocationLoading(true);
-                await useCurrentLocation();
-                setLocationLoading(false);
-              }}
-              prefix={
-                <Icon
-                  name={locationLoading ? "spinner" : "location-outline"}
-                  fontFamily={locationLoading ? "EvilIcons" : "Ionicons"}
-                  fontSize="xl"
-                  color="gray800"
-                />
-              }
-            >
-              Use My Location
-            </Button>
-          </Div>
-
-          <Div row>
-            <Button
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg={undefined}
-              borderWidth={1}
-              borderColor="fruxgreen"
-              color="fruxgreen"
-              onPress={() => {
-                setLocationOverlay(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onPress={() => {
-                mutateEntity({
-                  variables: {
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                  },
-                });
-                setLocationOverlay(false);
-              }}
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg="fruxgreen"
-              color="white"
-            >
-              Save
-            </Button>
-          </Div>
-        </Div>
-      </Overlay>
+      <LocationOverlay
+        location={location}
+        setLocation={setLocation}
+        visible={locationOverlay}
+        setVisible={setLocationOverlay}
+      />
 
       <Overlay visible={myTopicsOverlay}>
         <Div justifyContent="center" row flexWrap="wrap">
@@ -521,7 +440,6 @@ export default function Render(props) {
       data={data}
       navigation={props.navigation}
       mutateEntity={mutateEntity}
-      isViewer={data.profile.dbId === data.user.dbId}
     />
   );
 }

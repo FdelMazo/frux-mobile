@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Loading from "../components/Loading";
 import { MainView, View } from "../components/Themed";
 import { signInWithGithub, useGithubAuth } from "../services/oauth";
-import { registration, resetPassword, signIn } from "../services/user";
+import { registration, resetPassword, signIn, useUser } from "../services/user";
 import User from "./User";
 
 function Screen({ data, navigation }) {
@@ -62,8 +62,8 @@ const WelcomeScreen = ({ navigation }) => {
                 await signIn(email, password);
               } catch (err) {
                 setErrors(err.message);
+                setLoading(false);
               }
-              setLoading(false);
             }}
             bg="fruxgreen"
             color="white"
@@ -83,8 +83,8 @@ const WelcomeScreen = ({ navigation }) => {
                 await registration(email, password);
               } catch (err) {
                 setErrors(err.message);
+                setLoading(false);
               }
-              setLoading(false);
             }}
             borderColor="fruxgreen"
             color="fruxgreen"
@@ -107,8 +107,8 @@ const WelcomeScreen = ({ navigation }) => {
                 await redirectToGithub();
               } catch (err) {
                 setErrors(err.message);
+                setLoading(false);
               }
-              setLoading(false);
             }}
             borderColor="fruxgreen"
             color="fruxgreen"
@@ -158,9 +158,9 @@ export default function Render(props) {
     }
   `;
 
-  const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.dbId },
-  });
+  const { loading, error, data } = useQuery(query);
+  const { token } = useUser();
+  if (token && error) alert(JSON.stringify(error));
   if (loading) return <Loading />;
   return <Screen data={data} navigation={props.navigation} />;
 }

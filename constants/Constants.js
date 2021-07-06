@@ -38,3 +38,8 @@ export const TopicImage = {
   Music: require(`../assets/images/topics/music.png`),
   Other: require(`../assets/images/topics/other.png`),
 };
+
+export const DefaultLocation = {
+  longitude: -58.4346815,
+  latitude: -34.5723074,
+};

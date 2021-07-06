@@ -2,21 +2,28 @@ import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Icon, Input, Tag } from "react-native-magnus";
+import LocationOverlay from "../components/LocationOverlay";
 import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 
 function Component({ setFilters, data }) {
   const [searchText, setSearchText] = React.useState("");
-  const [searchLocation, setSearchLocation] = React.useState(false);
   const [progressFilters, setProgressFilters] = React.useState([]);
   const [topicsFilter, setTopicsFilter] = React.useState([]);
+
+  const [radius, setRadius] = React.useState(10000);
+  const [location, setLocation] = React.useState({
+    latitude: undefined,
+    longitude: undefined,
+  });
+  const [locationOverlay, setLocationOverlay] = React.useState(false);
 
   React.useEffect(() => {
     topicsFilter.length
       ? setFilters({ categoryNameIn: topicsFilter })
       : setFilters({});
-  }, [searchText, searchLocation, progressFilters, topicsFilter]);
+  }, [searchText, location, progressFilters, topicsFilter]);
 
   return (
     <Div mt="xl" alignItems="center">
@@ -28,11 +35,11 @@ function Component({ setFilters, data }) {
           onChangeText={setSearchText}
           suffix={<Icon name="search" color="gray900" fontFamily="Feather" />}
         />
-        <TouchableOpacity onPress={() => setSearchLocation(!searchLocation)}>
+        <TouchableOpacity onPress={() => setLocationOverlay(true)}>
           <Icon
             m="sm"
             fontSize="3xl"
-            name={searchLocation ? "location-sharp" : "location-outline"}
+            name={!!location.latitude ? "location-sharp" : "location-outline"}
             color="gray900"
             fontFamily="Ionicons"
           />
@@ -79,6 +86,16 @@ function Component({ setFilters, data }) {
           </Button>
         ))}
       </Div>
+
+      <LocationOverlay
+        location={location}
+        setLocation={setLocation}
+        visible={locationOverlay}
+        setVisible={setLocationOverlay}
+        radius={radius}
+        setRadius={setRadius}
+        canRemove={true}
+      />
     </Div>
   );
 }

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, gql } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -16,6 +16,7 @@ import Loading from "../components/Loading";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
+import Colors from "../constants/Colors";
 import { States } from "../constants/Constants";
 
 function Screen({ data, navigation, mutations, created }) {
@@ -100,8 +101,7 @@ function Screen({ data, navigation, mutations, created }) {
                 Detective Comics #33
               </Text>
               <MultiSlider
-                trackStyle={{ backgroundColor: "#bdc3c7" }}
-                selectedStyle={{ backgroundColor: "#90B44B" }}
+                selectedStyle={{ backgroundColor: Colors.fruxgreen }}
                 touchDimensions={{
                   height: 0,
                   width: 0,
@@ -111,7 +111,7 @@ function Screen({ data, navigation, mutations, created }) {
                 markerStyle={{
                   borderRadius: 0,
                   width: 7,
-                  backgroundColor: "#90B44B",
+                  backgroundColor: Colors.fruxgreen,
                 }}
                 values={[
                   (data.project.amountCollected / data.project.goal) * 10,
@@ -210,13 +210,12 @@ function Screen({ data, navigation, mutations, created }) {
         </Text>
         <Div alignSelf="center">
           <MultiSlider
-            trackStyle={{ backgroundColor: "#bdc3c7" }}
-            selectedStyle={{ backgroundColor: "#90B44B" }}
+            selectedStyle={{ backgroundColor: Colors.fruxgreen }}
             enabledOne={false}
             markerStyle={{
               borderRadius: 0,
               width: 7,
-              backgroundColor: "#90B44B",
+              backgroundColor: Colors.fruxgreen,
             }}
             values={[
               Math.floor(
