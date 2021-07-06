@@ -5,7 +5,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import React from "react";
 
-export const useAuth = () => {
+export const useUser = () => {
   const [state, setState] = React.useState(async () => {
     const user = firebase.auth().currentUser;
     const token = await user?.getIdToken();
@@ -25,28 +25,6 @@ export const useAuth = () => {
   return state;
 };
 
-export const useGithubAuth = () => {
-  const discovery = {
-    authorizationEndpoint: "https://github.com/login/oauth/authorize",
-    tokenEndpoint: "https://github.com/login/oauth/access_token",
-    revocationEndpoint: `https://github.com/settings/connections/applications/${GITHUB_CLIENT_ID}`,
-  };
-
-  const [request, response, promptAsync] = useAuthRequest(
-    {
-      clientId: GITHUB_CLIENT_ID,
-      scopes: ["identity"],
-      redirectUri: makeRedirectUri({
-        scheme: "frux",
-        path: "oauth",
-      }),
-    },
-    discovery
-  );
-
-  return [response, promptAsync];
-};
-
 export async function registration(email, password) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
   const currentUser = firebase.auth().currentUser;
@@ -64,26 +42,6 @@ export async function signIn(email, password) {
 
 export async function loggingOut() {
   await firebase.auth().signOut();
-}
-
-export async function signInWithGithub(response) {
-  const { code } = response.params;
-  const token = await fetch("https://github.com/login/oauth/access_token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      client_id: GITHUB_CLIENT_ID,
-      client_secret: GITHUB_CLIENT_SECRET,
-      code,
-    }),
-  })
-    .then((res) => res.text())
-    .then((data) => data.split("&")[0].split("=")[1]);
-
-  const credential = firebase.auth.GithubAuthProvider.credential(token);
-  await firebase.auth().signInWithCredential(credential);
 }
 
 export async function resetPassword(email) {

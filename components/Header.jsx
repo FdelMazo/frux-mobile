@@ -2,14 +2,14 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { AppIcons } from "../constants/Constants";
-import { loggingOut, useAuth } from "../services/auth";
+import { loggingOut, useUser } from "../services/user";
 import CreateProjectButton from "./CreateProjectButton";
 import Notifications from "./Notifications";
 
 export default function Component(props) {
   const { icon, title, onPress, navigation } = props;
 
-  const { user } = useAuth();
+  const { user } = useUser();
 
   return (
     <Div

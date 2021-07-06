@@ -1,17 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { makeRedirectUri } from "expo-auth-session";
 import * as React from "react";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import { MainView, View } from "../components/Themed";
-import {
-  registration,
-  resetPassword,
-  signIn,
-  signInWithGithub,
-  useGithubAuth,
-} from "../services/auth";
+import { signInWithGithub, useGithubAuth } from "../services/oauth";
+import { registration, resetPassword, signIn } from "../services/user";
 import User from "./User";
 
 function Screen({ data, navigation }) {
@@ -27,13 +21,11 @@ const WelcomeScreen = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState("");
-  const [response, promptAsync] = useGithubAuth();
+  const [githubResponse, redirectToGithub] = useGithubAuth();
 
   React.useEffect(() => {
-    if (response?.type === "success") {
-      signInWithGithub(response);
-    }
-  }, [response]);
+    signInWithGithub(githubResponse);
+  }, [githubResponse]);
 
   return (
     <View>
@@ -112,13 +104,7 @@ const WelcomeScreen = ({ navigation }) => {
               setErrors("");
               setLoading(true);
               try {
-                await promptAsync({
-                  useProxy: true,
-                  redirectUri: makeRedirectUri({
-                    scheme: "frux",
-                    path: "oauth",
-                  }),
-                });
+                await redirectToGithub();
               } catch (err) {
                 setErrors(err.message);
               }

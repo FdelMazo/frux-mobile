@@ -20,7 +20,7 @@ import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import { googleMapsConfig } from "../constants/Config";
 import { UserIcons } from "../constants/Constants";
-import { resetPassword } from "../services/auth";
+import { resetPassword } from "../services/user";
 import { toggler } from "../services/helpers";
 
 function Screen({ data, navigation, mutateEntity, isViewer }) {

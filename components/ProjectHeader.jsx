@@ -1,12 +1,12 @@
 import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
 import { Div } from "react-native-magnus";
-import { useAuth } from "../services/auth";
+import { useUser } from "../services/user";
 import Notifications from "./Notifications";
 import TopicContainer from "./TopicContainer";
 
 function Component({ data, navigation }) {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   return (
     <Div bgImg={require("../assets/images/nopicture.jpg")} h={200}>

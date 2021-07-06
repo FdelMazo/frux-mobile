@@ -16,7 +16,7 @@ import Colors from "./constants/Colors";
 import { firebaseConfig } from "./constants/Config";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
-import { useAuth } from "./services/auth";
+import { useUser } from "./services/user";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -24,7 +24,7 @@ export default function App() {
     firebase.initializeApp(firebaseConfig);
   }
 
-  const { token } = useAuth();
+  const { token } = useUser();
   const httpLink = createHttpLink({
     uri: GRAPHQL_ENDPOINT,
   });
