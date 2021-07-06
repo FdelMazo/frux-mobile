@@ -211,14 +211,14 @@ function Screen({ data, navigation, mutateEntity }) {
               onChangeText={setName}
               suffix={
                 <>
-                  {name !== defaultName && (
+                  {name !== defaultName && name !== "" && (
                     <Button
                       bg={undefined}
                       p={0}
                       onPress={() => {
                         mutateEntity({
                           variables: {
-                            name,
+                            username: name,
                           },
                         });
                       }}
