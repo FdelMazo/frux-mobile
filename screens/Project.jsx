@@ -171,8 +171,8 @@ function Screen({ data, navigation, mutations }) {
             </Div>
           </Div>
         </Div>
-        {((created && !locationSet) || !!locationSet) && (
-          <Div row w="90%" justifyContent="space-between">
+        <Div row w="90%" justifyContent="space-between">
+          {((created && !locationSet) || !!locationSet) && (
             <TouchableOpacity
               activeOpacity={created && !locationSet ? 0.2 : 1}
               onPress={
@@ -208,8 +208,13 @@ function Screen({ data, navigation, mutations }) {
                 </Text>
               </Div>
             </TouchableOpacity>
+          )}
+          <Div row>
+            <Text py="sm" px={0} bg={undefined} color="violet" fontSize="xs">
+              01/01/1970 ~ 01/01/1990
+            </Text>
           </Div>
-        )}
+        </Div>
         <Div row w="90%" mt="xs" justifyContent="space-between">
           <TouchableOpacity onPress={() => dropdownRef.current.open()}>
             <Div>
