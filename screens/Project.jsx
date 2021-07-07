@@ -18,6 +18,7 @@ import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import Colors from "../constants/Colors";
 import { States } from "../constants/Constants";
+import { toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
 
 function Screen({ data, navigation, mutations }) {
@@ -25,6 +26,11 @@ function Screen({ data, navigation, mutations }) {
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
   const [name, setName] = React.useState(data.project.name);
+  const [hashtags, setHashtags] = React.useState(
+    data.project.hashtags.edges.map((n) => n.node.hashtag) || []
+  );
+  const [newHashtag, setNewHashtag] = React.useState("");
+  const [hashtagOverlay, setHashtagOverlay] = React.useState(false);
   const [description, setDescription] = React.useState(
     data.project.description
   );
@@ -33,6 +39,25 @@ function Screen({ data, navigation, mutations }) {
     data.project.latitude !== "0.0"
   );
   const [locationText, setLocationText] = React.useState("Include my location");
+
+  React.useEffect(() => {
+    let toAdd = newHashtag;
+    if (toAdd.includes(" ")) {
+      if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
+      toAdd = toAdd.trim();
+      toggler(hashtags, setHashtags, toAdd);
+      setNewHashtag("");
+    }
+  }, [newHashtag]);
+
+  React.useEffect(() => {
+    mutations.mutateEntity({
+      variables: {
+        idProject: data.project.dbId,
+        hashtags,
+      },
+    });
+  }, [hashtags]);
 
   React.useEffect(() => {
     async function _getAddress() {
@@ -60,17 +85,17 @@ function Screen({ data, navigation, mutations }) {
               dbId={data.project.owner.dbId}
             />
 
-            <TouchableOpacity
-              activeOpacity={created ? 0.2 : 1}
-              onPress={
-                created
-                  ? () => {
-                      setDataOverlay(true);
-                    }
-                  : undefined
-              }
-            >
-              <Div flex={1} ml="lg">
+            <Div flex={1} ml="lg">
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setDataOverlay(true);
+                      }
+                    : undefined
+                }
+              >
                 <Div row justifyContent="flex-start">
                   <Text
                     fontSize="4xl"
@@ -99,19 +124,47 @@ function Screen({ data, navigation, mutations }) {
                 >
                   {data.project.description}
                 </Text>
-                {data.project.hashtags?.map((h) => (
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setHashtagOverlay(true);
+                      }
+                    : undefined
+                }
+              >
+                {hashtags.length ? (
+                  <Div row flexWrap="wrap">
+                    {hashtags.map((h) => (
+                      <Text
+                        key={h}
+                        px={0}
+                        mx="xs"
+                        bg={undefined}
+                        color="fruxgreen"
+                        fontSize="sm"
+                      >
+                        {"# "}
+                        {h}
+                      </Text>
+                    ))}
+                  </Div>
+                ) : (
                   <Text
-                    key={h}
-                    fontSize="md"
-                    fontFamily="latinmodernroman-bold"
-                    color="blue600"
+                    px={0}
+                    bg={undefined}
+                    mx="sm"
+                    color="fruxgreen"
+                    fontSize="sm"
                   >
-                    {" #"}
-                    {h}
+                    ####
                   </Text>
-                ))}
-              </Div>
-            </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            </Div>
           </Div>
         </Div>
         {((created && !locationSet) || !!locationSet) && (
@@ -404,6 +457,60 @@ function Screen({ data, navigation, mutations }) {
           </Button>
         </Div>
       </Overlay>
+
+      <Overlay visible={hashtagOverlay}>
+        <Input
+          prefix={<Text color="fruxgreen">#</Text>}
+          value={newHashtag}
+          onChangeText={setNewHashtag}
+          onEndEditing={() => {
+            let toAdd = newHashtag;
+            if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
+            toAdd = toAdd.trim();
+            toggler(hashtags, setHashtags, toAdd);
+            setNewHashtag("");
+          }}
+          focusBorderColor="fruxgreen"
+          placeholder="hashtag"
+        />
+
+        <Div mt="sm" row flexWrap="wrap">
+          {hashtags.map((h) => (
+            <Button
+              key={h}
+              bg={undefined}
+              p={0}
+              m="xs"
+              onPress={() => {
+                toggler(hashtags, setHashtags, h);
+              }}
+            >
+              <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
+                <Text fontSize="xs">{`# ${h}`}</Text>
+              </Div>
+            </Button>
+          ))}
+        </Div>
+
+        <Div my="md" row justifyContent="space-between">
+          <Div alignSelf="center"></Div>
+
+          <Div row>
+            <Button
+              onPress={() => {
+                setHashtagOverlay(false);
+              }}
+              mx="sm"
+              fontSize="sm"
+              p="md"
+              bg="fruxgreen"
+              color="white"
+            >
+              Done
+            </Button>
+          </Div>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -427,6 +534,13 @@ export default function Render(props) {
         description
         amountCollected
         goal
+        hashtags {
+          edges {
+            node {
+              hashtag
+            }
+          }
+        }
       }
       profile {
         dbId
@@ -441,6 +555,7 @@ export default function Render(props) {
       $description: String
       $longitude: String
       $latitude: String
+      $hashtags: [String]
     ) {
       mutateUpdateProject(
         idProject: $idProject
@@ -448,12 +563,20 @@ export default function Render(props) {
         description: $description
         latitude: $latitude
         longitude: $longitude
+        hashtags: $hashtags
       ) {
         id
         name
         description
         latitude
         longitude
+        hashtags {
+          edges {
+            node {
+              hashtag
+            }
+          }
+        }
       }
     }
   `;
