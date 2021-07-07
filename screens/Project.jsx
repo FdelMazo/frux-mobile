@@ -8,6 +8,7 @@ import {
   Dropdown,
   Fab,
   Icon,
+  Image,
   Input,
   Overlay,
   Text,
@@ -215,6 +216,39 @@ function Screen({ data, navigation, mutations }) {
             </Text>
           </Div>
         </Div>
+        <Div row my="lg">
+          <Image
+            mx="xs"
+            w={35}
+            h={35}
+            source={require("../assets/images/star.png")}
+          />
+          <Image
+            mx="xs"
+            w={35}
+            h={35}
+            source={require("../assets/images/star.png")}
+          />
+          <Image
+            mx="xs"
+            w={35}
+            h={35}
+            source={require("../assets/images/half-star.png")}
+          />
+          <Image
+            mx="xs"
+            w={35}
+            h={35}
+            source={require("../assets/images/no-star.png")}
+          />
+          <Image
+            mx="xs"
+            w={35}
+            h={35}
+            source={require("../assets/images/no-star.png")}
+          />
+        </Div>
+
         <Div row w="90%" mt="xs" justifyContent="space-between">
           <TouchableOpacity onPress={() => dropdownRef.current.open()}>
             <Div>
