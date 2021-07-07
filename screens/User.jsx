@@ -48,9 +48,11 @@ function Screen({ data, navigation, mutateEntity }) {
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
 
   const [projectsShown, setProjectsShown] = React.useState(
-    data.user.projectInvestments ||
-      data.user.favoritedProjects ||
-      data.user.createdProjects
+    (!!data.user.projectInvestments.edges.length &&
+      data.user.projectInvestments) ||
+      (!!data.user.favoritedProjects.edges.length &&
+        data.user.favoritedProjects) ||
+      (!!data.user.createdProjects.edges.length && data.user.createdProjects)
   );
 
   return (
@@ -109,7 +111,7 @@ function Screen({ data, navigation, mutateEntity }) {
 
         <Div w="90%" mt="xl">
           <Div row>
-            {data.user.projectInvestments.edges.length !== 0 && (
+            {!!data.user.projectInvestments.edges.length && (
               <TouchableOpacity
                 onPress={() => setProjectsShown(data.user.projectInvestments)}
               >
@@ -128,7 +130,7 @@ function Screen({ data, navigation, mutateEntity }) {
               </TouchableOpacity>
             )}
 
-            {data.user.favoritedProjects.edges.length !== 0 && (
+            {!!data.user.favoritedProjects.edges.length && (
               <TouchableOpacity
                 onPress={() => setProjectsShown(data.user.favoritedProjects)}
               >
@@ -147,7 +149,7 @@ function Screen({ data, navigation, mutateEntity }) {
               </TouchableOpacity>
             )}
 
-            {data.user.createdProjects.edges.length !== 0 && (
+            {!!data.user.createdProjects.edges.length && (
               <TouchableOpacity
                 onPress={() => setProjectsShown(data.user.createdProjects)}
               >
