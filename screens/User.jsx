@@ -7,7 +7,6 @@ import {
   Dropdown,
   Icon,
   Input,
-  Overlay,
   Tag,
   Text,
 } from "react-native-magnus";
@@ -17,8 +16,8 @@ import LocationOverlay from "../components/LocationOverlay";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
+import TopicsOverlay from "../components/TopicsOverlay";
 import { UserIcons } from "../constants/Constants";
-import { toggler } from "../services/helpers";
 import { resetPassword } from "../services/user";
 
 function Screen({ data, navigation, mutateEntity }) {
@@ -46,6 +45,13 @@ function Screen({ data, navigation, mutateEntity }) {
     data.user.interests.edges.map((n) => n.name) || []
   );
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
+  React.useEffect(() => {
+    mutateEntity({
+      variables: {
+        interests: myTopics,
+      },
+    });
+  }, [myTopics]);
 
   const [projectsShown, setProjectsShown] = React.useState(
     (!!data.user.projectInvestments.edges.length &&
@@ -295,51 +301,13 @@ function Screen({ data, navigation, mutateEntity }) {
         setVisible={setLocationOverlay}
       />
 
-      <Overlay visible={myTopicsOverlay}>
-        <Div justifyContent="center" row flexWrap="wrap">
-          {data.allCategories.edges.map((item) => (
-            <Button
-              key={item.node.name}
-              bg={undefined}
-              p={0}
-              underlayColor="fruxgreen"
-              onPress={() => {
-                toggler(myTopics, setMyTopics, item.node.name);
-              }}
-            >
-              <TopicContainer
-                active={myTopics.includes(item.node.name)}
-                showName={true}
-                name={item.node.name}
-              />
-            </Button>
-          ))}
-        </Div>
-
-        <Div my="md" row justifyContent="space-between">
-          <Div alignSelf="center"></Div>
-
-          <Div row>
-            <Button
-              onPress={() => {
-                mutateEntity({
-                  variables: {
-                    interests: myTopics,
-                  },
-                });
-                setMyTopicsOverlay(false);
-              }}
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg="fruxgreen"
-              color="white"
-            >
-              Done
-            </Button>
-          </Div>
-        </Div>
-      </Overlay>
+      <TopicsOverlay
+        topics={myTopics}
+        setTopics={setMyTopics}
+        visible={myTopicsOverlay}
+        setVisible={setMyTopicsOverlay}
+        multiple={true}
+      />
     </View>
   );
 }
@@ -389,13 +357,6 @@ export default function Render(props) {
       }
       profile {
         dbId
-      }
-      allCategories {
-        edges {
-          node {
-            name
-          }
-        }
       }
     }
   `;

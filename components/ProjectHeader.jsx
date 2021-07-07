@@ -6,16 +6,30 @@ import { getImageUri, uploadImage } from "../services/media";
 import { useUser } from "../services/user";
 import Notifications from "./Notifications";
 import TopicContainer from "./TopicContainer";
+import TopicsOverlay from "./TopicsOverlay";
 
 function Component({ data, navigation, mutateEntity }) {
   const { user } = useUser();
   const [uriImage, setUriImage] = React.useState(null);
+  const [topic, setTopic] = React.useState(
+    data.project.categoryName || "Other"
+  );
+  const [topicOverlay, setTopicOverlay] = React.useState(false);
 
   React.useEffect(() => {
     getImageUri(data.project.uriImage || "nopicture.jpg").then((r) =>
       setUriImage(r)
     );
   }, []);
+
+  React.useEffect(() => {
+    mutateEntity({
+      variables: {
+        idProject: data.project.dbId,
+        category: topic,
+      },
+    });
+  }, [topic]);
 
   return (
     <Div bgImg={{ uri: uriImage }} h={200} justifyContent="center">
@@ -78,8 +92,22 @@ function Component({ data, navigation, mutateEntity }) {
 
       {user && <Notifications navigation={navigation} />}
       <Div position="absolute" right={0} bottom={0}>
-        <TopicContainer name={data.project.categoryName} showName={false} />
+        <TouchableOpacity
+          onPress={() => {
+            setTopicOverlay(true);
+          }}
+        >
+          <TopicContainer name={topic} showName={false} />
+        </TouchableOpacity>
       </Div>
+
+      <TopicsOverlay
+        topics={topic}
+        setTopics={setTopic}
+        visible={topicOverlay}
+        setVisible={setTopicOverlay}
+        multiple={false}
+      />
     </Div>
   );
 }
@@ -97,10 +125,19 @@ export default function Render(props) {
   `;
 
   const updateProject = gql`
-    mutation updateProject($uriImage: String, $idProject: Int!) {
-      mutateUpdateProject(uriImage: $uriImage, idProject: $idProject) {
+    mutation updateProject(
+      $uriImage: String
+      $idProject: Int!
+      $category: String
+    ) {
+      mutateUpdateProject(
+        uriImage: $uriImage
+        idProject: $idProject
+        category: $category
+      ) {
         id
         uriImage
+        categoryName
       }
     }
   `;
@@ -111,7 +148,6 @@ export default function Render(props) {
   });
   if (error) alert(JSON.stringify(error));
   if (loading) return null;
-  console.log(data);
   return (
     <Component
       data={data}
