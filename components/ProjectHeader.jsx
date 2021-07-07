@@ -15,6 +15,7 @@ function Component({ data, navigation, mutateEntity }) {
     data.project.categoryName || "Other"
   );
   const [topicOverlay, setTopicOverlay] = React.useState(false);
+  const created = user && data.project.owner.email === user.email;
 
   React.useEffect(() => {
     getImageUri(data.project.uriImage || "nopicture.jpg").then((r) =>
@@ -33,7 +34,7 @@ function Component({ data, navigation, mutateEntity }) {
 
   return (
     <Div bgImg={{ uri: uriImage }} h={200} justifyContent="center">
-      {!data.project.uriImage && (
+      {created && !data.project.uriImage && (
         <TouchableOpacity
           onPress={async () => {
             const id = await uploadImage();
@@ -61,7 +62,7 @@ function Component({ data, navigation, mutateEntity }) {
         </TouchableOpacity>
       )}
 
-      {!!data.project.uriImage && (
+      {created && !!data.project.uriImage && (
         <Div position="absolute" left={0} bottom={0} m="sm">
           <TouchableOpacity
             onPress={async () => {
@@ -93,9 +94,14 @@ function Component({ data, navigation, mutateEntity }) {
       {user && <Notifications navigation={navigation} />}
       <Div position="absolute" right={0} bottom={0}>
         <TouchableOpacity
-          onPress={() => {
-            setTopicOverlay(true);
-          }}
+          activeOpacity={created ? 0.2 : 1}
+          onPress={
+            created
+              ? () => {
+                  setTopicOverlay(true);
+                }
+              : undefined
+          }
         >
           <TopicContainer name={topic} showName={false} />
         </TouchableOpacity>
@@ -120,6 +126,9 @@ export default function Render(props) {
         id
         uriImage
         categoryName
+        owner {
+          email
+        }
       }
     }
   `;

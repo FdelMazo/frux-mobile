@@ -20,6 +20,7 @@ import Colors from "../constants/Colors";
 import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
+import { useUser } from "../services/user";
 
 function Screen({ data, navigation, mutations }) {
   const [dataOverlay, setDataOverlay] = React.useState(false);
@@ -34,11 +35,13 @@ function Screen({ data, navigation, mutations }) {
   const [description, setDescription] = React.useState(
     data.project.description
   );
-  const created = data.project.owner.dbId === data.profile.dbId;
   const [locationSet, setLocationSet] = React.useState(
     data.project.latitude !== "0.0"
   );
   const [locationText, setLocationText] = React.useState("Include my location");
+
+  const { user } = useUser();
+  const created = user && data.project.owner.email === user.email;
 
   React.useEffect(() => {
     let toAdd = newHashtag;
@@ -51,12 +54,13 @@ function Screen({ data, navigation, mutations }) {
   }, [newHashtag]);
 
   React.useEffect(() => {
-    mutations.mutateEntity({
-      variables: {
-        idProject: data.project.dbId,
-        hashtags: hashtags.map((h) => h.toLowerCase()),
-      },
-    });
+    if (created)
+      mutations.mutateEntity({
+        variables: {
+          idProject: data.project.dbId,
+          hashtags: hashtags.map((h) => h.toLowerCase()),
+        },
+      });
   }, [hashtags]);
 
   React.useEffect(() => {
@@ -170,9 +174,9 @@ function Screen({ data, navigation, mutations }) {
         {((created && !locationSet) || !!locationSet) && (
           <Div row w="90%" justifyContent="space-between">
             <TouchableOpacity
-              activeOpacity={created ? 0.2 : 1}
+              activeOpacity={created && !locationSet ? 0.2 : 1}
               onPress={
-                created
+                created && !locationSet
                   ? async () => {
                       mutations.mutateEntity({
                         variables: {
@@ -526,6 +530,7 @@ export default function Render(props) {
         latitude
         owner {
           dbId
+          email
           latitude
           longitude
         }
@@ -541,9 +546,6 @@ export default function Render(props) {
             }
           }
         }
-      }
-      profile {
-        dbId
       }
     }
   `;

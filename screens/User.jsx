@@ -18,11 +18,12 @@ import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import TopicsOverlay from "../components/TopicsOverlay";
 import { UserIcons } from "../constants/Constants";
-import { resetPassword } from "../services/user";
+import { resetPassword, useUser } from "../services/user";
 
 function Screen({ data, navigation, mutateEntity }) {
   const defaultName = data.user.username || data.user.email.split("@")[0];
-  const isViewer = data.profile.dbId === data.user.dbId;
+  const { user } = useUser();
+  const isViewer = user && data.user.email === user.email;
   const [name, setName] = React.useState(defaultName);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
@@ -355,9 +356,6 @@ export default function Render(props) {
             }
           }
         }
-      }
-      profile {
-        dbId
       }
     }
   `;
