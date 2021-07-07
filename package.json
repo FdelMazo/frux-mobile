@@ -52,7 +52,8 @@
     "react-native-screens": "~3.0.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.16.2",
-    "validate-color": "^2.1.1"
+    "validate-color": "^2.1.1",
+    "expo-image-picker": "~10.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

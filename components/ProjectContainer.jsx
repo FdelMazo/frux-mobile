@@ -3,8 +3,17 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 import { States } from "../constants/Constants";
+import { getImageUri } from "../services/media";
 
 function Component({ data, navigation }) {
+  const [uriImage, setUriImage] = React.useState(null);
+
+  React.useEffect(() => {
+    getImageUri(data.project.uriImage || "nopicture.jpg").then((r) =>
+      setUriImage(r)
+    );
+  }, []);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -12,12 +21,7 @@ function Component({ data, navigation }) {
       }}
     >
       <Div my="sm" mr="lg">
-        <Div
-          rounded="xl"
-          h={150}
-          w={250}
-          bgImg={require("../assets/images/nopicture.jpg")}
-        >
+        <Div rounded="xl" h={150} w={250} bgImg={{ uri: uriImage }}>
           <Div
             bg={States[data.project.currentState].color + "500"}
             rounded="md"
@@ -62,6 +66,7 @@ export default function Render(props) {
       project(dbId: $dbId) {
         dbId
         id
+        uriImage
         name
         currentState
         categoryName
