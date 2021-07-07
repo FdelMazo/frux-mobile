@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import { Clipboard } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
@@ -8,6 +9,7 @@ import {
   Icon,
   Input,
   Overlay,
+  Snackbar,
   Tag,
   Text,
 } from "react-native-magnus";
@@ -28,6 +30,9 @@ function Screen({ data, navigation, mutateEntity }) {
   const [username, setUsername] = React.useState(defaultUsername);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
+
+  const [walletOverlay, setWalletOverlay] = React.useState(false);
+  const snackbarRef = React.createRef();
 
   const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
   const [firstName, setFirstName] = React.useState(data.user.firstName);
@@ -85,7 +90,7 @@ function Screen({ data, navigation, mutateEntity }) {
       />
 
       <MainView>
-        <Div w="90%" mt="xl">
+        <Div row w="90%" mt="xl" justifyContent="space-between">
           <TouchableOpacity
             activeOpacity={isViewer ? 0.2 : 1}
             onPress={
@@ -130,6 +135,30 @@ function Screen({ data, navigation, mutateEntity }) {
               </Text>
             )}
           </TouchableOpacity>
+          {isViewer && (
+            <Div alignSelf="center">
+              <TouchableOpacity
+                activeOpacity={isViewer ? 0.2 : 1}
+                onPress={() => {
+                  setWalletOverlay(true);
+                }}
+              >
+                <Icon
+                  name="wallet"
+                  color="fruxgreen"
+                  fontFamily="AntDesign"
+                  h={40}
+                  w={40}
+                  borderColor="fruxgreen"
+                  borderWidth={1}
+                  rounded="sm"
+                  fontSize="xl"
+                  ml="xl"
+                  bg="white"
+                />
+              </TouchableOpacity>
+            </Div>
+          )}
         </Div>
 
         {isViewer && !firstName && !lastName && !description && (
@@ -432,6 +461,63 @@ function Screen({ data, navigation, mutateEntity }) {
           </Button>
         </Div>
       </Overlay>
+
+      <Overlay visible={walletOverlay} style={{ zIndex: 0 }}>
+        <Text fontSize="xl" fontWeight="bold">
+          ETH Wallet
+        </Text>
+        <Div my="md">
+          <Text>
+            This is your own personal ethereum wallet address, by adding funds
+            onto this address you'll be able to sponsor the different seeds
+            throught <Text color="fruxgreen">Frux</Text>
+          </Text>
+
+          <Button
+            bg={undefined}
+            p={0}
+            onPress={() => {
+              Clipboard.setString(data.user.walletAddress);
+              if (snackbarRef.current) {
+                snackbarRef.current.show(
+                  "Wallet address copied to clipboard!",
+                  {
+                    duration: 2000,
+                  }
+                );
+              }
+            }}
+          >
+            <Text fontFamily="monospace" m="md" color="#af6161">
+              {data.user.walletAddress}
+            </Text>
+          </Button>
+        </Div>
+
+        <Snackbar
+          ref={snackbarRef}
+          bg={undefined}
+          fontSize="xs"
+          color="fruxgreen"
+        />
+
+        <Div row alignSelf="flex-end">
+          <Button
+            onPress={() => {
+              setWalletOverlay(false);
+            }}
+            mx="sm"
+            p="md"
+            borderColor="fruxgreen"
+            borderWidth={1}
+            rounded="sm"
+            bg={undefined}
+            color="fruxgreen"
+          >
+            Done
+          </Button>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -445,6 +531,7 @@ export default function Render(props) {
         firstName
         lastName
         description
+        walletAddress
         username
         email
         imagePath
