@@ -1,7 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
+import DelayInput from "react-native-debounce-input";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, Div, Icon, Input, Tag } from "react-native-magnus";
+import { Button, Div, Icon, Tag } from "react-native-magnus";
 import LocationOverlay from "../components/LocationOverlay";
 import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
@@ -20,20 +21,42 @@ function Component({ setFilters, data }) {
   const [locationOverlay, setLocationOverlay] = React.useState(false);
 
   React.useEffect(() => {
-    topicsFilter.length
-      ? setFilters({ categoryNameIn: topicsFilter })
-      : setFilters({});
+    setFilters({
+      categoryNameIn: (topicsFilter.length && topicsFilter) || undefined,
+      currentStateIn: (progressFilters.length && progressFilters) || undefined,
+      or:
+        (searchText && [
+          { or: [{ nameIlike: "%" + searchText.replace(/ /g, "%") + "%" }] },
+          {
+            or: [
+              { descriptionIlike: "%" + searchText.replace(/ /g, "%") + "%" },
+            ],
+          },
+        ]) ||
+        undefined,
+    });
   }, [searchText, location, progressFilters, topicsFilter]);
+
+  React.useEffect(() => {
+    console.log(searchText);
+  }, [searchText]);
 
   return (
     <Div mt="xl" alignItems="center">
       <Div w="65%" row alignItems="center">
-        <Input
+        <DelayInput
           placeholder="Search"
-          focusBorderColor="blue700"
           value={searchText}
+          minLength={3}
           onChangeText={setSearchText}
-          suffix={<Icon name="search" color="gray900" fontFamily="Feather" />}
+          delayTimeout={500}
+          style={{
+            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: "gray",
+            borderRadius: 3,
+            width: "80%",
+          }}
         />
         <TouchableOpacity onPress={() => setLocationOverlay(true)}>
           <Icon
@@ -52,11 +75,11 @@ function Component({ setFilters, data }) {
           return (
             <TouchableOpacity
               key={name}
-              onPress={() => toggler(progressFilters, setProgressFilters, name)}
+              onPress={() => toggler(progressFilters, setProgressFilters, k)}
             >
               <Tag
                 mx="sm"
-                bg={progressFilters.includes(name) ? color + 300 : color + 100}
+                bg={progressFilters.includes(k) ? color + 300 : color + 100}
                 borderColor={color + 700}
                 borderWidth={1}
               >
