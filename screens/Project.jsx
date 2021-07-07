@@ -18,8 +18,9 @@ import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import Colors from "../constants/Colors";
 import { States } from "../constants/Constants";
+import { getAddressName } from "../services/location";
 
-function Screen({ data, navigation, mutations, created }) {
+function Screen({ data, navigation, mutations }) {
   const [dataOverlay, setDataOverlay] = React.useState(false);
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
@@ -27,6 +28,25 @@ function Screen({ data, navigation, mutations, created }) {
   const [description, setDescription] = React.useState(
     data.project.description
   );
+  const created = data.project.owner.dbId === data.profile.dbId;
+  const [locationSet, setLocationSet] = React.useState(
+    data.project.latitude !== "0.0"
+  );
+  const [locationText, setLocationText] = React.useState("Include my location");
+
+  React.useEffect(() => {
+    async function _getAddress() {
+      let text = "Include my location";
+      if (locationSet) {
+        text = await getAddressName({
+          latitude: parseFloat(data.project.latitude),
+          longitude: parseFloat(data.project.longitude),
+        });
+      }
+      setLocationText(text);
+    }
+    _getAddress();
+  }, [locationSet]);
 
   const dropdownRef = React.createRef();
   return (
@@ -35,7 +55,10 @@ function Screen({ data, navigation, mutations, created }) {
       <MainView>
         <Div w="90%" mt="lg">
           <Div row>
-            <UserContainer navigation={navigation} dbId={data.project.userId} />
+            <UserContainer
+              navigation={navigation}
+              dbId={data.project.owner.dbId}
+            />
 
             <TouchableOpacity
               activeOpacity={created ? 0.2 : 1}
@@ -91,7 +114,46 @@ function Screen({ data, navigation, mutations, created }) {
             </TouchableOpacity>
           </Div>
         </Div>
-        <Div row w="90%" mt="xl" justifyContent="space-between">
+        {((created && !locationSet) || !!locationSet) && (
+          <Div row w="90%" justifyContent="space-between">
+            <TouchableOpacity
+              activeOpacity={created ? 0.2 : 1}
+              onPress={
+                created
+                  ? async () => {
+                      mutations.mutateEntity({
+                        variables: {
+                          idProject: data.project.dbId,
+                          latitude: data.project.owner.latitude,
+                          longitude: data.project.owner.longitude,
+                        },
+                      });
+                      setLocationSet(true);
+                    }
+                  : undefined
+              }
+            >
+              <Div row>
+                <Icon
+                  name="location-outline"
+                  fontFamily="Ionicons"
+                  fontSize="xl"
+                  color="blue600"
+                />
+                <Text
+                  py="sm"
+                  px={0}
+                  bg={undefined}
+                  color="blue500"
+                  fontSize="sm"
+                >
+                  {locationText}
+                </Text>
+              </Div>
+            </TouchableOpacity>
+          </Div>
+        )}
+        <Div row w="90%" mt="xs" justifyContent="space-between">
           <TouchableOpacity onPress={() => dropdownRef.current.open()}>
             <Div>
               <Text fontSize="lg">
@@ -353,7 +415,13 @@ export default function Render(props) {
         id
         dbId
         name
-        userId
+        longitude
+        latitude
+        owner {
+          dbId
+          latitude
+          longitude
+        }
         name
         currentState
         description
@@ -371,15 +439,21 @@ export default function Render(props) {
       $idProject: Int!
       $name: String
       $description: String
+      $longitude: String
+      $latitude: String
     ) {
       mutateUpdateProject(
         idProject: $idProject
         name: $name
         description: $description
+        latitude: $latitude
+        longitude: $longitude
       ) {
         id
         name
         description
+        latitude
+        longitude
       }
     }
   `;
@@ -410,7 +484,6 @@ export default function Render(props) {
       data={data}
       navigation={props.navigation}
       mutations={{ invest, mutateEntity }}
-      created={data.project.userId === data.profile.dbId}
     />
   );
 }
