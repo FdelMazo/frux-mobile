@@ -54,7 +54,7 @@ function Screen({ data, navigation, mutations }) {
     mutations.mutateEntity({
       variables: {
         idProject: data.project.dbId,
-        hashtags,
+        hashtags: hashtags.map((h) => h.toLowerCase()),
       },
     });
   }, [hashtags]);

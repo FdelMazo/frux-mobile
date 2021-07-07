@@ -21,6 +21,18 @@ function Component({ setFilters, data }) {
   const [locationOverlay, setLocationOverlay] = React.useState(false);
 
   React.useEffect(() => {
+    let hashtags = [];
+    let nonHashtagWords = [];
+    searchText
+      .trim()
+      .split(" ")
+      .forEach((w) => {
+        w[0] === "#"
+          ? hashtags.push(w.substr(1).toLowerCase())
+          : nonHashtagWords.push(w);
+      });
+    const nameAndDescription = "%" + nonHashtagWords.join("%") + "%";
+
     setFilters({
       categoryNameIn: (topicsFilter.length && topicsFilter) || undefined,
       currentStateIn: (progressFilters.length && progressFilters) || undefined,
@@ -32,21 +44,16 @@ function Component({ setFilters, data }) {
         ]) ||
         undefined,
       or:
-        (searchText && [
-          { or: [{ nameIlike: "%" + searchText.replace(/ /g, "%") + "%" }] },
+        (nameAndDescription && [
+          { or: [{ nameIlike: nameAndDescription }] },
           {
-            or: [
-              { descriptionIlike: "%" + searchText.replace(/ /g, "%") + "%" },
-            ],
+            or: [{ descriptionIlike: nameAndDescription }],
           },
         ]) ||
         undefined,
+      hasHashtag: (hashtags.length && hashtags) || undefined,
     });
   }, [searchText, location, radius, progressFilters, topicsFilter]);
-
-  React.useEffect(() => {
-    console.log(searchText);
-  }, [searchText]);
 
   return (
     <Div mt="xl" alignItems="center">
