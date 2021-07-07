@@ -7,6 +7,7 @@ import {
   Dropdown,
   Icon,
   Input,
+  Overlay,
   Tag,
   Text,
 } from "react-native-magnus";
@@ -21,12 +22,17 @@ import { UserIcons } from "../constants/Constants";
 import { resetPassword, useUser } from "../services/user";
 
 function Screen({ data, navigation, mutateEntity }) {
-  const defaultName = data.user.username || data.user.email.split("@")[0];
+  const defaultUsername = data.user.username || data.user.email.split("@")[0];
   const { user } = useUser();
   const isViewer = user && data.user.email === user.email;
-  const [name, setName] = React.useState(defaultName);
+  const [username, setUsername] = React.useState(defaultUsername);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
+
+  const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
+  const [firstName, setFirstName] = React.useState(data.user.firstName);
+  const [lastName, setLastName] = React.useState(data.user.lastName);
+  const [description, setDescription] = React.useState(data.user.description);
 
   const [location, setLocation] = React.useState({
     latitude: data.user.latitude,
@@ -74,11 +80,75 @@ function Screen({ data, navigation, mutateEntity }) {
             : undefined
         }
         navigation={navigation}
-        title={defaultName}
+        title={defaultUsername}
         icon={data.user.imagePath || "seed"}
       />
 
       <MainView>
+        <Div w="90%" mt="xl">
+          <TouchableOpacity
+            activeOpacity={isViewer ? 0.2 : 1}
+            onPress={
+              isViewer
+                ? () => {
+                    setBasicDataOverlay(true);
+                  }
+                : undefined
+            }
+          >
+            <Div row justifyContent="flex-start">
+              {!!lastName && (
+                <Text
+                  fontSize="4xl"
+                  fontFamily="latinmodernroman-bold"
+                  fontWeight="bold"
+                  color="fruxgreen"
+                >
+                  {firstName ? lastName + ", " : lastName}
+                </Text>
+              )}
+
+              {!!firstName && (
+                <Text
+                  fontSize="4xl"
+                  fontFamily="latinmodernroman-bold"
+                  fontWeight="bold"
+                  color="fruxbrown"
+                >
+                  {firstName}
+                </Text>
+              )}
+            </Div>
+            {!!description && (
+              <Text
+                lineHeight={20}
+                fontSize="xl"
+                fontFamily="latinmodernroman-bold"
+                color="gray600"
+              >
+                {description}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </Div>
+
+        {isViewer && !firstName && !lastName && !description && (
+          <TouchableOpacity
+            onPress={() => {
+              setBasicDataOverlay(true);
+            }}
+          >
+            <Text
+              lineHeight={20}
+              fontSize="xl"
+              fontFamily="latinmodernroman-bold"
+              color="gray600"
+            >
+              Tell us your name!
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <Div w="90%" mt="xl">
           {myTopics.length ? (
             <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
@@ -88,7 +158,7 @@ function Screen({ data, navigation, mutateEntity }) {
                     {isViewer ? "My Topics" : "Favourite Topics"}
                   </Text>
                 </Div>
-                <Div row my="md" flexWrap="wrap" justifyContent="center">
+                <Div row my="md" flexWrap="wrap">
                   {myTopics.map((t) => (
                     <TopicContainer showName={true} name={t} key={t} />
                   ))}
@@ -217,18 +287,18 @@ function Screen({ data, navigation, mutateEntity }) {
               placeholder="Username"
               w="65%"
               focusBorderColor="blue700"
-              value={name}
-              onChangeText={setName}
+              value={username}
+              onChangeText={setUsername}
               suffix={
                 <>
-                  {name !== defaultName && name !== "" && (
+                  {username !== defaultUsername && username !== "" && (
                     <Button
                       bg={undefined}
                       p={0}
                       onPress={() => {
                         mutateEntity({
                           variables: {
-                            username: name,
+                            username,
                           },
                         });
                       }}
@@ -310,6 +380,58 @@ function Screen({ data, navigation, mutateEntity }) {
         setVisible={setMyTopicsOverlay}
         multiple={true}
       />
+
+      <Overlay visible={basicDataOverlay}>
+        <Text fontSize="xl" fontWeight="bold">
+          Hi, how are you?
+        </Text>
+        <Div>
+          <Div w="70%" row justifyContent="space-between">
+            <Input
+              w="45%"
+              mt="md"
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholder="First Name"
+            />
+            <Input
+              w="45%"
+              mt="md"
+              value={lastName}
+              onChangeText={setLastName}
+              placeholder="Last Name"
+            />
+          </Div>
+          <Input
+            w="70%"
+            mt="md"
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Description"
+          />
+        </Div>
+
+        <Div row alignSelf="flex-end">
+          <Button
+            onPress={() => {
+              mutateEntity({
+                variables: {
+                  firstName,
+                  lastName,
+                  description,
+                },
+              });
+              setBasicDataOverlay(false);
+            }}
+            mx="sm"
+            p="md"
+            bg="fruxgreen"
+            color="white"
+          >
+            Done
+          </Button>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -320,6 +442,9 @@ export default function Render(props) {
       user(dbId: $dbId) {
         dbId
         id
+        firstName
+        lastName
+        description
         username
         email
         imagePath
@@ -366,6 +491,9 @@ export default function Render(props) {
       $imagePath: String
       $latitude: String
       $longitude: String
+      $firstName: String
+      $lastName: String
+      $description: String
       $interests: [String]
     ) {
       mutateUpdateUser(
@@ -374,11 +502,17 @@ export default function Render(props) {
         latitude: $latitude
         longitude: $longitude
         interests: $interests
+        firstName: $firstName
+        lastName: $lastName
+        description: $description
       ) {
         id
         username
         imagePath
         latitude
+        firstName
+        lastName
+        description
         longitude
         interests {
           edges {
