@@ -45,7 +45,7 @@ const WelcomeScreen = ({ navigation }) => {
             secureTextEntry
           />
 
-          <Text my="md" color="red">
+          <Text my="md" color="fruxred">
             {errors}
           </Text>
           <Button

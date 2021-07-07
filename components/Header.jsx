@@ -25,7 +25,7 @@ export default function Component(props) {
             <Button bg={undefined} onPress={() => loggingOut()}>
               <Icon
                 name="sign-out"
-                color="red"
+                color="fruxred"
                 fontFamily="Octicons"
                 fontSize="2xl"
               />

@@ -26,6 +26,8 @@ import { useUser } from "../services/user";
 function Screen({ data, navigation, mutations }) {
   const [dataOverlay, setDataOverlay] = React.useState(false);
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
+  const [deleteOverlay, setDeleteOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
   const [name, setName] = React.useState(data.project.name);
   const [hashtags, setHashtags] = React.useState(
@@ -322,44 +324,79 @@ function Screen({ data, navigation, mutations }) {
       </Dropdown>
 
       <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
-        <Button
-          p={0}
-          bg={undefined}
-          underlayColor="gray"
-          alignSelf="flex-end"
-          onPress={() => setSponsorOverlay(true)}
-        >
-          <Div rounded="sm" bg="white" p="sm">
-            <Text fontSize="md">Seed</Text>
-          </Div>
-          <Icon
-            name="wallet"
-            color="fruxgreen"
-            fontFamily="AntDesign"
-            h={45}
-            w={45}
-            fontSize="xl"
-            rounded="circle"
-            ml="lg"
-            bg="white"
-          />
-        </Button>
-        <Button p={0} bg={undefined} underlayColor="gray" alignSelf="flex-end">
-          <Div rounded="sm" bg="white" p="sm">
-            <Text fontSize="md">Fav</Text>
-          </Div>
-          <Icon
-            name="hearto"
-            color="fruxgreen"
-            fontSize="xl"
-            fontFamily="AntDesign"
-            h={45}
-            w={45}
-            rounded="circle"
-            ml="lg"
-            bg="white"
-          />
-        </Button>
+        {created ? (
+          <Button
+            my="xs"
+            p={0}
+            bg={undefined}
+            underlayColor="gray"
+            alignSelf="flex-end"
+            onPress={() => setDeleteOverlay(true)}
+          >
+            <Div rounded="sm" bg="white" p="sm">
+              <Text fontSize="md">Delete</Text>
+            </Div>
+            <Icon
+              name="trash-outline"
+              color="fruxred"
+              fontFamily="Ionicons"
+              h={45}
+              w={45}
+              fontSize="2xl"
+              rounded="circle"
+              ml="lg"
+              bg="white"
+            />
+          </Button>
+        ) : (
+          <>
+            <Button
+              my="xs"
+              p={0}
+              bg={undefined}
+              underlayColor="gray"
+              alignSelf="flex-end"
+              onPress={() => setSponsorOverlay(true)}
+            >
+              <Div rounded="sm" bg="white" p="sm">
+                <Text fontSize="md">Seed</Text>
+              </Div>
+              <Icon
+                name="wallet"
+                color="fruxgreen"
+                fontFamily="AntDesign"
+                h={45}
+                w={45}
+                fontSize="xl"
+                rounded="circle"
+                ml="lg"
+                bg="white"
+              />
+            </Button>
+            <Button
+              my="xs"
+              p={0}
+              bg={undefined}
+              underlayColor="gray"
+              alignSelf="flex-end"
+            >
+              <Div rounded="sm" bg="white" p="sm">
+                <Text fontSize="md">Fav</Text>
+              </Div>
+              <Icon
+                name="hearto"
+                color="fruxgreen"
+                fontSize="xl"
+                fontFamily="AntDesign"
+                h={45}
+                w={45}
+                rounded="circle"
+                ml="lg"
+                bg="white"
+              />
+            </Button>
+          </>
+        )}
       </Fab>
 
       <Overlay visible={sponsorOverlay}>
@@ -450,6 +487,67 @@ function Screen({ data, navigation, mutations }) {
             color="white"
           >
             Seed
+          </Button>
+        </Div>
+      </Overlay>
+
+      <Overlay visible={deleteOverlay}>
+        <Text fontSize="xl" fontWeight="bold">
+          Are you sure?
+        </Text>
+        <Div my="sm">
+          <Text>
+            This action <Text fontWeight="bold">cannot</Text> be undone. By
+            deleting this project you are returning every seeder their funds,
+            and making it impossible for new users to seed it.
+          </Text>
+
+          <Text>
+            Please type <Text fontWeight="bold">{data.project.name}</Text> below
+            to continue.
+          </Text>
+          <Input
+            focusBorderColor="fruxred"
+            w="70%"
+            fontSize="xs"
+            my="md"
+            value={deleteConfirmation}
+            onChangeText={setDeleteConfirmation}
+          />
+        </Div>
+        <Div row alignSelf="flex-end">
+          <Button
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg={undefined}
+            borderWidth={1}
+            borderColor="gray500"
+            color="gray500"
+            onPress={() => {
+              setDeleteOverlay(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={
+              deleteConfirmation === name
+                ? () => {
+                    alert("Mock delete action");
+                    setDeleteOverlay(false);
+                  }
+                : undefined
+            }
+            mx="sm"
+            fontSize="sm"
+            p="md"
+            bg={deleteConfirmation === name ? "fruxred" : undefined}
+            borderColor={!(deleteConfirmation === name) ? "gray500" : undefined}
+            borderWidth={1}
+            color={deleteConfirmation === name ? "white" : "gray500"}
+          >
+            Delete
           </Button>
         </Div>
       </Overlay>

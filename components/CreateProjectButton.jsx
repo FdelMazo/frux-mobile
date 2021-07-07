@@ -111,7 +111,7 @@ function Component(props) {
           </Div>
         </Div>
         {projectError !== "" && (
-          <Text color="red" textAlign="right" m="md">
+          <Text color="fruxred" textAlign="right" m="md">
             {projectError}
           </Text>
         )}
