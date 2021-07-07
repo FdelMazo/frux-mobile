@@ -49,7 +49,18 @@ function Component({ data, navigation, mutateEntity }) {
 
       {!!data.project.uriImage && (
         <Div position="absolute" left={0} bottom={0} m="sm">
-          <TouchableOpacity onPress={() => alert("a")}>
+          <TouchableOpacity
+            onPress={async () => {
+              const id = await uploadImage();
+              setUriImage(await getImageUri(id));
+              mutateEntity({
+                variables: {
+                  idProject: data.project.dbId,
+                  uriImage: id,
+                },
+              });
+            }}
+          >
             <Icon
               h={30}
               w={30}
