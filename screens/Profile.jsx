@@ -1,11 +1,13 @@
 import { gql, useQuery } from "@apollo/client";
+import { makeRedirectUri, startAsync } from "expo-auth-session";
 import * as React from "react";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import { MainView, View } from "../components/Themed";
-import { signInWithGithub, useGithubAuth } from "../services/oauth";
+import { useGithubAuth } from "../services/oauth";
 import { registration, resetPassword, signIn, useUser } from "../services/user";
+import { OAUTH_CLIENT_ID } from "@env";
 import User from "./User";
 
 function Screen({ data, navigation }) {
@@ -24,7 +26,9 @@ const WelcomeScreen = ({ navigation }) => {
   const [githubResponse, redirectToGithub] = useGithubAuth();
 
   React.useEffect(() => {
-    signInWithGithub(githubResponse);
+    // setLoading(true);
+    // signInWithGithub(githubResponse);
+    // setLoading(false);
   }, [githubResponse]);
 
   return (
@@ -102,13 +106,27 @@ const WelcomeScreen = ({ navigation }) => {
             bg="white"
             onPress={async () => {
               setErrors("");
-              setLoading(true);
+              let r = null;
               try {
-                await redirectToGithub();
+                r = await startAsync({
+                  authUrl: `https://github.com/login/oauth/authorize?client_id=${OAUTH_CLIENT_ID}&scope=identity&redirect_uri=${makeRedirectUri(
+                    {
+                      scheme: "frux",
+                      path: "oauth",
+                    }
+                  )}`,
+                  returnUrl: makeRedirectUri({
+                    scheme: "frux",
+                    path: "oauth",
+                  }),
+                });
               } catch (err) {
                 setErrors(err.message);
-                setLoading(false);
               }
+              // if (r.type === "dismiss") {
+              // setErrors("Sign in dismissed");
+              setErrors(JSON.stringify(r));
+              // }
             }}
             borderColor="fruxgreen"
             color="fruxgreen"

@@ -23,17 +23,13 @@ export const useGithubAuth = () => {
     discovery
   );
 
-  const redirectToGithub = async () => {
-    promptAsync({
-      useProxy: true,
-      redirectUri: makeRedirectUri({
-        scheme: "frux",
-        path: "oauth",
-      }),
-    });
-  };
+  // const redirectToGithub = async () => {
+  //   return promptAsync({
+  //     useProxy: true,
+  //   });
+  // };
 
-  return [response, redirectToGithub];
+  return [response, promptAsync];
 };
 
 export async function signInWithGithub(response) {
