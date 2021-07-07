@@ -1,13 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { makeRedirectUri, startAsync } from "expo-auth-session";
 import * as React from "react";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 import { MainView, View } from "../components/Themed";
-import { useGithubAuth } from "../services/oauth";
+import { redirectToGithub, signInWithGithub } from "../services/oauth";
 import { registration, resetPassword, signIn, useUser } from "../services/user";
-import { OAUTH_CLIENT_ID } from "@env";
 import User from "./User";
 
 function Screen({ data, navigation }) {
@@ -23,13 +21,6 @@ const WelcomeScreen = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState("");
-  const [githubResponse, redirectToGithub] = useGithubAuth();
-
-  React.useEffect(() => {
-    // setLoading(true);
-    // signInWithGithub(githubResponse);
-    // setLoading(false);
-  }, [githubResponse]);
 
   return (
     <View>
@@ -106,27 +97,13 @@ const WelcomeScreen = ({ navigation }) => {
             bg="white"
             onPress={async () => {
               setErrors("");
-              let r = null;
               try {
-                r = await startAsync({
-                  authUrl: `https://github.com/login/oauth/authorize?client_id=${OAUTH_CLIENT_ID}&scope=identity&redirect_uri=${makeRedirectUri(
-                    {
-                      scheme: "frux",
-                      path: "oauth",
-                    }
-                  )}`,
-                  returnUrl: makeRedirectUri({
-                    scheme: "frux",
-                    path: "oauth",
-                  }),
-                });
+                const response = await redirectToGithub();
+                setLoading(true);
+                signInWithGithub(response);
               } catch (err) {
                 setErrors(err.message);
               }
-              // if (r.type === "dismiss") {
-              // setErrors("Sign in dismissed");
-              setErrors(JSON.stringify(r));
-              // }
             }}
             borderColor="fruxgreen"
             color="fruxgreen"

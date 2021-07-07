@@ -1,5 +1,3 @@
-import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "@env";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
