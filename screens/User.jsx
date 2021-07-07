@@ -42,9 +42,10 @@ function Screen({ data, navigation, mutateEntity }) {
   }, [location]);
 
   const [myTopics, setMyTopics] = React.useState(
-    data.user.interests.edges.map((n) => n.name) || []
+    data.user.interests.edges.map((n) => n.node.name) || []
   );
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
+
   React.useEffect(() => {
     mutateEntity({
       variables: {
