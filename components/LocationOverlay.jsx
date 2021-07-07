@@ -64,7 +64,7 @@ export default function Component({
               }}
               values={[radius / 1000]}
               sliderLength={200}
-              onValuesChange={(v) => {
+              onValuesChangeFinish={(v) => {
                 setRadius(Math.floor(v * 1000));
               }}
               step={3}

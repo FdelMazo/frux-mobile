@@ -24,6 +24,13 @@ function Component({ setFilters, data }) {
     setFilters({
       categoryNameIn: (topicsFilter.length && topicsFilter) || undefined,
       currentStateIn: (progressFilters.length && progressFilters) || undefined,
+      isCloserThan:
+        (!!location.latitude && [
+          location.latitude,
+          location.longitude,
+          radius / 1000 || 10,
+        ]) ||
+        undefined,
       or:
         (searchText && [
           { or: [{ nameIlike: "%" + searchText.replace(/ /g, "%") + "%" }] },
@@ -35,7 +42,7 @@ function Component({ setFilters, data }) {
         ]) ||
         undefined,
     });
-  }, [searchText, location, progressFilters, topicsFilter]);
+  }, [searchText, location, radius, progressFilters, topicsFilter]);
 
   React.useEffect(() => {
     console.log(searchText);
