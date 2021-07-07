@@ -17,22 +17,26 @@ const Component = () => {
 
   return wakeup ? (
     <Div justifyContent="center" h="100%">
-      <Image h="40%" source={require("../assets/images/loading.png")} />
+      <Image
+        resizeMode="contain"
+        h={350}
+        source={require("../assets/images/loading.png")}
+      />
       <Div mt="md" alignItems="center">
         <Text>Oops! It appears that our server is still sleeping!</Text>
         <Text>Just wait a few minutes and we'll be right back with you!</Text>
       </Div>
-      <Div position="absolute" bottom={0} p="xl" mx="xl">
+      <Div position="absolute" bottom={0} p="xl" mx="xl" row flexWrap="wrap">
         <Text fontSize="sm">
           If you see this problem for longer than 5 minutes, please
-          <TouchableOpacity
-            onPress={() => {
-              Linking.openURL("https://github.com/camidvorkin/frux-app-server");
-            }}
-          >
-            <Text color="fruxgreen">contact us!</Text>
-          </TouchableOpacity>
         </Text>
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL("https://github.com/camidvorkin/frux-app-server");
+          }}
+        >
+          <Text color="fruxgreen"> contact us!</Text>
+        </TouchableOpacity>
       </Div>
     </Div>
   ) : null;
