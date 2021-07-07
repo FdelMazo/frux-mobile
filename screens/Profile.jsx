@@ -98,11 +98,12 @@ const WelcomeScreen = ({ navigation }) => {
             onPress={async () => {
               setErrors("");
               try {
-                const response = await redirectToGithub();
                 setLoading(true);
-                signInWithGithub(response);
+                const response = await redirectToGithub();
+                await signInWithGithub(response);
               } catch (err) {
                 setErrors(err.message);
+                setLoading(false);
               }
             }}
             borderColor="fruxgreen"
