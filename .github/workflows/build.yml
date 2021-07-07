@@ -27,5 +27,5 @@ jobs:
           FIREBASE_APPID: ${{secrets.FIREBASE_APPID}}
           GRAPHQL_ENDPOINT: ${{secrets.GRAPHQL_ENDPOINT}}
           GOOGLE_APIKEY: ${{secrets.GOOGLE_APIKEY}}
-          GITHUB_CLIENT_ID: ${{secrets.GITHUB_CLIENT_ID}}
-          GITHUB_CLIENT_SECRET: ${{secrets.GITHUB_CLIENT_SECRET}}
+          OAUTH_CLIENT_ID: ${{secrets.OAUTH_CLIENT_ID}}
+          OAUTH_CLIENT_SECRET: ${{secrets.OAUTH_CLIENT_SECRET}}
