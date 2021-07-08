@@ -216,7 +216,7 @@ function Screen({ data, navigation, mutations }) {
             </TouchableOpacity>
           )}
           <Div row>
-            <Text py="sm" px={0} bg={undefined} color="violet" fontSize="xs">
+            <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
               {dateRepresentation(data.project.creationDate)} ~{" "}
               {dateRepresentation(data.project.deadline)}
             </Text>
@@ -236,7 +236,7 @@ function Screen({ data, navigation, mutations }) {
                 <Text fontSize="lg" fontWeight="bold">
                   Stage 3:{" "}
                 </Text>
-                Detective Comics #33
+                StageName
               </Text>
               <MultiSlider
                 selectedStyle={{ backgroundColor: Colors.fruxgreen }}
