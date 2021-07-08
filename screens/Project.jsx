@@ -8,13 +8,13 @@ import {
   Dropdown,
   Fab,
   Icon,
-  Image,
   Input,
   Overlay,
   Text,
 } from "react-native-magnus";
 import Loading from "../components/Loading";
 import ProjectHeader from "../components/ProjectHeader";
+import StarRating from "../components/StarRating";
 import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import Colors from "../constants/Colors";
@@ -42,6 +42,9 @@ function Screen({ data, navigation, mutations }) {
     data.project.latitude !== "0.0"
   );
   const [locationText, setLocationText] = React.useState("Include my location");
+  const [reviewOverlay, setReviewOverlay] = React.useState(false);
+  const [comment, setComment] = React.useState("");
+  const [rating, setRating] = React.useState(0);
 
   const { user } = useUser();
   const created = user && data.project.owner.email === user.email;
@@ -218,38 +221,12 @@ function Screen({ data, navigation, mutations }) {
             </Text>
           </Div>
         </Div>
-        <Div row my="lg">
-          <Image
-            mx="xs"
-            w={35}
-            h={35}
-            source={require("../assets/images/star.png")}
-          />
-          <Image
-            mx="xs"
-            w={35}
-            h={35}
-            source={require("../assets/images/star.png")}
-          />
-          <Image
-            mx="xs"
-            w={35}
-            h={35}
-            source={require("../assets/images/half-star.png")}
-          />
-          <Image
-            mx="xs"
-            w={35}
-            h={35}
-            source={require("../assets/images/no-star.png")}
-          />
-          <Image
-            mx="xs"
-            w={35}
-            h={35}
-            source={require("../assets/images/no-star.png")}
-          />
-        </Div>
+
+        <TouchableOpacity onPress={() => setReviewOverlay(true)}>
+          <Div row my="lg">
+            <StarRating rating={2.5} size={35} />
+          </Div>
+        </TouchableOpacity>
 
         <Div row w="90%" mt="xs" justifyContent="space-between">
           <TouchableOpacity onPress={() => dropdownRef.current.open()}>
@@ -491,63 +468,106 @@ function Screen({ data, navigation, mutations }) {
         </Div>
       </Overlay>
 
-      <Overlay visible={deleteOverlay}>
+      <Overlay visible={reviewOverlay}>
         <Text fontSize="xl" fontWeight="bold">
-          Are you sure?
+          Reviews
         </Text>
-        <Div my="sm">
-          <Text>
-            This action <Text fontWeight="bold">cannot</Text> be undone. By
-            deleting this project you are returning every seeder their funds,
-            and making it impossible for new users to seed it.
-          </Text>
+        <Div>
+          <Div row justifyContent="space-between" my="xs">
+            <Text color="fruxgreen">Ringo</Text>
 
-          <Text>
-            Please type <Text fontWeight="bold">{data.project.name}</Text> below
-            to continue.
+            <Div alignSelf="flex-end" row>
+              <StarRating rating={5} size={10} />
+            </Div>
+          </Div>
+          <Text
+            borderColor="fruxgreen"
+            borderLeftWidth={2}
+            ml="xs"
+            mb="sm"
+            pl="md"
+          >
+            Esta ensalada de papas tiene toda la pinta. En las fotos parece que
+            tiene... mayonesa? Siento que va a ser la mejor ensalada de papas de
+            la historia
           </Text>
-          <Input
-            focusBorderColor="fruxred"
-            w="70%"
-            fontSize="xs"
-            my="md"
-            value={deleteConfirmation}
-            onChangeText={setDeleteConfirmation}
-          />
         </Div>
-        <Div row alignSelf="flex-end">
+
+        <Div>
+          <Div row justifyContent="space-between" my="xs">
+            <Text color="fruxgreen">John</Text>
+
+            <Div alignSelf="flex-end" row>
+              <StarRating rating={4} size={10} />
+            </Div>
+          </Div>
+          <Text
+            borderColor="fruxgreen"
+            borderLeftWidth={2}
+            ml="xs"
+            mb="sm"
+            pl="md"
+          >
+            OH MY FREAKING GOD. If you are not trying this salad tonight, you
+            are missing on everything that's good for you. I did find it a
+            little bit extra on the potatoes, though, you feel me?
+          </Text>
+        </Div>
+
+        <Div>
+          <Text fontWeight="bold" mt="sm">
+            Leave your review
+          </Text>
+          <Div row justifyContent="space-between">
+            <Input
+              w="60%"
+              my="md"
+              value={comment}
+              onChangeText={setComment}
+              placeholder="Review"
+            />
+            <Div alignSelf="center">
+              <Button
+                bg={undefined}
+                onPress={() => {
+                  if (rating === 5) setRating(0);
+                  else setRating(rating + 0.5);
+                }}
+              >
+                <Div row alignSelf="center">
+                  <StarRating rating={rating} size={12} />
+                </Div>
+              </Button>
+            </Div>
+          </Div>
+        </Div>
+
+        <Div row alignSelf="flex-end" mt="sm">
           <Button
             mx="sm"
-            fontSize="sm"
             p="md"
             bg={undefined}
             borderWidth={1}
-            borderColor="gray500"
-            color="gray500"
+            borderColor="fruxgreen"
+            color="fruxgreen"
             onPress={() => {
-              setDeleteOverlay(false);
+              setReviewOverlay(false);
             }}
           >
-            Cancel
+            Close
           </Button>
           <Button
-            onPress={
-              deleteConfirmation === name
-                ? () => {
-                    alert("Mock delete action");
-                    setDeleteOverlay(false);
-                  }
-                : undefined
-            }
+            onPress={() => {
+              if (!rating || !comment) return;
+              alert("Mock review action");
+              setReviewOverlay(false);
+            }}
             mx="sm"
-            fontSize="sm"
             p="md"
-            bg={deleteConfirmation === name ? "fruxred" : undefined}
-            borderColor={!(deleteConfirmation === name) ? "gray500" : undefined}
-            borderWidth={1}
-            color={deleteConfirmation === name ? "white" : "gray500"}
+            bg="fruxgreen"
+            color="white"
           >
-            Delete
+            Review
           </Button>
         </Div>
       </Overlay>
@@ -596,6 +616,60 @@ function Screen({ data, navigation, mutations }) {
           >
             Save
           </Button>
+        </Div>
+      </Overlay>
+
+      <Overlay visible={hashtagOverlay}>
+        <Input
+          prefix={<Text color="fruxgreen">#</Text>}
+          value={newHashtag}
+          onChangeText={setNewHashtag}
+          onEndEditing={() => {
+            let toAdd = newHashtag;
+            if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
+            toAdd = toAdd.trim();
+            toggler(hashtags, setHashtags, toAdd);
+            setNewHashtag("");
+          }}
+          focusBorderColor="fruxgreen"
+          placeholder="hashtag"
+        />
+
+        <Div mt="sm" row flexWrap="wrap">
+          {hashtags.map((h) => (
+            <Button
+              key={h}
+              bg={undefined}
+              p={0}
+              m="xs"
+              onPress={() => {
+                toggler(hashtags, setHashtags, h);
+              }}
+            >
+              <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
+                <Text fontSize="xs">{`# ${h}`}</Text>
+              </Div>
+            </Button>
+          ))}
+        </Div>
+
+        <Div my="md" row justifyContent="space-between">
+          <Div alignSelf="center"></Div>
+
+          <Div row>
+            <Button
+              onPress={() => {
+                setHashtagOverlay(false);
+              }}
+              mx="sm"
+              fontSize="sm"
+              p="md"
+              bg="fruxgreen"
+              color="white"
+            >
+              Done
+            </Button>
+          </Div>
         </Div>
       </Overlay>
 
