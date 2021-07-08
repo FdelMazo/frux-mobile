@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as React from "react";
 import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
 import Colors from "../constants/Colors";
+import { formatDateInput } from "../services/helpers";
 
 function Component(props) {
   const { mutations, navigation, data } = props;
@@ -84,7 +85,7 @@ function Component(props) {
             <Div flex={1}>
               <Text color={newFinalizationDate ? "gray700" : "gray900"}>
                 {newFinalizationDate
-                  ? newFinalizationDate.toLocaleDateString("es-AR")
+                  ? formatDateInput(newFinalizationDate)
                   : "Delivered By..."}
               </Text>
             </Div>
@@ -146,6 +147,7 @@ function Component(props) {
                   name: newProjectName,
                   goal: newProjectGoal,
                   description: newProjectDescription,
+                  deadline: formatDateInput(newFinalizationDate),
                 },
               });
             }}
@@ -180,8 +182,14 @@ export default function Render(props) {
       $description: String!
       $goal: Int!
       $name: String!
+      $deadline: String!
     ) {
-      mutateProject(description: $description, goal: $goal, name: $name) {
+      mutateProject(
+        description: $description
+        goal: $goal
+        name: $name
+        deadline: $deadline
+      ) {
         dbId
       }
     }

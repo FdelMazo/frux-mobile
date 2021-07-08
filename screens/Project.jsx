@@ -19,7 +19,7 @@ import { MainView, View } from "../components/Themed";
 import UserContainer from "../components/UserContainer";
 import Colors from "../constants/Colors";
 import { States } from "../constants/Constants";
-import { toggler } from "../services/helpers";
+import { dateRepresentation, toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
 import { useUser } from "../services/user";
 
@@ -217,7 +217,8 @@ function Screen({ data, navigation, mutations }) {
           )}
           <Div row>
             <Text py="sm" px={0} bg={undefined} color="violet" fontSize="xs">
-              01/01/1970 ~ 01/01/1990
+              {dateRepresentation(data.project.creationDate)} ~{" "}
+              {dateRepresentation(data.project.deadline)}
             </Text>
           </Div>
         </Div>
@@ -736,6 +737,7 @@ export default function Render(props) {
       project(dbId: $dbId) {
         id
         dbId
+        deadline
         name
         longitude
         latitude
@@ -746,6 +748,7 @@ export default function Render(props) {
           longitude
         }
         name
+        creationDate
         currentState
         description
         amountCollected
