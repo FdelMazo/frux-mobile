@@ -91,54 +91,67 @@ function Screen({ data, navigation, mutateEntity }) {
 
       <MainView>
         <Div row w="90%" mt="xl" justifyContent="space-between">
-          <TouchableOpacity
-            activeOpacity={isViewer ? 0.2 : 1}
-            onPress={
-              isViewer
-                ? () => {
-                    setBasicDataOverlay(true);
-                  }
-                : undefined
-            }
-          >
-            <Div row justifyContent="flex-start">
-              {!!lastName && (
+          <Div w="80%" alignSelf="center">
+            <TouchableOpacity
+              activeOpacity={isViewer ? 0.2 : 1}
+              onPress={
+                isViewer
+                  ? () => {
+                      setBasicDataOverlay(true);
+                    }
+                  : undefined
+              }
+            >
+              {isViewer && !firstName && !lastName && !description && (
                 <Text
-                  fontSize="4xl"
+                  lineHeight={20}
+                  fontSize="xl"
                   fontFamily="latinmodernroman-bold"
-                  fontWeight="bold"
-                  color="fruxgreen"
+                  color="gray600"
                 >
-                  {firstName ? lastName + ", " : lastName}
+                  Tell us your name!
                 </Text>
               )}
+              <Div row>
+                {!!lastName && (
+                  <Text
+                    fontSize="4xl"
+                    fontFamily="latinmodernroman-bold"
+                    fontWeight="bold"
+                    color="fruxgreen"
+                  >
+                    {firstName ? lastName + ", " : lastName}
+                  </Text>
+                )}
+                {!!firstName && (
+                  <Text
+                    fontSize="4xl"
+                    fontFamily="latinmodernroman-bold"
+                    fontWeight="bold"
+                    color="fruxbrown"
+                  >
+                    {firstName}
+                  </Text>
+                )}
+              </Div>
+              <Div>
+                {!!description && (
+                  <Text
+                    lineHeight={20}
+                    fontSize="xl"
+                    fontFamily="latinmodernroman-bold"
+                    color="gray600"
+                  >
+                    {description}
+                  </Text>
+                )}
+              </Div>
+            </TouchableOpacity>
+          </Div>
 
-              {!!firstName && (
-                <Text
-                  fontSize="4xl"
-                  fontFamily="latinmodernroman-bold"
-                  fontWeight="bold"
-                  color="fruxbrown"
-                >
-                  {firstName}
-                </Text>
-              )}
-            </Div>
-            {!!description && (
-              <Text
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                {description}
-              </Text>
-            )}
-          </TouchableOpacity>
-          {isViewer && (
-            <Div alignSelf="center">
+          <Div alignSelf="center">
+            {isViewer && (
               <TouchableOpacity
-                activeOpacity={isViewer ? 0.2 : 1}
                 onPress={() => {
                   setWalletOverlay(true);
                 }}
@@ -153,30 +166,12 @@ function Screen({ data, navigation, mutateEntity }) {
                   borderWidth={1}
                   rounded="sm"
                   fontSize="xl"
-                  ml="xl"
                   bg="white"
                 />
               </TouchableOpacity>
-            </Div>
-          )}
+            )}
+          </Div>
         </Div>
-
-        {isViewer && !firstName && !lastName && !description && (
-          <TouchableOpacity
-            onPress={() => {
-              setBasicDataOverlay(true);
-            }}
-          >
-            <Text
-              lineHeight={20}
-              fontSize="xl"
-              fontFamily="latinmodernroman-bold"
-              color="gray600"
-            >
-              Tell us your name!
-            </Text>
-          </TouchableOpacity>
-        )}
 
         <Div w="90%" mt="xl">
           {myTopics.length ? (
