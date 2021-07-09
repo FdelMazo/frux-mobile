@@ -1,6 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
-import { Clipboard } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
@@ -9,7 +8,6 @@ import {
   Icon,
   Input,
   Overlay,
-  Snackbar,
   Tag,
   Text,
 } from "react-native-magnus";
@@ -20,25 +18,19 @@ import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 import TopicContainer from "../components/TopicContainer";
 import TopicsOverlay from "../components/TopicsOverlay";
+import UserData from "../components/UserData";
 import { UserIcons } from "../constants/Constants";
 import { resetPassword, useUser } from "../services/user";
 
 function Screen({ data, navigation, mutateEntity }) {
   const defaultUsername = data.user.username || data.user.email.split("@")[0];
   const { user } = useUser();
-  const isViewer = user && data.user.email === user.email;
+  const isViewer = user && data.user.email === user.email; // convertime en useMemo
   const [username, setUsername] = React.useState(defaultUsername);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
 
-  const [walletOverlay, setWalletOverlay] = React.useState(false);
-  const snackbarRef = React.createRef();
-
-  const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
   const [seerOverlay, setSeerOverlay] = React.useState(false);
-  const [firstName, setFirstName] = React.useState(data.user.firstName);
-  const [lastName, setLastName] = React.useState(data.user.lastName);
-  const [description, setDescription] = React.useState(data.user.description);
 
   const [location, setLocation] = React.useState({
     latitude: data.user.latitude,
@@ -91,88 +83,17 @@ function Screen({ data, navigation, mutateEntity }) {
       />
 
       <MainView>
-        <Div row w="90%" mt="xl" justifyContent="space-between">
-          <Div w="80%" alignSelf="center">
-            <TouchableOpacity
-              activeOpacity={isViewer ? 0.2 : 1}
-              onPress={
-                isViewer
-                  ? () => {
-                      setBasicDataOverlay(true);
-                    }
-                  : undefined
-              }
-            >
-              {isViewer && !firstName && !lastName && !description && (
-                <Text
-                  lineHeight={20}
-                  fontSize="xl"
-                  fontFamily="latinmodernroman-bold"
-                  color="gray600"
-                >
-                  Tell us your name!
-                </Text>
-              )}
-              <Div row>
-                {!!lastName && (
-                  <Text
-                    fontSize="4xl"
-                    fontFamily="latinmodernroman-bold"
-                    fontWeight="bold"
-                    color="fruxgreen"
-                  >
-                    {firstName ? lastName + ", " : lastName}
-                  </Text>
-                )}
-                {!!firstName && (
-                  <Text
-                    fontSize="4xl"
-                    fontFamily="latinmodernroman-bold"
-                    fontWeight="bold"
-                    color="fruxbrown"
-                  >
-                    {firstName}
-                  </Text>
-                )}
-              </Div>
-              <Div>
-                {!!description && (
-                  <Text
-                    lineHeight={20}
-                    fontSize="xl"
-                    fontFamily="latinmodernroman-bold"
-                    color="gray600"
-                  >
-                    {description}
-                  </Text>
-                )}
-              </Div>
-            </TouchableOpacity>
-          </Div>
-
-          <Div alignSelf="center">
-            {isViewer && (
-              <TouchableOpacity
-                onPress={() => {
-                  setWalletOverlay(true);
-                }}
-              >
-                <Icon
-                  name="wallet"
-                  color="fruxgreen"
-                  fontFamily="AntDesign"
-                  h={40}
-                  w={40}
-                  borderColor="fruxgreen"
-                  borderWidth={1}
-                  rounded="sm"
-                  fontSize="xl"
-                  bg="white"
-                />
-              </TouchableOpacity>
-            )}
-          </Div>
-        </Div>
+        <UserData
+          data={data}
+          isViewer={isViewer}
+          mutations={{ mutateUpdateUser: mutateEntity }}
+          navigation={navigation}
+        />
+        {/* <UserHeader /> -> <UserEditDropdown />
+          <UserData /> -> UserBasicData and UserWallet
+          <UserFavouriteTopics />
+          <UserProjects />
+          <UserBecomeSupervisorButton /> */}
 
         <Div w="90%" mt="xl">
           {myTopics.length ? (
@@ -431,58 +352,6 @@ function Screen({ data, navigation, mutateEntity }) {
         multiple={true}
       />
 
-      <Overlay visible={basicDataOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          Hi, how are you?
-        </Text>
-        <Div>
-          <Div w="70%" row justifyContent="space-between">
-            <Input
-              w="45%"
-              mt="md"
-              value={firstName}
-              onChangeText={setFirstName}
-              placeholder="First Name"
-            />
-            <Input
-              w="45%"
-              mt="md"
-              value={lastName}
-              onChangeText={setLastName}
-              placeholder="Last Name"
-            />
-          </Div>
-          <Input
-            w="70%"
-            mt="md"
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Description"
-          />
-        </Div>
-
-        <Div row alignSelf="flex-end">
-          <Button
-            onPress={() => {
-              mutateEntity({
-                variables: {
-                  firstName,
-                  lastName,
-                  description,
-                },
-              });
-              setBasicDataOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Done
-          </Button>
-        </Div>
-      </Overlay>
-
       <Overlay visible={seerOverlay}>
         <Text fontSize="xl" fontWeight="bold">
           Become a Project Supervisor
@@ -534,85 +403,19 @@ function Screen({ data, navigation, mutateEntity }) {
           </Button>
         </Div>
       </Overlay>
-
-      <Overlay visible={walletOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          ETH Wallet
-        </Text>
-        <Div my="md">
-          <Text>
-            This is your own personal ethereum wallet address, by adding funds
-            onto this address you'll be able to sponsor the different seeds
-            throught <Text color="fruxgreen">Frux</Text>.
-          </Text>
-
-          <Button
-            bg={undefined}
-            underlayColor={"none"}
-            p={0}
-            onPress={() => {
-              Clipboard.setString(data.user.walletAddress);
-              if (snackbarRef.current) {
-                snackbarRef.current.show(
-                  "Wallet address copied to clipboard!",
-                  {
-                    duration: 2000,
-                  }
-                );
-              }
-            }}
-          >
-            <Text
-              fontFamily="monospace"
-              m="lg"
-              color="fruxgreen"
-              bg="#1b1d23"
-              rounded="sm"
-              p="sm"
-            >
-              {data.user.walletAddress}
-            </Text>
-          </Button>
-        </Div>
-
-        <Snackbar
-          ref={snackbarRef}
-          bg={undefined}
-          fontSize="xs"
-          color="fruxgreen"
-        />
-
-        <Div row alignSelf="flex-end">
-          <Button
-            onPress={() => {
-              setWalletOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            borderColor="fruxgreen"
-            borderWidth={1}
-            rounded="sm"
-            bg={undefined}
-            color="fruxgreen"
-          >
-            Done
-          </Button>
-        </Div>
-      </Overlay>
     </View>
   );
 }
 
 export default function Render(props) {
   const query = gql`
+    ${UserData.fragments.user}
     query User($dbId: Int!) {
       user(dbId: $dbId) {
+        ...UserData
         dbId
         id
-        firstName
-        lastName
-        description
-        walletAddress
+
         username
         email
         imagePath
@@ -654,6 +457,7 @@ export default function Render(props) {
   `;
 
   const updateMutation = gql`
+    ${UserData.fragments.user}
     mutation updateMutation(
       $username: String
       $imagePath: String
@@ -678,9 +482,7 @@ export default function Render(props) {
         username
         imagePath
         latitude
-        firstName
-        lastName
-        description
+        ...UserData
         longitude
         interests {
           edges {
@@ -692,12 +494,12 @@ export default function Render(props) {
       }
     }
   `;
-  const [mutateEntity] = useMutation(updateMutation);
+  const [mutateEntity, { error: mutError }] = useMutation(updateMutation);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
-  if (error) alert(JSON.stringify(error));
+  if (mutError) alert(JSON.stringify(mutError));
   if (loading) return <Loading />;
   return (
     <Screen
