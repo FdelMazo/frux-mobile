@@ -543,11 +543,12 @@ function Screen({ data, navigation, mutateEntity }) {
           <Text>
             This is your own personal ethereum wallet address, by adding funds
             onto this address you'll be able to sponsor the different seeds
-            throught <Text color="fruxgreen">Frux</Text>
+            throught <Text color="fruxgreen">Frux</Text>.
           </Text>
 
           <Button
             bg={undefined}
+            underlayColor={"none"}
             p={0}
             onPress={() => {
               Clipboard.setString(data.user.walletAddress);
@@ -561,7 +562,14 @@ function Screen({ data, navigation, mutateEntity }) {
               }
             }}
           >
-            <Text fontFamily="monospace" m="md" color="#af6161">
+            <Text
+              fontFamily="monospace"
+              m="lg"
+              color="fruxgreen"
+              bg="#1b1d23"
+              rounded="sm"
+              p="sm"
+            >
               {data.user.walletAddress}
             </Text>
           </Button>
