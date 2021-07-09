@@ -28,14 +28,14 @@ const Component = () => {
       </Div>
       <Div position="absolute" bottom={0} p="xl" mx="xl" row flexWrap="wrap">
         <Text fontSize="sm">
-          If you see this problem for longer than 5 minutes, please
+          If you see this problem for longer than 5 minutes, please{" "}
         </Text>
         <TouchableOpacity
           onPress={() => {
             Linking.openURL("https://github.com/camidvorkin/frux-app-server");
           }}
         >
-          <Text color="fruxgreen"> contact us!</Text>
+          <Text color="fruxgreen">contact us!</Text>
         </TouchableOpacity>
       </Div>
     </Div>
