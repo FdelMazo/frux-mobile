@@ -13,6 +13,7 @@ import {
 } from "react-native-magnus";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
+import Error from "../components/Error";
 import LocationOverlay from "../components/LocationOverlay";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
@@ -494,18 +495,22 @@ export default function Render(props) {
       }
     }
   `;
-  const [mutateEntity, { error: mutError }] = useMutation(updateMutation);
+
+  const [mutateUpdateUser, { error: mutateUpdateUserError }] =
+    useMutation(updateMutation);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
-  if (mutError) alert(JSON.stringify(mutError));
+  const errors = [error, mutateUpdateUserError];
+
+  if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
   return (
     <Screen
       data={data}
       navigation={props.navigation}
-      mutateEntity={mutateEntity}
+      mutateEntity={mutateUpdateUser}
     />
   );
 }
