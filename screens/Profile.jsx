@@ -2,10 +2,10 @@ import { gql, useQuery } from "@apollo/client";
 import * as React from "react";
 import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import Header from "../components/Header";
-import Loading from "./Loading";
 import { MainView, View } from "../components/Themed";
 import { redirectToGithub, signInWithGithub } from "../services/oauth";
 import { registration, resetPassword, signIn, useUser } from "../services/user";
+import Loading from "./Loading";
 import User from "./User";
 
 function Screen({ data, navigation }) {

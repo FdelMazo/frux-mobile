@@ -359,13 +359,12 @@ function Screen({ data, navigation, mutations }) {
 export default function Render(props) {
   const query = gql`
     ${UserData.fragments.user}
-    ${UserFavouriteTopics.fragments.AllCategories}
+    ${UserFavouriteTopics.fragments.allCategories}
     query User($dbId: Int!) {
       user(dbId: $dbId) {
         ...UserData
         dbId
         id
-
         username
         email
         imagePath

@@ -12,7 +12,7 @@ import {
   Text,
 } from "react-native-magnus";
 
-export default function Component({ data, navigation, isViewer, mutations }) {
+export default function Component({ data, isViewer, mutations }) {
   const [firstName, setFirstName] = React.useState(data.user.firstName);
   const [lastName, setLastName] = React.useState(data.user.lastName);
   const [description, setDescription] = React.useState(data.user.description);

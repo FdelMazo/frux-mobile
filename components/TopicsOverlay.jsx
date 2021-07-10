@@ -1,10 +1,17 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import * as React from "react";
 import { Button, Div, Overlay } from "react-native-magnus";
 import { toggler } from "../services/helpers";
 import TopicContainer from "./TopicContainer";
 
-function Component({ visible, setVisible, topics, setTopics, multiple, data }) {
+export default function Component({
+  visible,
+  setVisible,
+  topics,
+  setTopics,
+  multiple,
+  data,
+}) {
   return (
     <Overlay visible={visible}>
       <Div justifyContent="center" row flexWrap="wrap">
@@ -55,23 +62,14 @@ function Component({ visible, setVisible, topics, setTopics, multiple, data }) {
   );
 }
 
-export default function Render(props) {
-  const query = gql`
-    query Topics {
-      allCategories {
-        edges {
-          node {
-            name
-          }
+Component.fragments = {
+  allCategories: gql`
+    fragment TopicsOverlay on CategoryConnection {
+      edges {
+        node {
+          name
         }
       }
     }
-  `;
-
-  const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.dbId },
-  });
-  if (error) alert(JSON.stringify(error));
-  if (loading) return null;
-  return <Component data={data} {...props} />;
-}
+  `,
+};
