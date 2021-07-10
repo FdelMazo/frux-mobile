@@ -72,9 +72,20 @@ export default function Component({ data, isViewer, mutations }) {
 
 Component.fragments = {
   allCategories: gql`
-    ${TopicsOverlay.fragments.allCategories}
-    fragment UserFavouriteTopics on CategoryConnection {
+    fragment UserFavouriteTopics_allCategories on CategoryConnection {
       ...TopicsOverlay
+    }
+    ${TopicsOverlay.fragments.allCategories}
+  `,
+  user: gql`
+    fragment UserFavouriteTopics_user on User {
+      interests {
+        edges {
+          node {
+            name
+          }
+        }
+      }
     }
   `,
 };

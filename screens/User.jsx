@@ -1,6 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import {
   Button,
   Div,
@@ -8,15 +7,14 @@ import {
   Icon,
   Input,
   Overlay,
-  Tag,
   Text,
 } from "react-native-magnus";
 import Header from "../components/Header";
 import LocationOverlay from "../components/LocationOverlay";
-import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 import UserData from "../components/UserData";
 import UserFavouriteTopics from "../components/UserFavouriteTopics";
+import UserProjects from "../components/UserProjects";
 import { UserIcons } from "../constants/Constants";
 import { resetPassword, useUser } from "../services/user";
 import Error from "./Error";
@@ -46,14 +44,6 @@ function Screen({ data, navigation, mutations }) {
     });
   }, [location]);
 
-  const [projectsShown, setProjectsShown] = React.useState(
-    (!!data.user.projectInvestments.edges.length &&
-      data.user.projectInvestments) ||
-      (!!data.user.favoritedProjects.edges.length &&
-        data.user.favoritedProjects) ||
-      (!!data.user.createdProjects.edges.length && data.user.createdProjects)
-  );
-
   return (
     <View>
       <Header
@@ -70,98 +60,18 @@ function Screen({ data, navigation, mutations }) {
       />
 
       <MainView>
-        <UserData
-          data={data}
-          isViewer={isViewer}
-          mutations={mutations}
-          navigation={navigation}
-        />
+        <UserData data={data} isViewer={isViewer} mutations={mutations} />
         <UserFavouriteTopics
           data={data}
           isViewer={isViewer}
           mutations={mutations}
-          navigation={navigation}
         />
+        <UserProjects data={data} navigation={navigation} />
         {/* <UserHeader /> -> <UserEditDropdown />
           <UserData /> -> UserBasicData and UserWallet
           <UserFavouriteTopics />
           <UserProjects />
           <UserBecomeSupervisorButton /> */}
-
-        <Div w="90%" mt="xl">
-          <Div row>
-            {!!data.user.projectInvestments.edges.length && (
-              <TouchableOpacity
-                onPress={() => setProjectsShown(data.user.projectInvestments)}
-              >
-                <Tag
-                  fontSize="sm"
-                  rounded="circle"
-                  mx="sm"
-                  bg={
-                    projectsShown === data.user.projectInvestments
-                      ? "blue400"
-                      : "blue200"
-                  }
-                >
-                  Seeding
-                </Tag>
-              </TouchableOpacity>
-            )}
-
-            {!!data.user.favoritedProjects.edges.length && (
-              <TouchableOpacity
-                onPress={() => setProjectsShown(data.user.favoritedProjects)}
-              >
-                <Tag
-                  mx="sm"
-                  rounded="circle"
-                  fontSize="sm"
-                  bg={
-                    projectsShown === data.user.favoritedProjects
-                      ? "blue400"
-                      : "blue200"
-                  }
-                >
-                  Favourites
-                </Tag>
-              </TouchableOpacity>
-            )}
-
-            {!!data.user.createdProjects.edges.length && (
-              <TouchableOpacity
-                onPress={() => setProjectsShown(data.user.createdProjects)}
-              >
-                <Tag
-                  fontSize="sm"
-                  rounded="circle"
-                  mx="sm"
-                  bg={
-                    projectsShown === data.user.createdProjects
-                      ? "blue400"
-                      : "blue200"
-                  }
-                >
-                  Created
-                </Tag>
-              </TouchableOpacity>
-            )}
-          </Div>
-
-          <Div mt="sm">
-            <FlatList
-              horizontal
-              keyExtractor={(item) => item.node.id}
-              data={projectsShown.edges}
-              renderItem={({ item }) => (
-                <ProjectContainer
-                  navigation={navigation}
-                  dbId={item.node.projectId || item.node.dbId}
-                />
-              )}
-            />
-          </Div>
-        </Div>
 
         <Div w="65%" mt="2xl">
           <Button
@@ -358,8 +268,6 @@ function Screen({ data, navigation, mutations }) {
 
 export default function Render(props) {
   const query = gql`
-    ${UserData.fragments.user}
-    ${UserFavouriteTopics.fragments.allCategories}
     query User($dbId: Int!) {
       user(dbId: $dbId) {
         ...UserData
@@ -370,42 +278,17 @@ export default function Render(props) {
         imagePath
         latitude
         longitude
-        projectInvestments {
-          edges {
-            node {
-              id
-              projectId
-            }
-          }
-        }
-        favoritedProjects {
-          edges {
-            node {
-              id
-              projectId
-            }
-          }
-        }
-        createdProjects {
-          edges {
-            node {
-              id
-              dbId
-            }
-          }
-        }
-        interests {
-          edges {
-            node {
-              name
-            }
-          }
-        }
+        ...UserProjects
+        ...UserFavouriteTopics_user
       }
       allCategories {
-        ...UserFavouriteTopics
+        ...UserFavouriteTopics_allCategories
       }
     }
+    ${UserData.fragments.user}
+    ${UserFavouriteTopics.fragments.user}
+    ${UserProjects.fragments.user}
+    ${UserFavouriteTopics.fragments.allCategories}
   `;
 
   const updateMutation = gql`
