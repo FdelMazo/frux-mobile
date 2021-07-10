@@ -51,9 +51,9 @@ const Component = ({ errors }) => {
                       />
                     }
                   >
-                    <Div flexDir="column">
+                    <Div flexDir="column" w="80%">
                       {e.networkError.result.errors.map((err) => (
-                        <Div row>
+                        <Div row my="xs">
                           <Icon
                             color="fruxred"
                             name="hair-cross"
