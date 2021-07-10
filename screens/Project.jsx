@@ -12,7 +12,7 @@ import {
   Overlay,
   Text,
 } from "react-native-magnus";
-import Loading from "../components/Loading";
+import Loading from "./Loading";
 import ProjectHeader from "../components/ProjectHeader";
 import StarRating from "../components/StarRating";
 import { MainView, View } from "../components/Themed";

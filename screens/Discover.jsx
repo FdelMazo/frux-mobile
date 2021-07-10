@@ -4,7 +4,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 import DiscoverFilters from "../components/DiscoverFilters";
 import Header from "../components/Header";
-import Loading from "../components/Loading";
+import Loading from "./Loading";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
 

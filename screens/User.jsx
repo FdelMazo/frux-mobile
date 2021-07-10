@@ -12,18 +12,17 @@ import {
   Text,
 } from "react-native-magnus";
 import Header from "../components/Header";
-import Loading from "../components/Loading";
-import Error from "../components/Error";
 import LocationOverlay from "../components/LocationOverlay";
 import ProjectContainer from "../components/ProjectContainer";
 import { MainView, View } from "../components/Themed";
-import TopicContainer from "../components/TopicContainer";
-import TopicsOverlay from "../components/TopicsOverlay";
 import UserData from "../components/UserData";
+import UserFavouriteTopics from "../components/UserFavouriteTopics";
 import { UserIcons } from "../constants/Constants";
 import { resetPassword, useUser } from "../services/user";
+import Error from "./Error";
+import Loading from "./Loading";
 
-function Screen({ data, navigation, mutateEntity }) {
+function Screen({ data, navigation, mutations }) {
   const defaultUsername = data.user.username || data.user.email.split("@")[0];
   const { user } = useUser();
   const isViewer = user && data.user.email === user.email; // convertime en useMemo
@@ -39,26 +38,13 @@ function Screen({ data, navigation, mutateEntity }) {
   });
   const [locationOverlay, setLocationOverlay] = React.useState(false);
   React.useEffect(() => {
-    mutateEntity({
+    mutations.mutateUpdateUser({
       variables: {
         latitude: location.latitude,
         longitude: location.longitude,
       },
     });
   }, [location]);
-
-  const [myTopics, setMyTopics] = React.useState(
-    data.user.interests.edges.map((n) => n.node.name) || []
-  );
-  const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
-
-  React.useEffect(() => {
-    mutateEntity({
-      variables: {
-        interests: myTopics,
-      },
-    });
-  }, [myTopics]);
 
   const [projectsShown, setProjectsShown] = React.useState(
     (!!data.user.projectInvestments.edges.length &&
@@ -87,7 +73,13 @@ function Screen({ data, navigation, mutateEntity }) {
         <UserData
           data={data}
           isViewer={isViewer}
-          mutations={{ mutateUpdateUser: mutateEntity }}
+          mutations={mutations}
+          navigation={navigation}
+        />
+        <UserFavouriteTopics
+          data={data}
+          isViewer={isViewer}
+          mutations={mutations}
           navigation={navigation}
         />
         {/* <UserHeader /> -> <UserEditDropdown />
@@ -95,44 +87,6 @@ function Screen({ data, navigation, mutateEntity }) {
           <UserFavouriteTopics />
           <UserProjects />
           <UserBecomeSupervisorButton /> */}
-
-        <Div w="90%" mt="xl">
-          {myTopics.length ? (
-            <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
-              <>
-                <Div alignSelf="flex-start">
-                  <Text fontSize="xl" fontWeight="bold">
-                    {isViewer ? "My Topics" : "Favourite Topics"}
-                  </Text>
-                </Div>
-                <Div row my="md" flexWrap="wrap">
-                  {myTopics.map((t) => (
-                    <TopicContainer showName={true} name={t} key={t} />
-                  ))}
-                </Div>
-              </>
-            </TouchableOpacity>
-          ) : (
-            <>
-              {isViewer && (
-                <Div row alignItems="center">
-                  <TopicContainer active showName={false} name="Other" />
-                  <Button
-                    bg="white"
-                    fontWeight="bold"
-                    color="fruxgreen"
-                    alignSelf="center"
-                    onPress={() => {
-                      setMyTopicsOverlay(true);
-                    }}
-                  >
-                    Choose Your Favourite Topics
-                  </Button>
-                </Div>
-              )}
-            </>
-          )}
-        </Div>
 
         <Div w="90%" mt="xl">
           <Div row>
@@ -268,7 +222,7 @@ function Screen({ data, navigation, mutateEntity }) {
                       bg={undefined}
                       p={0}
                       onPress={() => {
-                        mutateEntity({
+                        mutations.mutateUpdateUser({
                           variables: {
                             username,
                           },
@@ -316,7 +270,9 @@ function Screen({ data, navigation, mutateEntity }) {
               bg={undefined}
               underlayColor="fruxgreen"
               onPress={() => {
-                mutateEntity({ variables: { imagePath: item.name } });
+                mutations.mutateUpdateUser({
+                  variables: { imagePath: item.name },
+                });
               }}
             >
               <Icon
@@ -343,14 +299,6 @@ function Screen({ data, navigation, mutateEntity }) {
         setLocation={setLocation}
         visible={locationOverlay}
         setVisible={setLocationOverlay}
-      />
-
-      <TopicsOverlay
-        topics={myTopics}
-        setTopics={setMyTopics}
-        visible={myTopicsOverlay}
-        setVisible={setMyTopicsOverlay}
-        multiple={true}
       />
 
       <Overlay visible={seerOverlay}>
@@ -411,6 +359,7 @@ function Screen({ data, navigation, mutateEntity }) {
 export default function Render(props) {
   const query = gql`
     ${UserData.fragments.user}
+    ${UserFavouriteTopics.fragments.AllCategories}
     query User($dbId: Int!) {
       user(dbId: $dbId) {
         ...UserData
@@ -453,6 +402,9 @@ export default function Render(props) {
             }
           }
         }
+      }
+      allCategories {
+        ...UserFavouriteTopics
       }
     }
   `;
@@ -510,7 +462,7 @@ export default function Render(props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutateEntity={mutateUpdateUser}
+      mutations={{ mutateUpdateUser }}
     />
   );
 }
