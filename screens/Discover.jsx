@@ -7,9 +7,7 @@ import { MainView, View } from "../components/Themed";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({ data, refetch, navigation }) {
-  const [filters, setFilters] = React.useState({});
-
+function Screen({ data, refetch, navigation, filters, setFilters }) {
   React.useEffect(() => {
     refetch({ filters });
   }, [filters]);
@@ -39,13 +37,22 @@ export default function Render(props) {
     ${DiscoverFilters.fragments.allCategories}
   `;
 
+  const [filters, setFilters] = React.useState({});
   const { loading, error, data, refetch } = useQuery(query, {
     variables: {
-      filters: {},
+      filters,
     },
   });
 
   if (error) return <Error errors={[error]} />;
   if (loading) return <Loading />;
-  return <Screen data={data} navigation={props.navigation} refetch={refetch} />;
+  return (
+    <Screen
+      data={data}
+      navigation={props.navigation}
+      refetch={refetch}
+      filters={filters}
+      setFilters={setFilters}
+    />
+  );
 }
