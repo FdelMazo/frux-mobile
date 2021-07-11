@@ -52,7 +52,19 @@ const Component = ({ errors }) => {
                     }
                   >
                     <Div flexDir="column" w="80%">
-                      {e.networkError.result.errors.map((err) => (
+                      {!!e.networkError ? (
+                        e.networkError.result.errors.map((err) => (
+                          <Div row my="xs">
+                            <Icon
+                              color="fruxred"
+                              name="hair-cross"
+                              fontFamily="Entypo"
+                              mx="md"
+                            />
+                            <Text color="fruxred">{err.message}</Text>
+                          </Div>
+                        ))
+                      ) : (
                         <Div row my="xs">
                           <Icon
                             color="fruxred"
@@ -60,9 +72,9 @@ const Component = ({ errors }) => {
                             fontFamily="Entypo"
                             mx="md"
                           />
-                          <Text color="fruxred">{err.message}</Text>
+                          <Text color="fruxred">Unknown Error</Text>
                         </Div>
-                      ))}
+                      )}
                     </Div>
                   </Collapse.Header>
                   <Collapse.Body py="sm">

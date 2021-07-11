@@ -5,16 +5,9 @@ import Header from "../components/Header";
 import { MainView, View } from "../components/Themed";
 import { redirectToGithub, signInWithGithub } from "../services/oauth";
 import { registration, resetPassword, signIn, useUser } from "../services/user";
+import Error from "./Error";
 import Loading from "./Loading";
 import User from "./User";
-
-function Screen({ data, navigation }) {
-  return data?.profile ? (
-    <User dbId={data.profile.dbId} navigation={navigation} />
-  ) : (
-    <WelcomeScreen navigation={navigation} />
-  );
-}
 
 const WelcomeScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -147,16 +140,20 @@ const WelcomeScreen = ({ navigation }) => {
 
 export default function Render(props) {
   const query = gql`
-    query Profile {
-      profile {
+    query Profile($isLogged: Boolean!) {
+      profile @include(if: $isLogged) {
         dbId
       }
     }
   `;
 
-  const { loading, error, data } = useQuery(query);
-  const { token } = useUser();
-  if (token && error) alert(JSON.stringify(error));
+  const { user } = useUser();
+  const { loading, error, data } = useQuery(query, {
+    variables: { isLogged: !!user },
+  });
+  if (error) return <Error errors={[error]} />;
   if (loading) return <Loading />;
-  return <Screen data={data} navigation={props.navigation} />;
+  if (!!data.profile)
+    return <User dbId={data.profile.dbId} navigation={props.navigation} />;
+  return <WelcomeScreen navigation={props.navigation} />;
 }
