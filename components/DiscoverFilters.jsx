@@ -8,7 +8,7 @@ import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 
-function Component({ setFilters, data }) {
+export default function Component({ setFilters, data }) {
   const [searchText, setSearchText] = React.useState("");
   const [progressFilters, setProgressFilters] = React.useState([]);
   const [topicsFilter, setTopicsFilter] = React.useState([]);
@@ -137,20 +137,14 @@ function Component({ setFilters, data }) {
   );
 }
 
-export default function Render(props) {
-  const query = gql`
-    query DiscoverFilter {
-      allCategories {
-        edges {
-          node {
-            name
-          }
+Component.fragments = {
+  allCategories: gql`
+    fragment DiscoverFilters on CategoryConnection {
+      edges {
+        node {
+          name
         }
       }
     }
-  `;
-  const { loading, error, data } = useQuery(query);
-  if (error) alert(JSON.stringify(error));
-  if (loading) return null;
-  return <Component data={data} {...props} />;
-}
+  `,
+};
