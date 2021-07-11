@@ -82,7 +82,11 @@ export default function Component({ data, navigation }) {
           renderItem={({ item }) => (
             <ProjectContainer
               navigation={navigation}
-              dbId={item.node.projectId || item.node.dbId}
+              project={
+                projectsShown === data?.user?.createdProjects
+                  ? item.node
+                  : item.node.project
+              }
             />
           )}
         />
@@ -98,7 +102,9 @@ Component.fragments = {
         edges {
           node {
             id
-            projectId
+            project {
+              ...ProjectContainer
+            }
           }
         }
       }
@@ -106,7 +112,9 @@ Component.fragments = {
         edges {
           node {
             id
-            projectId
+            project {
+              ...ProjectContainer
+            }
           }
         }
       }
@@ -114,10 +122,11 @@ Component.fragments = {
         edges {
           node {
             id
-            dbId
+            ...ProjectContainer
           }
         }
       }
     }
+    ${ProjectContainer.fragments.project}
   `,
 };
