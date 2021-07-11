@@ -12,7 +12,10 @@ import Loading from "./Loading";
 
 function Screen({ data, navigation, mutations }) {
   const { user } = useUser();
-  const isViewer = user && data.user.email === user.email; // convertime en useMemo
+  const isViewer = React.useMemo(
+    () => user && data.user.email === user.email,
+    [user]
+  );
 
   return (
     <View>
