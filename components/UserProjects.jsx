@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Tag } from "react-native-magnus";
 import ProjectContainer from "./ProjectContainer";
 
-export default function Component({ data, navigation }) {
+export default function Component({ data, navigation, refetch }) {
   const [projectsShown, setProjectsShown] = React.useState(
     (!!data.user.projectInvestments.edges.length &&
       data.user.projectInvestments) ||
@@ -77,6 +77,8 @@ export default function Component({ data, navigation }) {
       <Div mt="sm">
         <FlatList
           horizontal
+          refreshing={false}
+          onRefresh={refetch}
           keyExtractor={(item) => item.node.id}
           data={projectsShown.edges}
           renderItem={({ item }) => (

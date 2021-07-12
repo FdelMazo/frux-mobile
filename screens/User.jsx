@@ -10,7 +10,7 @@ import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({ data, navigation, mutations }) {
+function Screen({ data, navigation, mutations, refetch }) {
   const { user } = useUser();
   const isViewer = React.useMemo(
     () => user && data.user.email === user.email,
@@ -33,7 +33,7 @@ function Screen({ data, navigation, mutations }) {
           isViewer={isViewer}
           mutations={mutations}
         />
-        <UserProjects data={data} navigation={navigation} />
+        <UserProjects data={data} navigation={navigation} refetch={refetch} />
         <UserBecomeSupervisorButton data={data} isViewer={isViewer} />
       </MainView>
     </View>
@@ -111,7 +111,7 @@ export default function Render(props) {
     createProjectMutation
   );
 
-  const { loading, error, data } = useQuery(query, {
+  const { loading, error, data, refetch } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
 
@@ -123,6 +123,7 @@ export default function Render(props) {
       data={data}
       navigation={props.navigation}
       mutations={{ mutateUpdateUser, mutateProject }}
+      refetch={refetch}
     />
   );
 }
