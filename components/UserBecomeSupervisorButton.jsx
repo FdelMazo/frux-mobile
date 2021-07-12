@@ -4,7 +4,8 @@ import { Button, Div, Icon, Overlay, Text } from "react-native-magnus";
 export default function Component({ data, isViewer }) {
   const [seerOverlay, setSeerOverlay] = React.useState(false);
 
-  return isViewer ? (
+  if (!isViewer) return null;
+  return (
     <>
       <Div w="65%" mt="2xl">
         <Button
@@ -84,5 +85,5 @@ export default function Component({ data, isViewer }) {
         </Div>
       </Overlay>
     </>
-  ) : null;
+  );
 }

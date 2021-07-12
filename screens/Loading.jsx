@@ -16,7 +16,9 @@ const Component = () => {
     };
   }, []);
 
-  return wakeup ? (
+  if (!wakeup) return null;
+
+  return (
     <View>
       <Div justifyContent="center" h="100%">
         <Image
@@ -42,6 +44,6 @@ const Component = () => {
         </Div>
       </Div>
     </View>
-  ) : null;
+  );
 };
 export default Component;
