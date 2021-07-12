@@ -8,7 +8,7 @@ import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 
-export default function Component({ setFilters, data }) {
+export default function Component({ setFilters, data, isLogged }) {
   const [searchText, setSearchText] = React.useState("");
   const [progressFilters, setProgressFilters] = React.useState([]);
   const [topicsFilter, setTopicsFilter] = React.useState([]);
@@ -58,6 +58,33 @@ export default function Component({ setFilters, data }) {
   return (
     <Div mt="xl" alignItems="center">
       <Div w="65%" row alignItems="center">
+        {isLogged && (data.profile.latitude || data.profile.interests) && (
+          <TouchableOpacity
+            onPress={() => {
+              if (data.profile.latitude) {
+                setLocation({
+                  latitude: data.profile.latitude,
+                  longitude: data.profile.longitude,
+                });
+                setRadius(10000);
+              }
+              if (data.profile.interests.edges.length) {
+                setTopicsFilter(
+                  data.profile.interests.edges.map((n) => n.node.name)
+                );
+              }
+            }}
+          >
+            <Icon
+              m="sm"
+              fontSize="3xl"
+              color="fruxgreen"
+              name="color-wand"
+              fontFamily="Ionicons"
+            />
+          </TouchableOpacity>
+        )}
+
         <DelayInput
           placeholder="Search"
           value={searchText}
@@ -139,10 +166,23 @@ export default function Component({ setFilters, data }) {
 
 Component.fragments = {
   allCategories: gql`
-    fragment DiscoverFilters on CategoryConnection {
+    fragment DiscoverFilters_allCategories on CategoryConnection {
       edges {
         node {
           name
+        }
+      }
+    }
+  `,
+  user: gql`
+    fragment DiscoverFilters_user on User {
+      longitude
+      latitude
+      interests {
+        edges {
+          node {
+            name
+          }
         }
       }
     }
