@@ -1,21 +1,18 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Icon } from "react-native-magnus";
 import { getImageUri, uploadImage } from "../services/media";
-import { useUser } from "../services/user";
 import Notifications from "./Notifications";
 import TopicContainer from "./TopicContainer";
 import TopicsOverlay from "./TopicsOverlay";
 
-function Component({ data, navigation, mutateEntity }) {
-  const { user } = useUser();
+export default function Component({ data, navigation, mutations, created }) {
   const [uriImage, setUriImage] = React.useState(null);
   const [topic, setTopic] = React.useState(
     data.project.categoryName || "Other"
   );
   const [topicOverlay, setTopicOverlay] = React.useState(false);
-  const created = user && data.project.owner.email === user.email;
 
   React.useEffect(() => {
     getImageUri(data.project.uriImage || "nopicture.jpg").then((r) =>
@@ -24,7 +21,7 @@ function Component({ data, navigation, mutateEntity }) {
   }, []);
 
   React.useEffect(() => {
-    mutateEntity({
+    mutations.mutateUpdateProject({
       variables: {
         idProject: data.project.dbId,
         category: topic,
@@ -39,7 +36,7 @@ function Component({ data, navigation, mutateEntity }) {
           onPress={async () => {
             const id = await uploadImage();
             setUriImage(await getImageUri(id));
-            mutateEntity({
+            mutations.mutateUpdateProject({
               variables: {
                 idProject: data.project.dbId,
                 uriImage: id,
@@ -68,7 +65,7 @@ function Component({ data, navigation, mutateEntity }) {
             onPress={async () => {
               const id = await uploadImage();
               setUriImage(await getImageUri(id));
-              mutateEntity({
+              mutations.mutateUpdateProject({
                 variables: {
                   idProject: data.project.dbId,
                   uriImage: id,
@@ -91,7 +88,6 @@ function Component({ data, navigation, mutateEntity }) {
         </Div>
       )}
 
-      {user && <Notifications navigation={navigation} />}
       <Div position="absolute" right={0} bottom={0}>
         <TouchableOpacity
           activeOpacity={created ? 0.2 : 1}
@@ -113,55 +109,24 @@ function Component({ data, navigation, mutateEntity }) {
         visible={topicOverlay}
         setVisible={setTopicOverlay}
         multiple={false}
+        data={data}
       />
     </Div>
   );
 }
 
-export default function Render(props) {
-  const query = gql`
-    query ProjectHeader($dbId: Int!) {
-      project(dbId: $dbId) {
-        dbId
-        id
-        uriImage
-        categoryName
-        owner {
-          email
-        }
-      }
+Component.fragments = {
+  project: gql`
+    fragment ProjectHeader_project on Project {
+      dbId
+      categoryName
+      uriImage
     }
-  `;
-
-  const updateProject = gql`
-    mutation updateProject(
-      $uriImage: String
-      $idProject: Int!
-      $category: String
-    ) {
-      mutateUpdateProject(
-        uriImage: $uriImage
-        idProject: $idProject
-        category: $category
-      ) {
-        id
-        uriImage
-        categoryName
-      }
+  `,
+  allCategories: gql`
+    fragment ProjectHeader_allCategories on CategoryConnection {
+      ...TopicsOverlay
     }
-  `;
-  const [mutateEntity] = useMutation(updateProject);
-
-  const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.dbId },
-  });
-  if (error) alert(JSON.stringify(error));
-  if (loading) return null;
-  return (
-    <Component
-      data={data}
-      navigation={props.navigation}
-      mutateEntity={mutateEntity}
-    />
-  );
-}
+    ${TopicsOverlay.fragments.allCategories}
+  `,
+};

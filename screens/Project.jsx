@@ -1,29 +1,19 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import {
-  Button,
-  Div,
-  Dropdown,
-  Fab,
-  Icon,
-  Input,
-  Overlay,
-  Text,
-} from "react-native-magnus";
-import Loading from "./Loading";
 import ProjectHeader from "../components/ProjectHeader";
-import StarRating from "../components/StarRating";
-import { MainView, View } from "../components/Themed";
-import UserContainer from "../components/UserContainer";
-import Colors from "../constants/Colors";
-import { States } from "../constants/Constants";
-import { dateRepresentation, toggler } from "../services/helpers";
+import { View } from "../components/Themed";
+import { toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
 import { useUser } from "../services/user";
+import Error from "./Error";
+import Loading from "./Loading";
 
 function Screen({ data, navigation, mutations }) {
+  const { user } = useUser();
+  const created = React.useMemo(
+    () => user && data.project.owner.email === user.email,
+    [user]
+  );
   const [dataOverlay, setDataOverlay] = React.useState(false);
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
@@ -46,9 +36,6 @@ function Screen({ data, navigation, mutations }) {
   const [comment, setComment] = React.useState("");
   const [rating, setRating] = React.useState(0);
 
-  const { user } = useUser();
-  const created = user && data.project.owner.email === user.email;
-
   React.useEffect(() => {
     let toAdd = newHashtag;
     if (toAdd.includes(" ")) {
@@ -61,7 +48,7 @@ function Screen({ data, navigation, mutations }) {
 
   React.useEffect(() => {
     if (created)
-      mutations.mutateEntity({
+      mutations.mutateUpdateProject({
         variables: {
           idProject: data.project.dbId,
           hashtags: hashtags.map((h) => h.toLowerCase()),
@@ -86,8 +73,13 @@ function Screen({ data, navigation, mutations }) {
   const dropdownRef = React.createRef();
   return (
     <View>
-      <ProjectHeader dbId={data.project.dbId} navigation={navigation} />
-      <MainView>
+      <ProjectHeader
+        data={data}
+        created={created}
+        mutations={mutations}
+        navigation={navigation}
+      />
+      {/* <MainView>
         <Div w="90%" mt="lg">
           <Div row>
             <UserContainer
@@ -184,7 +176,7 @@ function Screen({ data, navigation, mutations }) {
               onPress={
                 created && !locationSet
                   ? async () => {
-                      mutations.mutateEntity({
+                      mutations.mutateUpdateProject({
                         variables: {
                           idProject: data.project.dbId,
                           latitude: data.project.owner.latitude,
@@ -600,7 +592,7 @@ function Screen({ data, navigation, mutations }) {
           </Button>
           <Button
             onPress={() => {
-              mutations.mutateEntity({
+              mutations.mutateUpdateProject({
                 variables: {
                   idProject: data.project.dbId,
                   description,
@@ -726,7 +718,7 @@ function Screen({ data, navigation, mutations }) {
             </Button>
           </Div>
         </Div>
-      </Overlay>
+      </Overlay> */}
     </View>
   );
 }
@@ -737,6 +729,7 @@ export default function Render(props) {
       project(dbId: $dbId) {
         id
         dbId
+        ...ProjectHeader_project
         deadline
         name
         longitude
@@ -761,7 +754,12 @@ export default function Render(props) {
           }
         }
       }
+      allCategories {
+        ...ProjectHeader_allCategories
+      }
     }
+    ${ProjectHeader.fragments.project}
+    ${ProjectHeader.fragments.allCategories}
   `;
 
   const updateMutation = gql`
@@ -772,6 +770,8 @@ export default function Render(props) {
       $longitude: String
       $latitude: String
       $hashtags: [String]
+      $uriImage: String
+      $category: String
     ) {
       mutateUpdateProject(
         idProject: $idProject
@@ -780,8 +780,11 @@ export default function Render(props) {
         latitude: $latitude
         longitude: $longitude
         hashtags: $hashtags
+        uriImage: $uriImage
+        category: $category
       ) {
         id
+        ...ProjectHeader_project
         name
         description
         latitude
@@ -795,9 +798,9 @@ export default function Render(props) {
         }
       }
     }
+    ${ProjectHeader.fragments.project}
   `;
-  const [mutateEntity, { error: mutError }] = useMutation(updateMutation);
-  if (mutError) alert(JSON.stringify(mutError));
+
   const investMutation = gql`
     mutation Invest($idProject: Int!, $investedAmount: Float!) {
       mutateInvestProject(
@@ -811,18 +814,25 @@ export default function Render(props) {
       }
     }
   `;
-  const [invest] = useMutation(investMutation);
+
+  const [mutateUpdateProject, { error: mutateUpdateProjectError }] =
+    useMutation(updateMutation);
+
+  const [mutateInvestProject, { error: mutateInvestProjectError }] =
+    useMutation(investMutation);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.route.params.dbId },
   });
-  if (error) alert(JSON.stringify(error));
+  const errors = [error, mutateUpdateProjectError, mutateInvestProjectError];
+
+  if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
   return (
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ invest, mutateEntity }}
+      mutations={{ mutateUpdateProject, mutateInvestProject }}
     />
   );
 }

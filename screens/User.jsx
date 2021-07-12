@@ -44,9 +44,10 @@ export default function Render(props) {
   const query = gql`
     query User($dbId: Int!) {
       user(dbId: $dbId) {
-        ...UserData
         dbId
         id
+        email
+        ...UserData
         ...UserEditionHeaderAndDropdown
         ...UserProjects
         ...UserFavouriteTopics_user
