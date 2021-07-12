@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
 import ProjectData from "../components/ProjectData";
+import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
 import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
@@ -37,6 +38,12 @@ function Screen({ data, navigation, mutations }) {
           created={created}
           mutations={mutations}
           navigation={navigation}
+        />
+
+        <ProjectFavAndInvest
+          data={data}
+          created={created}
+          mutations={mutations}
         />
 
         {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
@@ -395,12 +402,16 @@ function Screen({ data, navigation, mutations }) {
 
 export default function Render(props) {
   const query = gql`
-    query Project($dbId: Int!) {
+    query Project($dbId: Int!, $isLogged: Boolean!) {
+      profile @include(if: $isLogged) {
+        ...ProjectFavAndInvest_user
+      }
       project(dbId: $dbId) {
         id
         dbId
         ...ProjectHeader_project
         ...ProjectData
+        ...ProjectFavAndInvest_project
         owner {
           email
         }
@@ -412,6 +423,8 @@ export default function Render(props) {
     ${ProjectHeader.fragments.project}
     ${ProjectHeader.fragments.allCategories}
     ${ProjectData.fragments.project}
+    ${ProjectFavAndInvest.fragments.project}
+    ${ProjectFavAndInvest.fragments.user}
   `;
 
   const updateMutation = gql`
@@ -444,6 +457,28 @@ export default function Render(props) {
     ${ProjectData.fragments.project}
   `;
 
+  const favMutation = gql`
+    mutation favMutation($idProject: Int!) {
+      mutateFavProject(idProject: $idProject) {
+        project {
+          ...ProjectFavAndInvest_project
+        }
+      }
+    }
+    ${ProjectFavAndInvest.fragments.project}
+  `;
+
+  const unfavMutation = gql`
+    mutation unfavMutation($idProject: Int!) {
+      mutateUnfavProject(idProject: $idProject) {
+        project {
+          ...ProjectFavAndInvest_project
+        }
+      }
+    }
+    ${ProjectFavAndInvest.fragments.project}
+  `;
+
   // const investMutation = gql`
   //   mutation Invest($idProject: Int!, $investedAmount: Float!) {
   //     mutateInvestProject(
@@ -458,16 +493,45 @@ export default function Render(props) {
   //   }
   // `;
 
-  const [mutateUpdateProject, { error: mutateUpdateProjectError }] =
-    useMutation(updateMutation);
-
   // const [mutateInvestProject, { error: mutateInvestProjectError }] =
   // useMutation(investMutation);
 
+  const { user } = useUser();
+  const isLogged = !!user;
   const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.route.params.dbId },
+    variables: {
+      dbId: props.route.params.dbId,
+      isLogged,
+    },
   });
-  const errors = [error, mutateUpdateProjectError]; //, mutateInvestProjectError];
+
+  const [mutateUpdateProject, { error: mutateUpdateProjectError }] =
+    useMutation(updateMutation);
+
+  const [mutateFavProject, { error: mutateFavProjectError }] =
+    useMutation(favMutation);
+
+  const [mutateUnfavProject, { error: mutateUnfavProjectError }] = useMutation(
+    unfavMutation,
+    {
+      refetchQueries: [
+        {
+          query,
+          variables: {
+            dbId: props.route.params.dbId,
+            isLogged,
+          },
+        },
+      ],
+    }
+  );
+
+  const errors = [
+    error,
+    mutateFavProjectError,
+    mutateUnfavProjectError,
+    mutateUpdateProjectError,
+  ]; //, mutateInvestProjectError];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
@@ -475,7 +539,7 @@ export default function Render(props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateUpdateProject }} //, mutateInvestProject }}
+      mutations={{ mutateUpdateProject, mutateFavProject, mutateUnfavProject }} //, mutateInvestProject }}
     />
   );
 }
