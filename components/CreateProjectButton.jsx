@@ -1,18 +1,15 @@
-import { gql, useMutation } from "@apollo/client";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as React from "react";
 import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
-import Colors from "../constants/Colors";
 import { formatDateInput } from "../services/helpers";
 
-function Component(props) {
-  const { mutations, navigation, data } = props;
+export default function Component({ mutations, navigation }) {
+  const [projectId, setProjectId] = React.useState(null);
+
   const [createProjectOverlay, setCreateProjectOverlay] = React.useState(false);
   const [newProjectName, setNewProjectName] = React.useState("");
   const [newProjectDescription, setNewProjectDescription] = React.useState("");
   const [projectError, setProjectError] = React.useState("");
-  const [newProjectGoal, setNewProjectGoal] = React.useState(500);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const inOneMonth = new Date();
@@ -21,11 +18,11 @@ function Component(props) {
   const [selectDate, setSelectDate] = React.useState(false);
 
   React.useEffect(() => {
-    if (data?.mutateProject?.dbId)
-      navigation.navigate("ProjectScreen", {
-        dbId: data.mutateProject.dbId,
-      });
-  }, [data?.mutateProject?.dbId]);
+    if (!projectId) return;
+    navigation.navigate("ProjectScreen", {
+      dbId: projectId,
+    });
+  }, [projectId]);
 
   return (
     <>
@@ -46,7 +43,7 @@ function Component(props) {
         <Text fontSize="xl" fontWeight="bold">
           Create New Project
         </Text>
-        <Div>
+        <Div my="md">
           <Input
             w="65%"
             mt="md"
@@ -90,26 +87,6 @@ function Component(props) {
               </Text>
             </Div>
           </Button>
-
-          <Div m="md">
-            <Text fontSize="5xl" color="fruxgreen">
-              {"$"}
-              {newProjectGoal}
-            </Text>
-            <MultiSlider
-              selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-              markerStyle={{
-                backgroundColor: Colors.fruxgreen,
-              }}
-              values={[newProjectGoal]}
-              sliderLength={200}
-              onValuesChange={(v) => {
-                setNewProjectGoal(Math.floor(v));
-              }}
-              step={50}
-              max={5000}
-            />
-          </Div>
         </Div>
         {projectError !== "" && (
           <Text color="fruxred" textAlign="right" m="md">
@@ -135,21 +112,21 @@ function Component(props) {
               if (
                 !newProjectName ||
                 !newProjectDescription ||
-                !newProjectGoal ||
                 !newFinalizationDate
               ) {
                 return setProjectError("You must specify all fields!");
               }
 
               setCreateProjectOverlay(false);
-              await mutations?.createProject({
+
+              const newProject = await mutations.mutateProject({
                 variables: {
                   name: newProjectName,
-                  goal: newProjectGoal,
                   description: newProjectDescription,
                   deadline: formatDateInput(newFinalizationDate),
                 },
               });
+              setProjectId(newProject.data.mutateProject.dbId);
             }}
             mx="sm"
             p="md"
@@ -174,29 +151,4 @@ function Component(props) {
       </Overlay>
     </>
   );
-}
-
-export default function Render(props) {
-  const createProjectMutation = gql`
-    mutation createProjectMutation(
-      $description: String!
-      $goal: Int!
-      $name: String!
-      $deadline: String!
-    ) {
-      mutateProject(
-        description: $description
-        goal: $goal
-        name: $name
-        deadline: $deadline
-      ) {
-        dbId
-      }
-    }
-  `;
-  const [createProject, { data, loading, error }] = useMutation(
-    createProjectMutation
-  );
-
-  return <Component mutations={{ createProject }} {...props} data={data} />;
 }

@@ -95,21 +95,34 @@ export default function Render(props) {
     ${UserEditionHeaderAndDropdown.fragments.user}
   `;
 
+  const createProjectMutation = gql`
+    mutation createProjectMutation($description: String!, $name: String!) {
+      mutateProject(description: $description, name: $name, goal: 0) {
+        id
+        dbId
+      }
+    }
+  `;
+
   const [mutateUpdateUser, { error: mutateUpdateUserError }] =
     useMutation(updateMutation);
+
+  const [mutateProject, { error: mutateProjectError }] = useMutation(
+    createProjectMutation
+  );
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
-  const errors = [error, mutateUpdateUserError];
 
+  const errors = [error, mutateUpdateUserError, mutateProjectError];
   if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
   return (
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateUpdateUser }}
+      mutations={{ mutateUpdateUser, mutateProject }}
     />
   );
 }

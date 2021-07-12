@@ -6,9 +6,14 @@ import { loggingOut, useUser } from "../services/user";
 import CreateProjectButton from "./CreateProjectButton";
 import Notifications from "./Notifications";
 
-export default function Component(props) {
-  const { icon, title, onPress, navigation } = props;
-
+export default function Component({
+  data,
+  icon,
+  title,
+  onPress,
+  navigation,
+  mutations,
+}) {
   const { user } = useUser();
 
   return (
@@ -32,7 +37,10 @@ export default function Component(props) {
             </Button>
           </Div>
           <Div position="absolute" bottom={0}>
-            <CreateProjectButton navigation={navigation} />
+            <CreateProjectButton
+              navigation={navigation}
+              mutations={mutations}
+            />
           </Div>
         </>
       )}

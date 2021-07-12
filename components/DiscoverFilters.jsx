@@ -176,6 +176,7 @@ Component.fragments = {
   `,
   user: gql`
     fragment DiscoverFilters_user on User {
+      id
       longitude
       latitude
       interests {

@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
 import DiscoverFilters from "../components/DiscoverFilters";
 import DiscoverSeeds from "../components/DiscoverSeeds";
@@ -8,14 +8,28 @@ import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({ data, refetch, navigation, filters, setFilters, isLogged }) {
+function Screen({
+  data,
+  refetch,
+  navigation,
+  filters,
+  setFilters,
+  isLogged,
+  mutations,
+}) {
   React.useEffect(() => {
     refetch({ filters });
   }, [filters]);
 
   return (
     <View>
-      <Header navigation={navigation} title="Discover" icon="discover" />
+      <Header
+        data={data}
+        navigation={navigation}
+        title="Discover"
+        icon="discover"
+        mutations={mutations}
+      />
       <MainView>
         <DiscoverFilters
           data={data}
@@ -46,6 +60,28 @@ export default function Render(props) {
     ${DiscoverFilters.fragments.user}
   `;
 
+  const createProjectMutation = gql`
+    mutation createProjectMutation(
+      $description: String!
+      $name: String!
+      $deadline: String!
+    ) {
+      mutateProject(
+        description: $description
+        name: $name
+        deadline: $deadline
+        goal: 0
+      ) {
+        id
+        dbId
+      }
+    }
+  `;
+
+  const [mutateProject, { error: mutateProjectError }] = useMutation(
+    createProjectMutation
+  );
+
   const [filters, setFilters] = React.useState({});
   const { user } = useUser();
   const isLogged = !!user;
@@ -56,7 +92,8 @@ export default function Render(props) {
     },
   });
 
-  if (error) return <Error errors={[error]} />;
+  const errors = [error, mutateProjectError];
+  if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
   return (
     <Screen
@@ -64,6 +101,7 @@ export default function Render(props) {
       navigation={props.navigation}
       refetch={refetch}
       filters={filters}
+      mutations={{ mutateProject }}
       setFilters={setFilters}
       isLogged={isLogged}
     />

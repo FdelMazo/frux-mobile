@@ -30,6 +30,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
   return (
     <>
       <Header
+        data={data}
         onPress={
           isViewer
             ? () => {
@@ -38,6 +39,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
             : undefined
         }
         navigation={navigation}
+        mutations={mutations}
         title={defaultUsername}
         icon={data.user.imagePath || "seed"}
       />

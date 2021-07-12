@@ -142,6 +142,7 @@ export default function Render(props) {
   const query = gql`
     query Profile($isLogged: Boolean!) {
       profile @include(if: $isLogged) {
+        id
         dbId
       }
     }
