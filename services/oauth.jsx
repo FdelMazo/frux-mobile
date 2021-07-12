@@ -3,6 +3,10 @@ import { makeRedirectUri, startAsync } from "expo-auth-session";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { LogBox } from "react-native";
+
+// https://stackoverflow.com/questions/44603362/setting-a-timer-for-a-long-period-of-time-i-e-multiple-minutes
+LogBox.ignoreLogs(["Setting a timer"]);
 
 export async function redirectToGithub() {
   const returnUrl = makeRedirectUri({
