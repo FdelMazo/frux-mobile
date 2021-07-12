@@ -17,8 +17,12 @@ function Screen({
   isLogged,
   mutations,
 }) {
-  React.useEffect(() => {
+  const refetchSeeds = React.useCallback(() => {
     refetch({ filters });
+  }, [filters]);
+
+  React.useEffect(() => {
+    refetchSeeds();
   }, [filters]);
 
   return (
@@ -36,7 +40,11 @@ function Screen({
           setFilters={setFilters}
           isLogged={isLogged}
         />
-        <DiscoverSeeds data={data} navigation={navigation} />
+        <DiscoverSeeds
+          data={data}
+          navigation={navigation}
+          refetchSeeds={refetchSeeds}
+        />
       </MainView>
     </View>
   );
