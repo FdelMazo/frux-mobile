@@ -1,9 +1,8 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import ProjectData from "../components/ProjectData";
 import ProjectHeader from "../components/ProjectHeader";
-import { View } from "../components/Themed";
-import { toggler } from "../services/helpers";
-import { getAddressName } from "../services/location";
+import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
@@ -14,63 +13,16 @@ function Screen({ data, navigation, mutations }) {
     () => user && data.project.owner.email === user.email,
     [user]
   );
-  const [dataOverlay, setDataOverlay] = React.useState(false);
-  const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
-  const [deleteOverlay, setDeleteOverlay] = React.useState(false);
-  const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
-  const [name, setName] = React.useState(data.project.name);
-  const [hashtags, setHashtags] = React.useState(
-    data.project.hashtags.edges.map((n) => n.node.hashtag) || []
-  );
-  const [newHashtag, setNewHashtag] = React.useState("");
-  const [hashtagOverlay, setHashtagOverlay] = React.useState(false);
-  const [description, setDescription] = React.useState(
-    data.project.description
-  );
-  const [locationSet, setLocationSet] = React.useState(
-    data.project.latitude !== "0.0"
-  );
-  const [locationText, setLocationText] = React.useState("Include my location");
-  const [reviewOverlay, setReviewOverlay] = React.useState(false);
-  const [comment, setComment] = React.useState("");
-  const [rating, setRating] = React.useState(0);
+  // const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
+  // const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
+  // const [deleteOverlay, setDeleteOverlay] = React.useState(false);
+  // const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
 
-  React.useEffect(() => {
-    let toAdd = newHashtag;
-    if (toAdd.includes(" ")) {
-      if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
-      toAdd = toAdd.trim();
-      toggler(hashtags, setHashtags, toAdd);
-      setNewHashtag("");
-    }
-  }, [newHashtag]);
+  // const [reviewOverlay, setReviewOverlay] = React.useState(false);
+  // const [comment, setComment] = React.useState("");
+  // const [rating, setRating] = React.useState(0);
 
-  React.useEffect(() => {
-    if (created)
-      mutations.mutateUpdateProject({
-        variables: {
-          idProject: data.project.dbId,
-          hashtags: hashtags.map((h) => h.toLowerCase()),
-        },
-      });
-  }, [hashtags]);
-
-  React.useEffect(() => {
-    async function _getAddress() {
-      let text = "Include my location";
-      if (locationSet) {
-        text = await getAddressName({
-          latitude: parseFloat(data.project.latitude),
-          longitude: parseFloat(data.project.longitude),
-        });
-      }
-      setLocationText(text);
-    }
-    _getAddress();
-  }, [locationSet]);
-
-  const dropdownRef = React.createRef();
+  // const dropdownRef = React.createRef();
   return (
     <View>
       <ProjectHeader
@@ -79,148 +31,21 @@ function Screen({ data, navigation, mutations }) {
         mutations={mutations}
         navigation={navigation}
       />
-      {/* <MainView>
-        <Div w="90%" mt="lg">
-          <Div row>
-            <UserContainer
-              navigation={navigation}
-              dbId={data.project.owner.dbId}
-            />
+      <MainView>
+        <ProjectData
+          data={data}
+          created={created}
+          mutations={mutations}
+          navigation={navigation}
+        />
 
-            <Div flex={1} ml="lg">
-              <TouchableOpacity
-                activeOpacity={created ? 0.2 : 1}
-                onPress={
-                  created
-                    ? () => {
-                        setDataOverlay(true);
-                      }
-                    : undefined
-                }
-              >
-                <Div row justifyContent="flex-start">
-                  <Text
-                    fontSize="4xl"
-                    fontFamily="latinmodernroman-bold"
-                    fontWeight="bold"
-                  >
-                    {data.project.name}
-                  </Text>
-
-                  <Div
-                    alignSelf="flex-start"
-                    bg={States[data.project.currentState].color + "500"}
-                    rounded="md"
-                    px="xs"
-                  >
-                    <Text color="white" fontSize="xs">
-                      {data.project.currentState}
-                    </Text>
-                  </Div>
-                </Div>
-                <Text
-                  lineHeight={20}
-                  fontSize="xl"
-                  fontFamily="latinmodernroman-bold"
-                  color="gray600"
-                >
-                  {data.project.description}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={created ? 0.2 : 1}
-                onPress={
-                  created
-                    ? () => {
-                        setHashtagOverlay(true);
-                      }
-                    : undefined
-                }
-              >
-                {hashtags.length ? (
-                  <Div row flexWrap="wrap">
-                    {hashtags.map((h) => (
-                      <Text
-                        key={h}
-                        px={0}
-                        mx="xs"
-                        bg={undefined}
-                        color="fruxgreen"
-                        fontSize="sm"
-                      >
-                        {"# "}
-                        {h}
-                      </Text>
-                    ))}
-                  </Div>
-                ) : (
-                  <Text
-                    px={0}
-                    bg={undefined}
-                    mx="sm"
-                    color="fruxgreen"
-                    fontSize="sm"
-                  >
-                    ####
-                  </Text>
-                )}
-              </TouchableOpacity>
-            </Div>
-          </Div>
-        </Div>
-        <Div row w="90%" justifyContent="space-between">
-          {((created && !locationSet) || !!locationSet) && (
-            <TouchableOpacity
-              activeOpacity={created && !locationSet ? 0.2 : 1}
-              onPress={
-                created && !locationSet
-                  ? async () => {
-                      mutations.mutateUpdateProject({
-                        variables: {
-                          idProject: data.project.dbId,
-                          latitude: data.project.owner.latitude,
-                          longitude: data.project.owner.longitude,
-                        },
-                      });
-                      setLocationSet(true);
-                    }
-                  : undefined
-              }
-            >
-              <Div row>
-                <Icon
-                  name="location-outline"
-                  fontFamily="Ionicons"
-                  fontSize="xl"
-                  color="blue600"
-                />
-                <Text
-                  py="sm"
-                  px={0}
-                  bg={undefined}
-                  color="blue500"
-                  fontSize="sm"
-                >
-                  {locationText}
-                </Text>
-              </Div>
-            </TouchableOpacity>
-          )}
-          <Div row>
-            <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
-              {dateRepresentation(data.project.creationDate)} ~{" "}
-              {dateRepresentation(data.project.deadline)}
-            </Text>
-          </Div>
-        </Div>
-
-        <TouchableOpacity onPress={() => setReviewOverlay(true)}>
+        {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
           <Div row my="lg">
             <StarRating rating={2.5} size={35} />
           </Div>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
+        {/*
         <Div row w="90%" mt="xs" justifyContent="space-between">
           <TouchableOpacity onPress={() => dropdownRef.current.open()}>
             <Div>
@@ -265,10 +90,10 @@ function Screen({ data, navigation, mutations }) {
               Out of ${data.project.goal}
             </Text>
           </Div>
-        </Div>
+        </Div>*/}
       </MainView>
 
-      <Dropdown
+      {/* <Dropdown
         ref={dropdownRef}
         title={
           <Div alignSelf="center" mb="sm">
@@ -291,9 +116,9 @@ function Screen({ data, navigation, mutations }) {
             </Text>
           </Div>
         </Dropdown.Option>
-      </Dropdown>
+      </Dropdown> */}
 
-      <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
+      {/* <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
         {created ? (
           <Button
             my="xs"
@@ -367,9 +192,9 @@ function Screen({ data, navigation, mutations }) {
             </Button>
           </>
         )}
-      </Fab>
+      </Fab> */}
 
-      <Overlay visible={sponsorOverlay}>
+      {/* <Overlay visible={sponsorOverlay}>
         <Text fontSize="xl" fontWeight="bold">
           How much do you want to chip in?
         </Text>
@@ -563,161 +388,6 @@ function Screen({ data, navigation, mutations }) {
             Review
           </Button>
         </Div>
-      </Overlay>
-
-      <Overlay visible={dataOverlay}>
-        <Input value={name} onChangeText={setName} placeholder="Name" />
-
-        <Input
-          mt="sm"
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Description"
-        />
-
-        <Div row alignSelf="flex-end" mt="md">
-          <Button
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setDataOverlay(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onPress={() => {
-              mutations.mutateUpdateProject({
-                variables: {
-                  idProject: data.project.dbId,
-                  description,
-                  name,
-                },
-              });
-              setDataOverlay(false);
-            }}
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Save
-          </Button>
-        </Div>
-      </Overlay>
-
-      <Overlay visible={hashtagOverlay}>
-        <Input
-          prefix={<Text color="fruxgreen">#</Text>}
-          value={newHashtag}
-          onChangeText={setNewHashtag}
-          onEndEditing={() => {
-            let toAdd = newHashtag;
-            if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
-            toAdd = toAdd.trim();
-            toggler(hashtags, setHashtags, toAdd);
-            setNewHashtag("");
-          }}
-          focusBorderColor="fruxgreen"
-          placeholder="hashtag"
-        />
-
-        <Div mt="sm" row flexWrap="wrap">
-          {hashtags.map((h) => (
-            <Button
-              key={h}
-              bg={undefined}
-              p={0}
-              m="xs"
-              onPress={() => {
-                toggler(hashtags, setHashtags, h);
-              }}
-            >
-              <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
-                <Text fontSize="xs">{`# ${h}`}</Text>
-              </Div>
-            </Button>
-          ))}
-        </Div>
-
-        <Div my="md" row justifyContent="space-between">
-          <Div alignSelf="center"></Div>
-
-          <Div row>
-            <Button
-              onPress={() => {
-                setHashtagOverlay(false);
-              }}
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg="fruxgreen"
-              color="white"
-            >
-              Done
-            </Button>
-          </Div>
-        </Div>
-      </Overlay>
-
-      <Overlay visible={hashtagOverlay}>
-        <Input
-          prefix={<Text color="fruxgreen">#</Text>}
-          value={newHashtag}
-          onChangeText={setNewHashtag}
-          onEndEditing={() => {
-            let toAdd = newHashtag;
-            if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
-            toAdd = toAdd.trim();
-            toggler(hashtags, setHashtags, toAdd);
-            setNewHashtag("");
-          }}
-          focusBorderColor="fruxgreen"
-          placeholder="hashtag"
-        />
-
-        <Div mt="sm" row flexWrap="wrap">
-          {hashtags.map((h) => (
-            <Button
-              key={h}
-              bg={undefined}
-              p={0}
-              m="xs"
-              onPress={() => {
-                toggler(hashtags, setHashtags, h);
-              }}
-            >
-              <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
-                <Text fontSize="xs">{`# ${h}`}</Text>
-              </Div>
-            </Button>
-          ))}
-        </Div>
-
-        <Div my="md" row justifyContent="space-between">
-          <Div alignSelf="center"></Div>
-
-          <Div row>
-            <Button
-              onPress={() => {
-                setHashtagOverlay(false);
-              }}
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg="fruxgreen"
-              color="white"
-            >
-              Done
-            </Button>
-          </Div>
-        </Div>
       </Overlay> */}
     </View>
   );
@@ -730,28 +400,9 @@ export default function Render(props) {
         id
         dbId
         ...ProjectHeader_project
-        deadline
-        name
-        longitude
-        latitude
+        ...ProjectData
         owner {
-          dbId
           email
-          latitude
-          longitude
-        }
-        name
-        creationDate
-        currentState
-        description
-        amountCollected
-        goal
-        hashtags {
-          edges {
-            node {
-              hashtag
-            }
-          }
         }
       }
       allCategories {
@@ -760,6 +411,7 @@ export default function Render(props) {
     }
     ${ProjectHeader.fragments.project}
     ${ProjectHeader.fragments.allCategories}
+    ${ProjectData.fragments.project}
   `;
 
   const updateMutation = gql`
@@ -785,46 +437,37 @@ export default function Render(props) {
       ) {
         id
         ...ProjectHeader_project
-        name
-        description
-        latitude
-        longitude
-        hashtags {
-          edges {
-            node {
-              hashtag
-            }
-          }
-        }
+        ...ProjectData
       }
     }
     ${ProjectHeader.fragments.project}
+    ${ProjectData.fragments.project}
   `;
 
-  const investMutation = gql`
-    mutation Invest($idProject: Int!, $investedAmount: Float!) {
-      mutateInvestProject(
-        idProject: $idProject
-        investedAmount: $investedAmount
-      ) {
-        project {
-          id
-          amountCollected
-        }
-      }
-    }
-  `;
+  // const investMutation = gql`
+  //   mutation Invest($idProject: Int!, $investedAmount: Float!) {
+  //     mutateInvestProject(
+  //       idProject: $idProject
+  //       investedAmount: $investedAmount
+  //     ) {
+  //       project {
+  //         id
+  //         amountCollected
+  //       }
+  //     }
+  //   }
+  // `;
 
   const [mutateUpdateProject, { error: mutateUpdateProjectError }] =
     useMutation(updateMutation);
 
-  const [mutateInvestProject, { error: mutateInvestProjectError }] =
-    useMutation(investMutation);
+  // const [mutateInvestProject, { error: mutateInvestProjectError }] =
+  // useMutation(investMutation);
 
   const { loading, error, data } = useQuery(query, {
     variables: { dbId: props.route.params.dbId },
   });
-  const errors = [error, mutateUpdateProjectError, mutateInvestProjectError];
+  const errors = [error, mutateUpdateProjectError]; //, mutateInvestProjectError];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
@@ -832,7 +475,7 @@ export default function Render(props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateUpdateProject, mutateInvestProject }}
+      mutations={{ mutateUpdateProject }} //, mutateInvestProject }}
     />
   );
 }

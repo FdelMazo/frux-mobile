@@ -1,17 +1,15 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Icon, Text } from "react-native-magnus";
 import { AppIcons } from "../constants/Constants";
 
-function Component({ data, navigation }) {
-  const userPicture = data.user.imagePath || "seed";
+export default function Component({ user, navigation }) {
+  const userPicture = user.imagePath || "seed";
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("UserScreen", { dbId: data.user.dbId })
-      }
+      onPress={() => navigation.navigate("UserScreen", { dbId: user.dbId })}
     >
       <Div alignItems="center" m="sm">
         <Icon
@@ -27,7 +25,7 @@ function Component({ data, navigation }) {
         />
         <Div mt="xs">
           <Text fontSize="xs" fontWeight="bold">
-            {data.user.username || data.user.email.split("@")[0]}
+            {user.username || user.email.split("@")[0]}
           </Text>
         </Div>
       </Div>
@@ -35,21 +33,13 @@ function Component({ data, navigation }) {
   );
 }
 
-export default function Render(props) {
-  const query = gql`
-    query UserContainer($dbId: Int!) {
-      user(dbId: $dbId) {
-        dbId
-        username
-        email
-        imagePath
-      }
+Component.fragments = {
+  user: gql`
+    fragment UserContainer on User {
+      dbId
+      username
+      email
+      imagePath
     }
-  `;
-  const { loading, error, data } = useQuery(query, {
-    variables: { dbId: props.dbId },
-  });
-  if (error) alert(JSON.stringify(error));
-  if (loading) return null;
-  return <Component data={data} navigation={props.navigation} />;
-}
+  `,
+};

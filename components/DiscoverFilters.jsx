@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import * as React from "react";
 import DelayInput from "react-native-debounce-input";
 import { TouchableOpacity } from "react-native-gesture-handler";

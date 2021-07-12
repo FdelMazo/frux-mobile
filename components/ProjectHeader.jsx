@@ -3,7 +3,6 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Icon } from "react-native-magnus";
 import { getImageUri, uploadImage } from "../services/media";
-import Notifications from "./Notifications";
 import TopicContainer from "./TopicContainer";
 import TopicsOverlay from "./TopicsOverlay";
 
@@ -21,12 +20,13 @@ export default function Component({ data, navigation, mutations, created }) {
   }, []);
 
   React.useEffect(() => {
-    mutations.mutateUpdateProject({
-      variables: {
-        idProject: data.project.dbId,
-        category: topic,
-      },
-    });
+    if (created)
+      mutations.mutateUpdateProject({
+        variables: {
+          idProject: data.project.dbId,
+          category: topic,
+        },
+      });
   }, [topic]);
 
   return (
