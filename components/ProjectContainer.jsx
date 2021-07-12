@@ -12,7 +12,7 @@ export default function Component({ project, navigation }) {
     getImageUri(project.uriImage || "nopicture.jpg").then((r) =>
       setUriImage(r)
     );
-  }, []);
+  }, [project.uriImage]);
 
   return (
     <TouchableOpacity

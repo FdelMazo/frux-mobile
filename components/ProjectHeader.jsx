@@ -17,7 +17,7 @@ export default function Component({ data, navigation, mutations, created }) {
     getImageUri(data.project.uriImage || "nopicture.jpg").then((r) =>
       setUriImage(r)
     );
-  }, []);
+  }, [data.project.uriImage]);
 
   React.useEffect(() => {
     if (created)
