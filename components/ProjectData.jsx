@@ -78,14 +78,16 @@ export default function Component({ data, created, mutations, navigation }) {
               }
             >
               <Div row justifyContent="flex-start">
-                <Text
-                  fontSize="4xl"
-                  fontFamily="latinmodernroman-bold"
-                  fontWeight="bold"
-                >
-                  {data.project.name}
-                </Text>
-
+                <Div w="80%">
+                  <Text
+                    fontSize="4xl"
+                    lineHeight={25}
+                    fontFamily="latinmodernroman-bold"
+                    fontWeight="bold"
+                  >
+                    {data.project.name}
+                  </Text>
+                </Div>
                 <Div
                   alignSelf="flex-start"
                   bg={States[data.project.currentState].color + "500"}

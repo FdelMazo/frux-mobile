@@ -23,7 +23,10 @@ export default function Component({ data, isViewer, mutations }) {
     <>
       <Div w="90%" mt="xl">
         {myTopics.length ? (
-          <TouchableOpacity onPress={() => setMyTopicsOverlay(true)}>
+          <TouchableOpacity
+            activeOpacity={isViewer ? 0.2 : 1}
+            onPress={isViewer ? () => setMyTopicsOverlay(true) : undefined}
+          >
             <>
               <Div alignSelf="flex-start">
                 <Text fontSize="xl" fontWeight="bold">
