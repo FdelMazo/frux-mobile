@@ -42,8 +42,22 @@ export default function Component({ data, mutations, created }) {
     setStages(newStages);
   };
 
-  if (!created || data.project.currentState !== "CREATED") return null;
-  return (
+  if (data.project.currentState !== "CREATED") return null;
+  return !created ? (
+    <Div my="lg" w="75%" justifyContent="center" alignItems="center">
+      <Text textAlign="center" color="fruxgreen">
+        This project is still giving its first steps. You won't be able to fund
+        it until it enters it's{" "}
+        <Text color="fruxgreen" fontWeight="bold">
+          Funding
+        </Text>{" "}
+        phase.
+      </Text>
+      <Text my="sm" color="fruxgreen">
+        Why don't you come back a little bit later?
+      </Text>
+    </Div>
+  ) : (
     <>
       <Div row my="lg" w="90%" justifyContent="space-between">
         <Button
@@ -367,6 +381,7 @@ Component.fragments = {
         edges {
           node {
             id
+            currentState
             title
             description
             goal
