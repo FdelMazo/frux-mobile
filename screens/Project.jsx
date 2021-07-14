@@ -5,6 +5,7 @@ import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
 import ProjectProgress from "../components/ProjectProgress";
+import ProjectSeer from "../components/ProjectSeer";
 import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
 import Error from "./Error";
@@ -42,14 +43,10 @@ function Screen({ data, navigation, mutations }) {
           navigation={navigation}
         />
 
-        <ProjectFavAndInvest
-          data={data}
-          created={created}
-          mutations={mutations}
-        />
-
+        <ProjectFavAndInvest data={data} mutations={mutations} />
         <ProjectCreation data={data} created={created} mutations={mutations} />
         <ProjectProgress data={data} created={created} mutations={mutations} />
+        <ProjectSeer data={data} />
 
         {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
           <Div row my="lg">
@@ -57,7 +54,6 @@ function Screen({ data, navigation, mutations }) {
           </Div>
         </TouchableOpacity> */}
       </MainView>
-
 
       {/* <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
         {created ? (
@@ -339,6 +335,7 @@ export default function Render(props) {
     query Project($dbId: Int!, $isLogged: Boolean!) {
       profile @include(if: $isLogged) {
         ...ProjectFavAndInvest_user
+        ...ProjectSeer_user
       }
       project(dbId: $dbId) {
         id
@@ -348,6 +345,7 @@ export default function Render(props) {
         ...ProjectFavAndInvest_project
         ...ProjectCreation_project
         ...ProjectProgress
+        ...ProjectSeer_project
         owner {
           email
         }
@@ -363,6 +361,8 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.user}
     ${ProjectCreation.fragments.project}
     ${ProjectProgress.fragments.project}
+    ${ProjectSeer.fragments.project}
+    ${ProjectSeer.fragments.user}
   `;
 
   const updateMutation = gql`

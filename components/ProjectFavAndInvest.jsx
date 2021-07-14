@@ -3,7 +3,7 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import { Div, Image, Text } from "react-native-magnus";
 
-export default function Component({ data, mutations, created }) {
+export default function Component({ data, mutations }) {
   const likedByUser = React.useMemo(() => {
     if (!data.profile) return false;
     const ids = data.project.favoritesFrom.edges.map((i) => i.node.userId);

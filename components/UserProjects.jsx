@@ -7,15 +7,35 @@ import ProjectContainer from "./ProjectContainer";
 
 export default function Component({ data, navigation, refetch }) {
   const [projectsShown, setProjectsShown] = React.useState(
-    (!!data.user.projectInvestments.edges.length &&
-      data.user.projectInvestments) ||
+    (!!data.user.createdProjects.edges.length && data.user.createdProjects) ||
+      (!!data.user.projectInvestments.edges.length &&
+        data.user.projectInvestments) ||
       (!!data.user.favoritedProjects.edges.length &&
         data.user.favoritedProjects) ||
-      (!!data.user.createdProjects.edges.length && data.user.createdProjects)
+      (!!data.user.seerProjects.edges.length && data.user.seerProjects)
   );
   return (
     <Div w="90%" mt="xl">
       <Div row>
+        {!!data.user.createdProjects.edges.length && (
+          <TouchableOpacity
+            onPress={() => setProjectsShown(data.user.createdProjects)}
+          >
+            <Tag
+              fontSize="sm"
+              rounded="circle"
+              mx="sm"
+              bg={
+                projectsShown === data.user.createdProjects
+                  ? "blue400"
+                  : "blue200"
+              }
+            >
+              Created
+            </Tag>
+          </TouchableOpacity>
+        )}
+
         {!!data.user.projectInvestments.edges.length && (
           <TouchableOpacity
             onPress={() => setProjectsShown(data.user.projectInvestments)}
@@ -54,21 +74,19 @@ export default function Component({ data, navigation, refetch }) {
           </TouchableOpacity>
         )}
 
-        {!!data.user.createdProjects.edges.length && (
+        {!!data.user.seerProjects.edges.length && (
           <TouchableOpacity
-            onPress={() => setProjectsShown(data.user.createdProjects)}
+            onPress={() => setProjectsShown(data.user.seerProjects)}
           >
             <Tag
-              fontSize="sm"
-              rounded="circle"
               mx="sm"
+              rounded="circle"
+              fontSize="sm"
               bg={
-                projectsShown === data.user.createdProjects
-                  ? "blue400"
-                  : "blue200"
+                projectsShown === data.user.seerProjects ? "blue400" : "blue200"
               }
             >
-              Created
+              Supervising
             </Tag>
           </TouchableOpacity>
         )}
@@ -85,7 +103,8 @@ export default function Component({ data, navigation, refetch }) {
             <ProjectContainer
               navigation={navigation}
               project={
-                projectsShown === data?.user?.createdProjects
+                projectsShown === data?.user?.createdProjects ||
+                projectsShown === data?.user?.seerProjects
                   ? item.node
                   : item.node.project
               }
@@ -121,6 +140,14 @@ Component.fragments = {
         }
       }
       createdProjects {
+        edges {
+          node {
+            id
+            ...ProjectContainer
+          }
+        }
+      }
+      seerProjects {
         edges {
           node {
             id
