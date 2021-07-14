@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
-import { Button, Div, Icon, Image, Overlay, Text } from "react-native-magnus";
+import { Button, Div, Image, Overlay, Text } from "react-native-magnus";
 
 export default function Component({ data, isViewer, mutations }) {
   const [seerOverlay, setSeerOverlay] = React.useState(false);
@@ -20,13 +20,11 @@ export default function Component({ data, isViewer, mutations }) {
             color="fruxgreen"
             borderWidth={1}
             prefix={
-              <Icon
-                left={0}
-                color="fruxgreen"
-                position="absolute"
-                name="eye-outline"
-                fontSize="lg"
-                fontFamily="Ionicons"
+              <Image
+                mx="md"
+                w={35}
+                h={35}
+                source={require("../assets/images/no-seer.png")}
               />
             }
           >

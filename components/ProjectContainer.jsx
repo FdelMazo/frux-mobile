@@ -44,16 +44,18 @@ export default function Component({ project, navigation }) {
               {project.categoryName}
             </Text>
           </Div>
-          <Div row>
-            <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
-              {"$"}
-              {project.amountCollected}
-            </Text>
-            <Text color="gray500" fontWeight="bold" fontSize="lg">
-              {"  /"}
-              {project.goal}
-            </Text>
-          </Div>
+          {!!project.goal && (
+            <Div row>
+              <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
+                {"$"}
+                {project.amountCollected}
+              </Text>
+              <Text color="gray500" fontWeight="bold" fontSize="lg">
+                {"  /"}
+                {project.goal}
+              </Text>
+            </Div>
+          )}
         </Div>
       </Div>
     </TouchableOpacity>
