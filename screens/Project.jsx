@@ -501,6 +501,16 @@ export default function Render(props) {
   // const [mutateInvestProject, { error: mutateInvestProjectError }] =
   // useMutation(investMutation);
 
+  const seerMutation = gql`
+    mutation seerMutation($idProject: Int!) {
+      mutateSeerProject(idProject: $idProject) {
+        id
+        ...ProjectCreation_project
+      }
+    }
+    ${ProjectCreation.fragments.project}
+  `;
+
   const stageMutation = gql`
     mutation stageMutation(
       $idProject: Int!
@@ -565,12 +575,16 @@ export default function Render(props) {
     }
   );
 
+  const [mutateSeerProject, { error: mutateSeerProjectError }] =
+    useMutation(seerMutation);
+
   const errors = [
     error,
     mutateFavProjectError,
     mutateUnfavProjectError,
     mutateUpdateProjectError,
     mutateProjectStageError,
+    mutateSeerProjectError,
   ]; //, mutateInvestProjectError];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
@@ -584,6 +598,7 @@ export default function Render(props) {
         mutateFavProject,
         mutateUnfavProject,
         mutateProjectStage,
+        mutateSeerProject,
       }} //, mutateInvestProject }}
     />
   );

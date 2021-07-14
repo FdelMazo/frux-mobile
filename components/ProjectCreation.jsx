@@ -33,6 +33,7 @@ export default function Component({ data, mutations, created }) {
   const [errors, setErrors] = React.useState("");
   const [shownStage, setShownStage] = React.useState(0);
   const [stageOverlay, setStageOverlay] = React.useState(false);
+  const [finishOverlay, setFinishOverlay] = React.useState(false);
 
   const drawerRef = React.createRef();
 
@@ -74,7 +75,9 @@ export default function Component({ data, mutations, created }) {
           block
           w="45%"
           bg="white"
-          onPress={() => {}}
+          onPress={() => {
+            setFinishOverlay(true);
+          }}
           borderColor="fruxgreen"
           color="fruxgreen"
           borderWidth={1}
@@ -292,6 +295,58 @@ export default function Component({ data, mutations, created }) {
           )}
         </Div>
       </Overlay>
+
+      <Overlay visible={finishOverlay}>
+        <Text fontSize="xl" fontWeight="bold">
+          Finish Set Up
+        </Text>
+
+        <Text>
+          By finishing this setup you'll enter the{" "}
+          <Text color="fruxgreen">Funding</Text> phase of your project, where
+          people will be available to add funds to your project.
+        </Text>
+        <Text color="fruxred">
+          Keep in mind, you{" "}
+          <Text color="fruxred" fontWeight="bold">
+            won't
+          </Text>{" "}
+          be able to change neither the project stages, nor the title after
+          this!
+        </Text>
+
+        <Div row alignSelf="flex-end" my="md">
+          <Button
+            onPress={() => {
+              setFinishOverlay(false);
+            }}
+            mx="sm"
+            p="md"
+            borderWidth={1}
+            borderColor="fruxgreen"
+            bg={undefined}
+            color="fruxgreen"
+          >
+            Cancel
+          </Button>
+          <Button
+            onPress={() => {
+              mutations.mutateSeerProject({
+                variables: {
+                  idProject: data.project.dbId,
+                },
+              });
+              setFinishOverlay(false);
+            }}
+            mx="sm"
+            p="md"
+            bg="fruxgreen"
+            color="white"
+          >
+            Confirm
+          </Button>
+        </Div>
+      </Overlay>
     </>
   );
 }
@@ -307,6 +362,7 @@ Component.fragments = {
   `,
   project: gql`
     fragment ProjectCreation_project on Project {
+      seerId
       stages {
         edges {
           node {
