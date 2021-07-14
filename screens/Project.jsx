@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import ProjectCreation from "../components/ProjectCreation";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
@@ -45,6 +46,8 @@ function Screen({ data, navigation, mutations }) {
           created={created}
           mutations={mutations}
         />
+
+        <ProjectCreation data={data} created={created} mutations={mutations} />
 
         {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
           <Div row my="lg">
@@ -412,6 +415,7 @@ export default function Render(props) {
         ...ProjectHeader_project
         ...ProjectData
         ...ProjectFavAndInvest_project
+        ...ProjectCreation_project
         owner {
           email
         }
@@ -425,6 +429,7 @@ export default function Render(props) {
     ${ProjectData.fragments.project}
     ${ProjectFavAndInvest.fragments.project}
     ${ProjectFavAndInvest.fragments.user}
+    ${ProjectCreation.fragments.project}
   `;
 
   const updateMutation = gql`
@@ -496,6 +501,25 @@ export default function Render(props) {
   // const [mutateInvestProject, { error: mutateInvestProjectError }] =
   // useMutation(investMutation);
 
+  const stageMutation = gql`
+    mutation stageMutation(
+      $idProject: Int!
+      $description: String!
+      $goal: Float!
+      $title: String!
+    ) {
+      mutateProjectStage(
+        idProject: $idProject
+        description: $description
+        goal: $goal
+        title: $title
+      ) {
+        ...ProjectCreation_stage
+      }
+    }
+    ${ProjectCreation.fragments.stage}
+  `;
+
   const { user } = useUser();
   const isLogged = !!user;
   const { loading, error, data } = useQuery(query, {
@@ -526,11 +550,27 @@ export default function Render(props) {
     }
   );
 
+  const [mutateProjectStage, { error: mutateProjectStageError }] = useMutation(
+    stageMutation,
+    {
+      refetchQueries: [
+        {
+          query,
+          variables: {
+            dbId: props.route.params.dbId,
+            isLogged,
+          },
+        },
+      ],
+    }
+  );
+
   const errors = [
     error,
     mutateFavProjectError,
     mutateUnfavProjectError,
     mutateUpdateProjectError,
+    mutateProjectStageError,
   ]; //, mutateInvestProjectError];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
@@ -539,7 +579,12 @@ export default function Render(props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateUpdateProject, mutateFavProject, mutateUnfavProject }} //, mutateInvestProject }}
+      mutations={{
+        mutateUpdateProject,
+        mutateFavProject,
+        mutateUnfavProject,
+        mutateProjectStage,
+      }} //, mutateInvestProject }}
     />
   );
 }

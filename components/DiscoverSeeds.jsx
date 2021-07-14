@@ -31,6 +31,7 @@ export default function Component({ data, navigation, refetchSeeds }) {
               h={150}
               w={250}
               borderWidth={1}
+              bg="gray100"
               borderStyle="dashed"
               borderColor="gray500"
             />
