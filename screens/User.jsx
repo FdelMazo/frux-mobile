@@ -1,12 +1,13 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import { Button, Div, Overlay, Text } from "react-native-magnus";
 import { MainView, View } from "../components/Themed";
 import UserData from "../components/UserData";
 import UserEditionHeaderAndDropdown from "../components/UserEditionHeaderAndDropdown";
 import UserFavouriteTopics from "../components/UserFavouriteTopics";
 import UserProjects from "../components/UserProjects";
 import UserSupervisorBanner from "../components/UserSupervisorBanner";
-import { useUser } from "../services/user";
+import { loggingOut, useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
@@ -16,6 +17,11 @@ function Screen({ data, navigation, mutations, refetch }) {
     () => user && data.user.email === user.email,
     [user]
   );
+  const [blockedOverlay, setBlockedOverlay] = React.useState(false);
+
+  React.useEffect(() => {
+    setBlockedOverlay(isViewer && data.user.isBlocked);
+  }, [data, isViewer]);
 
   return (
     <View>
@@ -40,6 +46,36 @@ function Screen({ data, navigation, mutations, refetch }) {
           mutations={mutations}
         />
       </MainView>
+
+      <Overlay visible={blockedOverlay}>
+        <Text fontSize="xl" fontWeight="bold" color="fruxred">
+          User Blocked
+        </Text>
+        <Div my="md">
+          <Text>
+            Your user is blocked. Please contact a{" "}
+            <Text color="fruxgreen">Frux</Text> administrator to unblock your
+            account.
+          </Text>
+        </Div>
+        <Div row alignSelf="flex-end">
+          <Button
+            onPress={() => {
+              loggingOut();
+              setBlockedOverlay(false);
+            }}
+            mx="sm"
+            p="md"
+            borderColor="fruxgreen"
+            borderWidth={1}
+            rounded="sm"
+            bg={undefined}
+            color="fruxgreen"
+          >
+            Done
+          </Button>
+        </Div>
+      </Overlay>
     </View>
   );
 }
@@ -49,6 +85,7 @@ export default function Render(props) {
     query User($dbId: Int!) {
       user(dbId: $dbId) {
         dbId
+        isBlocked
         id
         email
         ...UserData
