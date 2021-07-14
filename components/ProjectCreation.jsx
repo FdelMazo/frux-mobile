@@ -376,12 +376,11 @@ Component.fragments = {
   `,
   project: gql`
     fragment ProjectCreation_project on Project {
-      seerId
+      currentState
       stages {
         edges {
           node {
             id
-            currentState
             title
             description
             goal

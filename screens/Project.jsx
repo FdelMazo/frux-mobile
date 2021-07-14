@@ -4,6 +4,7 @@ import ProjectCreation from "../components/ProjectCreation";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
+import ProjectProgress from "../components/ProjectProgress";
 import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
 import Error from "./Error";
@@ -48,85 +49,15 @@ function Screen({ data, navigation, mutations }) {
         />
 
         <ProjectCreation data={data} created={created} mutations={mutations} />
+        <ProjectProgress data={data} created={created} mutations={mutations} />
 
         {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
           <Div row my="lg">
             <StarRating rating={2.5} size={35} />
           </Div>
         </TouchableOpacity> */}
-
-        {/*
-        <Div row w="90%" mt="xs" justifyContent="space-between">
-          <TouchableOpacity onPress={() => dropdownRef.current.open()}>
-            <Div>
-              <Text fontSize="lg">
-                <Text fontSize="lg" fontWeight="bold">
-                  Stage 3:{" "}
-                </Text>
-                StageName
-              </Text>
-              <MultiSlider
-                selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-                touchDimensions={{
-                  height: 0,
-                  width: 0,
-                  borderRadius: 0,
-                  slipDisplacement: 0,
-                }}
-                markerStyle={{
-                  borderRadius: 0,
-                  width: 7,
-                  backgroundColor: Colors.fruxgreen,
-                }}
-                values={[
-                  (data.project.amountCollected / data.project.goal) * 10,
-                ]}
-                sliderLength={150}
-              />
-            </Div>
-          </TouchableOpacity>
-          <Div>
-            <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
-              {"$"}
-              {data.project.amountCollected}
-            </Text>
-            <Text
-              mx="md"
-              lineHeight={20}
-              fontSize="xl"
-              fontFamily="latinmodernroman-bold"
-              color="gray600"
-            >
-              Out of ${data.project.goal}
-            </Text>
-          </Div>
-        </Div>*/}
       </MainView>
 
-      {/* <Dropdown
-        ref={dropdownRef}
-        title={
-          <Div alignSelf="center" mb="sm">
-            <Text fontSize="2xl" fontWeight="bold">
-              {data.project.name} - Stages
-            </Text>
-          </Div>
-        }
-        showSwipeIndicator={true}
-        roundedTop="xl"
-      >
-        <Dropdown.Option py="lg" px="xl">
-          <Text fontSize="xl" fontWeight="bold">
-            Stage 1:{" "}
-          </Text>
-          <Text fontSize="xl">Detective Comics #33</Text>
-          <Div position="absolute" right={0}>
-            <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
-              $700
-            </Text>
-          </Div>
-        </Dropdown.Option>
-      </Dropdown> */}
 
       {/* <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
         {created ? (
@@ -416,6 +347,7 @@ export default function Render(props) {
         ...ProjectData
         ...ProjectFavAndInvest_project
         ...ProjectCreation_project
+        ...ProjectProgress
         owner {
           email
         }
@@ -430,6 +362,7 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.project}
     ${ProjectFavAndInvest.fragments.user}
     ${ProjectCreation.fragments.project}
+    ${ProjectProgress.fragments.project}
   `;
 
   const updateMutation = gql`
