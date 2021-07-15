@@ -77,8 +77,8 @@ export default function Component({ data, created, mutations, navigation }) {
                   : undefined
               }
             >
-              <Div row justifyContent="flex-start">
-                <Div w="80%">
+              <Div row justifyContent="space-between">
+                <Div w="70%">
                   <Text
                     fontSize="4xl"
                     lineHeight={25}
@@ -95,7 +95,7 @@ export default function Component({ data, created, mutations, navigation }) {
                   px="xs"
                 >
                   <Text color="white" fontSize="xs">
-                    {data.project.currentState}
+                    {States[data.project.currentState].name.toUpperCase()}
                   </Text>
                 </Div>
               </Div>
@@ -125,7 +125,7 @@ export default function Component({ data, created, mutations, navigation }) {
                     <Text
                       key={h}
                       px={0}
-                      mx="xs"
+                      mr="xs"
                       bg={undefined}
                       color="fruxgreen"
                       fontSize="sm"

@@ -43,7 +43,7 @@ export default function Component({ project, navigation }) {
             alignSelf="flex-start"
           >
             <Text color="white" fontSize="sm">
-              {project.currentState}
+              {States[project.currentState].name.toUpperCase()}
             </Text>
           </Div>
         </Div>
