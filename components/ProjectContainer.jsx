@@ -3,10 +3,22 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Div, Text } from "react-native-magnus";
 import { States } from "../constants/Constants";
+import { toDollars } from "../services/helpers";
 import { getImageUri } from "../services/media";
 
 export default function Component({ project, navigation }) {
   const [uriImage, setUriImage] = React.useState(null);
+  const [goalDollars, setGoalDollars] = React.useState(0);
+  const [amountCollectedDollars, setAmountCollectedDollars] = React.useState(0);
+  React.useEffect(() => {
+    async function dollars() {
+      let _goalDollars = await toDollars(project.goal);
+      let _amountCollectedDollars = await toDollars(project.amountCollected);
+      setGoalDollars(_goalDollars);
+      setAmountCollectedDollars(_amountCollectedDollars);
+    }
+    dollars();
+  }, [project.goal, project.amountCollected]);
 
   React.useEffect(() => {
     getImageUri(project.uriImage || "nopicture.jpg").then((r) =>
@@ -20,7 +32,7 @@ export default function Component({ project, navigation }) {
         navigation.navigate("ProjectScreen", { dbId: project.dbId });
       }}
     >
-      <Div my="sm" mr="lg">
+      <Div my="sm" mr="lg" w={250}>
         <Div rounded="xl" h={150} w={250} bgImg={{ uri: uriImage }}>
           <Div
             bg={States[project.currentState].color + "500"}
@@ -35,9 +47,9 @@ export default function Component({ project, navigation }) {
             </Text>
           </Div>
         </Div>
-        <Div mx="sm" row alignItems="center">
-          <Div flex={1}>
-            <Text fontWeight="bold" fontSize="xl" mt="sm">
+        <Div mx="sm" row alignItems="center" justifyContent="space-between">
+          <Div mt="sm" w="70%">
+            <Text fontWeight="bold" fontSize="xl">
               {project.name}
             </Text>
             <Text color="gray500" fontSize="sm">
@@ -45,14 +57,14 @@ export default function Component({ project, navigation }) {
             </Text>
           </Div>
           {!!project.goal && (
-            <Div row>
+            <Div row alignSelf="flex-start" mt="sm">
               <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
                 {"$"}
-                {project.amountCollected}
+                {amountCollectedDollars}
               </Text>
               <Text color="gray500" fontWeight="bold" fontSize="lg">
                 {"  /"}
-                {project.goal}
+                {goalDollars}
               </Text>
             </Div>
           )}

@@ -11,6 +11,7 @@ import {
   Snackbar,
   Text,
 } from "react-native-magnus";
+import { toDollars } from "../services/helpers";
 
 export default function Component({ data, isViewer, mutations }) {
   const [firstName, setFirstName] = React.useState(data.user.firstName);
@@ -20,6 +21,16 @@ export default function Component({ data, isViewer, mutations }) {
   const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
   const [walletOverlay, setWalletOverlay] = React.useState(false);
   const snackbarRef = React.createRef();
+
+  const [dollarBalance, setDollarBalance] = React.useState(0);
+  React.useEffect(() => {
+    if (isViewer) return;
+    async function dollars() {
+      let d = await toDollars(data.user.wallet.balance);
+      setDollarBalance(d);
+    }
+    dollars();
+  }, [data.user.wallet.balance]);
 
   return (
     <>
@@ -159,9 +170,20 @@ export default function Component({ data, isViewer, mutations }) {
       </Overlay>
 
       <Overlay visible={walletOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          ETH Wallet
-        </Text>
+        <Div row justifyContent="space-between">
+          <Text fontSize="xl" fontWeight="bold">
+            Wallet
+          </Text>
+          <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
+            {data.user.wallet.balance} ETH
+          </Text>
+        </Div>
+        <Div row justifyContent="flex-end">
+          <Text fontSize="lg" fontWeight="bold" color="gray600">
+            ~{dollarBalance} USD
+          </Text>
+        </Div>
+
         <Div my="md">
           <Text>
             This is your own personal ethereum wallet address, by adding funds
@@ -174,7 +196,7 @@ export default function Component({ data, isViewer, mutations }) {
             underlayColor={"none"}
             p={0}
             onPress={() => {
-              Clipboard.setString(data.user.walletAddress);
+              Clipboard.setString(data.user.wallet.address);
               if (snackbarRef.current) {
                 snackbarRef.current.show(
                   "Wallet address copied to clipboard!",
@@ -193,18 +215,16 @@ export default function Component({ data, isViewer, mutations }) {
               rounded="sm"
               p="sm"
             >
-              {data.user.walletAddress}
+              {data.user.wallet.address}
             </Text>
           </Button>
         </Div>
-
         <Snackbar
           ref={snackbarRef}
           bg={undefined}
           fontSize="xs"
           color="fruxgreen"
         />
-
         <Div row alignSelf="flex-end">
           <Button
             onPress={() => {
@@ -232,7 +252,10 @@ Component.fragments = {
       firstName
       lastName
       description
-      walletAddress
+      wallet {
+        balance
+        address
+      }
     }
   `,
 };

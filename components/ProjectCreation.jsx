@@ -13,23 +13,37 @@ import {
   Text,
 } from "react-native-magnus";
 import Colors from "../constants/Colors";
+import { toDollars, toEth } from "../services/helpers";
 
 export default function Component({ data, mutations, created }) {
   const [stages, setStages] = React.useState([]);
   React.useEffect(() => {
-    setStages(
-      data.project.stages.edges.map((s) => ({
-        title: s.node.title,
-        description: s.node.description,
-        goal: s.node.goal,
-      }))
-    );
+    const _stages = async () => {
+      const x = await Promise.all(
+        data.project.stages.edges.map(async (s) => ({
+          title: s.node.title,
+          description: s.node.description,
+          goal: await toDollars(s.node.goal),
+        }))
+      );
+      setStages(x);
+    };
+    _stages();
   }, [data.project.stages]);
 
   const [shownStageNewName, setShownStageNewName] = React.useState("");
   const [shownStageNewDescription, setShownStageNewDescription] =
     React.useState("");
   const [shownStageNewGoal, setShownStageNewGoal] = React.useState(0);
+  const [shownStageNewGoalETH, setShownStageNewGoalETH] = React.useState(0);
+  React.useEffect(() => {
+    async function eth() {
+      let eth = await toEth(shownStageNewGoal);
+      setShownStageNewGoalETH(eth);
+    }
+    eth();
+  }, [shownStageNewGoal]);
+
   const [errors, setErrors] = React.useState("");
   const [shownStage, setShownStage] = React.useState(0);
   const [stageOverlay, setStageOverlay] = React.useState(false);
@@ -230,10 +244,17 @@ export default function Component({ data, mutations, created }) {
 
         {!stages[shownStage]?.goal && (
           <Div m="md">
-            <Text fontSize="5xl" color="fruxgreen">
-              {"$"}
-              {shownStageNewGoal || 0}
-            </Text>
+            <Div row>
+              <Text fontSize="5xl" color="fruxgreen">
+                {"$"}
+                {shownStageNewGoal || 0}
+                {"  "}
+              </Text>
+              <Text fontSize="xl" color="gray600">
+                {"("}
+                {shownStageNewGoalETH} ETH)
+              </Text>
+            </Div>
             <MultiSlider
               selectedStyle={{ backgroundColor: Colors.fruxgreen }}
               markerStyle={{
@@ -290,7 +311,7 @@ export default function Component({ data, mutations, created }) {
                     idProject: data.project.dbId,
                     title: shownStageNewName,
                     description: shownStageNewDescription,
-                    goal: shownStageNewGoal,
+                    goal: shownStageNewGoalETH,
                   },
                 });
                 setErrors("");

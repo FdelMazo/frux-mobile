@@ -4,21 +4,52 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import { Button, Div, Drawer, Image, Overlay, Text } from "react-native-magnus";
 import Colors from "../constants/Colors";
+import { toDollars } from "../services/helpers";
 
 export default function Component({ data, mutations, created }) {
   const [stages, setStages] = React.useState([]);
   React.useEffect(() => {
-    setStages(
-      data.project.stages.edges.map((s) => ({
-        title: s.node.title,
-        description: s.node.description,
-        goal: s.node.goal,
-      }))
-    );
+    const _stages = async () => {
+      const x = await Promise.all(
+        data.project.stages.edges.map(async (s) => ({
+          title: s.node.title,
+          description: s.node.description,
+          goal: await toDollars(s.node.goal),
+        }))
+      );
+      setStages(x);
+    };
+    _stages();
   }, [data.project.stages]);
 
   const [shownStage, setShownStage] = React.useState(0);
   const [stageOverlay, setStageOverlay] = React.useState(false);
+  const [goalDollars, setGoalDollars] = React.useState(0);
+  const [amountCollectedDollars, setAmountCollectedDollars] = React.useState(0);
+  React.useEffect(() => {
+    async function dollars() {
+      let _goalDollars = await toDollars(data.project.goal);
+      let _amountCollectedDollars = await toDollars(
+        data.project.amountCollected
+      );
+      setGoalDollars(_goalDollars);
+      setAmountCollectedDollars(_amountCollectedDollars);
+    }
+    dollars();
+  }, [data.project.goal, data.project.amountCollected]);
+
+  const [currentStage, setCurrentStage] = React.useState(0);
+  React.useEffect(() => {
+    let r = 0;
+    let accum = 0;
+    for (let s of stages) {
+      if (amountCollectedDollars >= accum + s.goal) {
+        accum += s.goal;
+        r = stages.indexOf(s);
+      }
+    }
+    setCurrentStage(r);
+  }, [data.project.amountCollected]);
 
   const drawerRef = React.createRef();
 
@@ -37,9 +68,9 @@ export default function Component({ data, mutations, created }) {
             <Div>
               <Text fontSize="lg">
                 <Text fontSize="lg" fontWeight="bold">
-                  Stage 3:{" "}
+                  Stage #{currentStage}:{" "}
                 </Text>
-                StageName
+                {stages[currentStage]?.title}
               </Text>
               <MultiSlider
                 selectedStyle={{ backgroundColor: Colors.fruxgreen }}
@@ -53,7 +84,7 @@ export default function Component({ data, mutations, created }) {
             <Div>
               <Text mx="md" fontSize="5xl" color="fruxgreen" textAlign="right">
                 {"$"}
-                {data.project.amountCollected}
+                {amountCollectedDollars}
               </Text>
               <Text
                 mx="md"
@@ -62,7 +93,7 @@ export default function Component({ data, mutations, created }) {
                 fontFamily="latinmodernroman-bold"
                 color="gray600"
               >
-                Out of ${data.project.goal}
+                Out of ${goalDollars}
               </Text>
             </Div>
           </Div>
@@ -85,13 +116,13 @@ export default function Component({ data, mutations, created }) {
                     w={40}
                     h={40}
                     source={
-                      !!s.title
+                      i <= currentStage
                         ? require("../assets/images/stage.png")
                         : require("../assets/images/no-stage.png")
                     }
                   />
                   <Text mx="md" w="55%" fontWeight="bold">
-                    {s.title || `Stage #${i}`}
+                    {s.title}
                   </Text>
                 </Div>
 
@@ -104,28 +135,40 @@ export default function Component({ data, mutations, created }) {
         </Div>
       </Drawer>
 
-      <Overlay visible={stageOverlay}>
+      <Overlay visible={stageOverlay} key={shownStage}>
         <Div row justifyContent="space-between">
           <Text fontSize="xl" fontWeight="bold">
-            Stage #{shownStage}
-            {!!stages[shownStage]?.title
-              ? `: ${stages[shownStage]?.title}`
-              : ""}
+            Stage #{shownStage}: {stages[shownStage]?.title}
           </Text>
-          {!!stages[shownStage]?.goal && (
-            <Div row>
-              {false && (
-                <Text>Si complete el goal, mostrarlo todo en verde</Text>
-              )}
+          <Div row>
+            {shownStage <= currentStage ? (
               <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
-                {/* // Esto deberia ser lo que ya se pago $ */}
-                {stages[shownStage]?.goal}
+                ${stages[shownStage]?.goal}
               </Text>
-              <Text fontSize="3xl" fontWeight="bold" color="gray600">
-                /${stages[shownStage]?.goal}
-              </Text>
-            </Div>
-          )}
+            ) : (
+              <>
+                <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
+                  $
+                  {stages.reduce((acc, v, i) => {
+                    if (i < shownStage) {
+                      acc -= v.goal;
+                    }
+                    return acc;
+                  }, amountCollectedDollars) > 0
+                    ? stages.reduce((acc, v, i) => {
+                        if (i < shownStage) {
+                          acc -= v.goal;
+                        }
+                        return acc;
+                      }, amountCollectedDollars)
+                    : 0}
+                </Text>
+                <Text fontSize="3xl" fontWeight="bold" color="gray600">
+                  /${stages[shownStage]?.goal}
+                </Text>
+              </>
+            )}
+          </Div>
         </Div>
 
         {!!stages[shownStage]?.description && (

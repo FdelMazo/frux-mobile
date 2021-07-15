@@ -18,3 +18,27 @@ export const dateRepresentation = (d) => {
   let date = new Date(d);
   return date.toLocaleDateString("es-AR");
 };
+
+export const toEth = async (v) => {
+  const r = await fetch(
+    "https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH"
+  )
+    .then((res) => res.json())
+    .then((x) => x.ETH);
+
+  const n = v * r;
+  const factor = Math.pow(10, 4);
+  const roundedUp = Math.ceil(n * factor) / factor;
+
+  return parseFloat(roundedUp.toFixed(4));
+};
+
+export const toDollars = async (v) => {
+  const r = await fetch(
+    "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+  )
+    .then((res) => res.json())
+    .then((x) => x.USD);
+
+  return Math.round(v * r);
+};
