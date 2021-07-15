@@ -8,7 +8,7 @@ import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 
-export default function Component({ setFilters, data, isLogged }) {
+export default function Component({ data, isLogged, refetchSeeds }) {
   const [searchText, setSearchText] = React.useState("");
   const [progressFilters, setProgressFilters] = React.useState([]);
   const [topicsFilter, setTopicsFilter] = React.useState([]);
@@ -33,7 +33,7 @@ export default function Component({ setFilters, data, isLogged }) {
       });
     const nameAndDescription = "%" + nonHashtagWords.join("%") + "%";
 
-    setFilters({
+    const filters = {
       categoryNameIn: (topicsFilter.length && topicsFilter) || undefined,
       currentStateIn: (progressFilters.length && progressFilters) || undefined,
       isCloserThan:
@@ -52,7 +52,9 @@ export default function Component({ setFilters, data, isLogged }) {
         ]) ||
         undefined,
       hasHashtag: (hashtags.length && hashtags) || undefined,
-    });
+    };
+
+    refetchSeeds(filters);
   }, [searchText, location, radius, progressFilters, topicsFilter]);
 
   return (

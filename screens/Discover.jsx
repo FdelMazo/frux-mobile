@@ -1,4 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
+import throttle from "lodash.throttle";
 import * as React from "react";
 import DiscoverFilters from "../components/DiscoverFilters";
 import DiscoverSeeds from "../components/DiscoverSeeds";
@@ -8,22 +9,11 @@ import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({
-  data,
-  refetch,
-  navigation,
-  filters,
-  setFilters,
-  isLogged,
-  mutations,
-}) {
-  const refetchSeeds = React.useCallback(() => {
-    refetch({ filters });
-  }, [filters]);
-
-  React.useEffect(() => {
-    refetchSeeds();
-  }, [filters]);
+function Screen({ data, refetch, navigation, isLogged, mutations }) {
+  const refetchSeeds = React.useCallback(
+    throttle((f) => refetch({ filters: f }), 1500),
+    []
+  );
 
   return (
     <View>
@@ -36,8 +26,8 @@ function Screen({
       />
       <MainView>
         <DiscoverFilters
+          refetchSeeds={refetchSeeds}
           data={data}
-          setFilters={setFilters}
           isLogged={isLogged}
         />
         <DiscoverSeeds
@@ -91,12 +81,11 @@ export default function Render(props) {
     createProjectMutation
   );
 
-  const [filters, setFilters] = React.useState({});
   const { user } = useUser();
   const isLogged = !!user;
   const { loading, error, data, refetch } = useQuery(query, {
     variables: {
-      filters,
+      filters: {},
       isLogged,
     },
   });
@@ -109,9 +98,7 @@ export default function Render(props) {
       data={data}
       navigation={props.navigation}
       refetch={refetch}
-      filters={filters}
       mutations={{ mutateProject }}
-      setFilters={setFilters}
       isLogged={isLogged}
     />
   );
