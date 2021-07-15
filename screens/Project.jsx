@@ -5,6 +5,7 @@ import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
 import ProjectProgress from "../components/ProjectProgress";
+import ProjectRating from "../components/ProjectRating";
 import ProjectSeer from "../components/ProjectSeer";
 import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
@@ -17,14 +18,7 @@ function Screen({ data, navigation, mutations }) {
     () => user && data.project.owner.email === user.email,
     [user]
   );
-  // const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
-  // const [deleteOverlay, setDeleteOverlay] = React.useState(false);
 
-  // const [reviewOverlay, setReviewOverlay] = React.useState(false);
-  // const [comment, setComment] = React.useState("");
-  // const [rating, setRating] = React.useState(0);
-
-  // const dropdownRef = React.createRef();
   return (
     <View>
       <ProjectHeader
@@ -48,196 +42,9 @@ function Screen({ data, navigation, mutations }) {
         />
         <ProjectCreation data={data} created={created} mutations={mutations} />
         <ProjectProgress data={data} created={created} mutations={mutations} />
+        <ProjectRating data={data} created={created} mutations={mutations} />
         <ProjectSeer data={data} />
-
-        {/* <TouchableOpacity onPress={() => setReviewOverlay(true)}>
-          <Div row my="lg">
-            <StarRating rating={2.5} size={35} />
-          </Div>
-        </TouchableOpacity> */}
       </MainView>
-
-      {/* <Fab bg="fruxgreen" h={40} w={40} p={10} fontSize="2xl">
-        {created ? (
-          <Button
-            my="xs"
-            p={0}
-            bg={undefined}
-            underlayColor="gray"
-            alignSelf="flex-end"
-            onPress={() => setDeleteOverlay(true)}
-          >
-            <Div rounded="sm" bg="white" p="sm">
-              <Text fontSize="md">Delete</Text>
-            </Div>
-            <Icon
-              name="trash-outline"
-              color="fruxred"
-              fontFamily="Ionicons"
-              h={45}
-              w={45}
-              fontSize="2xl"
-              rounded="circle"
-              ml="lg"
-              bg="white"
-            />
-          </Button>
-        ) : (
-          <>
-            <Button
-              my="xs"
-              p={0}
-              bg={undefined}
-              underlayColor="gray"
-              alignSelf="flex-end"
-              onPress={() => setSponsorOverlay(true)}
-            >
-              <Div rounded="sm" bg="white" p="sm">
-                <Text fontSize="md">Seed</Text>
-              </Div>
-              <Icon
-                name="wallet"
-                color="fruxgreen"
-                fontFamily="AntDesign"
-                h={45}
-                w={45}
-                fontSize="xl"
-                rounded="circle"
-                ml="lg"
-                bg="white"
-              />
-            </Button>
-            <Button
-              my="xs"
-              p={0}
-              bg={undefined}
-              underlayColor="gray"
-              alignSelf="flex-end"
-            >
-              <Div rounded="sm" bg="white" p="sm">
-                <Text fontSize="md">Fav</Text>
-              </Div>
-              <Icon
-                name="hearto"
-                color="fruxgreen"
-                fontSize="xl"
-                fontFamily="AntDesign"
-                h={45}
-                w={45}
-                rounded="circle"
-                ml="lg"
-                bg="white"
-              />
-            </Button>
-          </>
-        )}
-      </Fab> */}
-
-      {/*
-
-      <Overlay visible={reviewOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          Reviews
-        </Text>
-        <Div>
-          <Div row justifyContent="space-between" my="xs">
-            <Text color="fruxgreen">Ringo</Text>
-
-            <Div alignSelf="flex-end" row>
-              <StarRating rating={5} size={10} />
-            </Div>
-          </Div>
-          <Text
-            borderColor="fruxgreen"
-            borderLeftWidth={2}
-            ml="xs"
-            mb="sm"
-            pl="md"
-          >
-            Esta ensalada de papas tiene toda la pinta. En las fotos parece que
-            tiene... mayonesa? Siento que va a ser la mejor ensalada de papas de
-            la historia
-          </Text>
-        </Div>
-
-        <Div>
-          <Div row justifyContent="space-between" my="xs">
-            <Text color="fruxgreen">John</Text>
-
-            <Div alignSelf="flex-end" row>
-              <StarRating rating={4} size={10} />
-            </Div>
-          </Div>
-          <Text
-            borderColor="fruxgreen"
-            borderLeftWidth={2}
-            ml="xs"
-            mb="sm"
-            pl="md"
-          >
-            OH MY FREAKING GOD. If you are not trying this salad tonight, you
-            are missing on everything that's good for you. I did find it a
-            little bit extra on the potatoes, though, you feel me?
-          </Text>
-        </Div>
-
-        <Div>
-          <Text fontWeight="bold" mt="sm">
-            Leave your review
-          </Text>
-          <Div row justifyContent="space-between">
-            <Input
-              w="60%"
-              my="md"
-              value={comment}
-              onChangeText={setComment}
-              placeholder="Review"
-            />
-            <Div alignSelf="center">
-              <Button
-                bg={undefined}
-                onPress={() => {
-                  if (rating === 5) setRating(0);
-                  else setRating(rating + 0.5);
-                }}
-              >
-                <Div row alignSelf="center">
-                  <StarRating rating={rating} size={12} />
-                </Div>
-              </Button>
-            </Div>
-          </Div>
-        </Div>
-
-        <Div row alignSelf="flex-end" mt="sm">
-          <Button
-            mx="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setReviewOverlay(false);
-            }}
-          >
-            Close
-          </Button>
-          <Button
-            onPress={() => {
-              if (!rating || !comment) return;
-              alert("Mock review action");
-              setReviewOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Review
-          </Button>
-        </Div>
-      </Overlay> */}
     </View>
   );
 }
@@ -253,6 +60,8 @@ export default function Render(props) {
       project(dbId: $dbId) {
         id
         dbId
+
+        ...ProjectRating
         ...ProjectHeader_project
         ...ProjectData
         ...ProjectFavAndInvest_project
@@ -274,6 +83,7 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.user}
     ${ProjectCreation.fragments.project}
     ${ProjectProgress.fragments.project}
+    ${ProjectRating.fragments.project}
     ${ProjectSeer.fragments.project}
     ${ProjectSeer.fragments.user}
   `;
@@ -380,6 +190,26 @@ export default function Render(props) {
     ${ProjectCreation.fragments.stage}
   `;
 
+  const reviewMutation = gql`
+    mutation reviewMutation(
+      $idProject: Int!
+      $description: String!
+      $score: Float!
+    ) {
+      mutateReviewProject(
+        idProject: $idProject
+        description: $description
+        score: $score
+      ) {
+        id
+        project {
+          ...ProjectRating
+        }
+      }
+    }
+    ${ProjectRating.fragments.project}
+  `;
+
   const { user } = useUser();
   const isLogged = !!user;
   const { loading, error, data } = useQuery(query, {
@@ -391,6 +221,9 @@ export default function Render(props) {
 
   const [mutateUpdateProject, { error: mutateUpdateProjectError }] =
     useMutation(updateMutation);
+
+  const [mutateReviewProject, { error: mutateReviewProjectError }] =
+    useMutation(reviewMutation);
 
   const [mutateFavProject, { error: mutateFavProjectError }] =
     useMutation(favMutation);
@@ -436,6 +269,7 @@ export default function Render(props) {
     mutateProjectStageError,
     mutateSeerProjectError,
     mutateInvestProjectError,
+    mutateReviewProjectError,
   ];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
@@ -451,6 +285,7 @@ export default function Render(props) {
         mutateProjectStage,
         mutateSeerProject,
         mutateInvestProject,
+        mutateReviewProject,
       }}
     />
   );

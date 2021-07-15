@@ -16,7 +16,7 @@ export default function Component({ data, mutations, created }) {
   const investedByUser = React.useMemo(() => {
     if (!data.profile) return false;
     const ids = data.project.investors.edges.map((i) => i.node.user.dbId);
-    return ids.includes(data.profile.dbId.toString());
+    return ids.includes(data.profile.dbId);
   }, [data.project.investors, data.profile]);
 
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);

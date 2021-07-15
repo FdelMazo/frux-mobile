@@ -56,9 +56,7 @@ export default function Component({ data, isViewer, mutations }) {
                 {isViewer
                   ? "Thanks for being a supervisor!"
                   : `${
-                      data.user.firstName ||
-                      data.user.username ||
-                      data.user.email.split("@")[0]
+                      data.user.username || data.user.email.split("@")[0]
                     } is part of our supervisor program, you can also join us!`}
               </Text>
             </Div>
@@ -126,6 +124,8 @@ Component.fragments = {
     fragment UserSupervisorBanner on User {
       id
       isSeer
+      username
+      email
     }
   `,
 };

@@ -22,7 +22,6 @@ export default function Component({ data }) {
             {supervisedByUser
               ? "Thanks for supervising this project!"
               : `${
-                  data.project.seer.firstName ||
                   data.project.seer.username ||
                   data.project.seer.email.split("@")[0]
                 } is supervising this project!`}
@@ -40,7 +39,6 @@ Component.fragments = {
       seer {
         id
         dbId
-        firstName
         username
         email
       }
