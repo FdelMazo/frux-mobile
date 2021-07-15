@@ -143,7 +143,6 @@ export default function Component({ data, created, mutations }) {
   );
 }
 
-// data.user.username || data.user.email.split("@")[0]
 
 Component.fragments = {
   project: gql`
