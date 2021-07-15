@@ -4,7 +4,7 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import { Button, Div, Image, Overlay, Text } from "react-native-magnus";
 import Colors from "../constants/Colors";
-import { toDollars, toEth } from "../services/helpers";
+import { dateRepresentation, toDollars, toEth } from "../services/helpers";
 
 export default function Component({ data, mutations, created }) {
   const likedByUser = React.useMemo(() => {
@@ -15,7 +15,7 @@ export default function Component({ data, mutations, created }) {
 
   const investedByUser = React.useMemo(() => {
     if (!data.profile) return false;
-    const ids = data.project.investors.edges.map((i) => i.node.userId);
+    const ids = data.project.investors.edges.map((i) => i.node.user.dbId);
     return ids.includes(data.profile.dbId.toString());
   }, [data.project.investors, data.profile]);
 
@@ -104,9 +104,24 @@ export default function Component({ data, mutations, created }) {
       <Overlay visible={sponsorOverlay}>
         {created ? (
           <>
+            <Text fontSize="xl" fontWeight="bold">
+              Investors
+            </Text>
             {data.project.investors.edges.length ? (
               data.project.investors.edges.map((i) => (
-                <Text>{i.node.userId}</Text>
+                <Text m="lg" key={i.node.user.dbId}>
+                  <Text color="fruxgreen">
+                    {i.node.user.username || i.node.user.email.split("@")[0]}{" "}
+                  </Text>
+                  invested{" "}
+                  <Text color="fruxgreen">
+                    {i.node.investedAmount.toFixed(4)} ETH
+                  </Text>
+                  {" on "}
+                  <Text color="fruxbrown">
+                    {dateRepresentation(i.node.dateOfInvestment)}
+                  </Text>
+                </Text>
               ))
             ) : (
               <Text>
@@ -115,6 +130,22 @@ export default function Component({ data, mutations, created }) {
                 try sharing a little bit about it on social media?
               </Text>
             )}
+            <Div row alignSelf="flex-end" my="lg">
+              <Button
+                mx="sm"
+                fontSize="sm"
+                p="md"
+                bg={undefined}
+                borderWidth={1}
+                borderColor="fruxgreen"
+                color="fruxgreen"
+                onPress={() => {
+                  setSponsorOverlay(false);
+                }}
+              >
+                Close
+              </Button>
+            </Div>
           </>
         ) : (
           <>
@@ -237,7 +268,13 @@ Component.fragments = {
         edges {
           node {
             id
-            userId
+            investedAmount
+            dateOfInvestment
+            user {
+              dbId
+              username
+              email
+            }
           }
         }
       }
