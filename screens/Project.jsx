@@ -17,10 +17,8 @@ function Screen({ data, navigation, mutations }) {
     () => user && data.project.owner.email === user.email,
     [user]
   );
-  // const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   // const [deleteConfirmation, setDeleteConfirmation] = React.useState("");
   // const [deleteOverlay, setDeleteOverlay] = React.useState(false);
-  // const [toSponsor, setToSponsor] = React.useState(0.05 * data.project.goal);
 
   // const [reviewOverlay, setReviewOverlay] = React.useState(false);
   // const [comment, setComment] = React.useState("");
@@ -43,7 +41,11 @@ function Screen({ data, navigation, mutations }) {
           navigation={navigation}
         />
 
-        <ProjectFavAndInvest data={data} mutations={mutations} />
+        <ProjectFavAndInvest
+          data={data}
+          created={created}
+          mutations={mutations}
+        />
         <ProjectCreation data={data} created={created} mutations={mutations} />
         <ProjectProgress data={data} created={created} mutations={mutations} />
         <ProjectSeer data={data} />
@@ -131,97 +133,7 @@ function Screen({ data, navigation, mutations }) {
         )}
       </Fab> */}
 
-      {/* <Overlay visible={sponsorOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          How much do you want to chip in?
-        </Text>
-        <Div alignSelf="center">
-          <MultiSlider
-            selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-            enabledOne={false}
-            markerStyle={{
-              borderRadius: 0,
-              width: 7,
-              backgroundColor: Colors.fruxgreen,
-            }}
-            values={[
-              Math.floor(
-                (data.project.amountCollected / data.project.goal) * 10
-              ),
-              Math.floor(
-                ((data.project.amountCollected + toSponsor) /
-                  data.project.goal) *
-                  10
-              ),
-            ]}
-            onValuesChange={(v) => {
-              setToSponsor(
-                Math.floor(
-                  v[1] * 0.1 * data.project.goal - data.project.amountCollected
-                )
-              );
-            }}
-            step={0.5}
-            sliderLength={250}
-          />
-        </Div>
-        <Div>
-          <Div row>
-            <Text mx="md" fontSize="5xl" color="gray600">
-              {"$"}
-              {data.project.amountCollected}
-            </Text>
-            <Text mx="md" fontSize="5xl" color="fruxgreen">
-              {"+ $"}
-              {toSponsor}
-            </Text>
-          </Div>
-
-          <Text
-            mx="md"
-            lineHeight={20}
-            fontSize="xl"
-            fontFamily="latinmodernroman-bold"
-            color="gray600"
-          >
-            With a goal of ${data.project.goal}
-          </Text>
-        </Div>
-        <Div row alignSelf="flex-end">
-          <Button
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setSponsorOverlay(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onPress={() => {
-              mutations.invest({
-                variables: {
-                  investedAmount: toSponsor,
-                  idProject: data.project.dbId,
-                },
-              });
-              setSponsorOverlay(false);
-            }}
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Seed
-          </Button>
-        </Div>
-      </Overlay>
+      {/*
 
       <Overlay visible={reviewOverlay}>
         <Text fontSize="xl" fontWeight="bold">
@@ -417,22 +329,22 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.project}
   `;
 
-  // const investMutation = gql`
-  //   mutation Invest($idProject: Int!, $investedAmount: Float!) {
-  //     mutateInvestProject(
-  //       idProject: $idProject
-  //       investedAmount: $investedAmount
-  //     ) {
-  //       project {
-  //         id
-  //         amountCollected
-  //       }
-  //     }
-  //   }
-  // `;
+  const investMutation = gql`
+    mutation Invest($idProject: Int!, $investedAmount: Float!) {
+      mutateInvestProject(
+        idProject: $idProject
+        investedAmount: $investedAmount
+      ) {
+        project {
+          ...ProjectFavAndInvest_project
+        }
+      }
+    }
+    ${ProjectFavAndInvest.fragments.project}
+  `;
 
-  // const [mutateInvestProject, { error: mutateInvestProjectError }] =
-  // useMutation(investMutation);
+  const [mutateInvestProject, { error: mutateInvestProjectError }] =
+    useMutation(investMutation);
 
   const seerMutation = gql`
     mutation seerMutation($idProject: Int!) {
@@ -518,7 +430,8 @@ export default function Render(props) {
     mutateUpdateProjectError,
     mutateProjectStageError,
     mutateSeerProjectError,
-  ]; //, mutateInvestProjectError];
+    mutateInvestProjectError,
+  ];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
@@ -532,7 +445,8 @@ export default function Render(props) {
         mutateUnfavProject,
         mutateProjectStage,
         mutateSeerProject,
-      }} //, mutateInvestProject }}
+        mutateInvestProject,
+      }}
     />
   );
 }

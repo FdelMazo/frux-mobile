@@ -38,9 +38,9 @@ export default function Component({ data, mutations, created }) {
     dollars();
   }, [data.project.goal, data.project.amountCollected]);
 
-  const [currentStage, setCurrentStage] = React.useState(0);
+  const [currentStage, setCurrentStage] = React.useState(-1);
   React.useEffect(() => {
-    let r = 0;
+    let r = -1;
     let accum = 0;
     for (let s of stages) {
       if (amountCollectedDollars >= accum + s.goal) {
@@ -48,7 +48,7 @@ export default function Component({ data, mutations, created }) {
         r = stages.indexOf(s);
       }
     }
-    setCurrentStage(r);
+    setCurrentStage(r + 1);
   }, [data.project.amountCollected]);
 
   const drawerRef = React.createRef();
@@ -117,7 +117,9 @@ export default function Component({ data, mutations, created }) {
                     h={40}
                     source={
                       i <= currentStage
-                        ? require("../assets/images/stage.png")
+                        ? i < currentStage
+                          ? require("../assets/images/stage.png")
+                          : require("../assets/images/current-stage.png")
                         : require("../assets/images/no-stage.png")
                     }
                   />
@@ -141,7 +143,7 @@ export default function Component({ data, mutations, created }) {
             Stage #{shownStage}: {stages[shownStage]?.title}
           </Text>
           <Div row>
-            {shownStage <= currentStage ? (
+            {shownStage < currentStage ? (
               <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
                 ${stages[shownStage]?.goal}
               </Text>
