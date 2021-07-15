@@ -60,6 +60,7 @@ export default function Render(props) {
         ...DiscoverFilters_allCategories
       }
       profile @include(if: $isLogged) {
+        id
         ...DiscoverFilters_user
       }
     }

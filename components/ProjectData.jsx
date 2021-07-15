@@ -305,6 +305,7 @@ export default function Component({ data, created, mutations, navigation }) {
 Component.fragments = {
   project: gql`
     fragment ProjectData on Project {
+      id
       name
       description
       currentState

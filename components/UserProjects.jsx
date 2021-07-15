@@ -119,6 +119,7 @@ export default function Component({ data, navigation, refetch }) {
 Component.fragments = {
   user: gql`
     fragment UserProjects on User {
+      id
       projectInvestments {
         edges {
           node {

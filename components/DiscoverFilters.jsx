@@ -169,6 +169,7 @@ Component.fragments = {
     fragment DiscoverFilters_allCategories on CategoryConnection {
       edges {
         node {
+          id
           name
         }
       }
@@ -182,6 +183,7 @@ Component.fragments = {
       interests {
         edges {
           node {
+            id
             name
           }
         }

@@ -124,6 +124,7 @@ export default function Component({ data, isViewer, mutations }) {
 Component.fragments = {
   user: gql`
     fragment UserSupervisorBanner on User {
+      id
       isSeer
     }
   `,

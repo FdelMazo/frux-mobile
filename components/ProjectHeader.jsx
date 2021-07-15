@@ -118,6 +118,7 @@ export default function Component({ data, navigation, mutations, created }) {
 Component.fragments = {
   project: gql`
     fragment ProjectHeader_project on Project {
+      id
       dbId
       categoryName
       uriImage

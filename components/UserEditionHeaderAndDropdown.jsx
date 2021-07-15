@@ -162,6 +162,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
 Component.fragments = {
   user: gql`
     fragment UserEditionHeaderAndDropdown on User {
+      id
       username
       email
       latitude

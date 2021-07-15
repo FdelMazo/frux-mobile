@@ -55,6 +55,7 @@ Component.fragments = {
     fragment DiscoverSeeds on ProjectConnectionsConnection {
       edges {
         node {
+          id
           dbId
           ...ProjectContainer
         }

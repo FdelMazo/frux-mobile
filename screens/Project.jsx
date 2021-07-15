@@ -246,6 +246,7 @@ export default function Render(props) {
   const query = gql`
     query Project($dbId: Int!, $isLogged: Boolean!) {
       profile @include(if: $isLogged) {
+        id
         ...ProjectFavAndInvest_user
         ...ProjectSeer_user
       }
@@ -311,6 +312,7 @@ export default function Render(props) {
     mutation favMutation($idProject: Int!) {
       mutateFavProject(idProject: $idProject) {
         project {
+          id
           ...ProjectFavAndInvest_project
         }
       }
@@ -322,6 +324,7 @@ export default function Render(props) {
     mutation unfavMutation($idProject: Int!) {
       mutateUnfavProject(idProject: $idProject) {
         project {
+          id
           ...ProjectFavAndInvest_project
         }
       }
@@ -336,6 +339,7 @@ export default function Render(props) {
         investedAmount: $investedAmount
       ) {
         project {
+          id
           ...ProjectFavAndInvest_project
         }
       }
@@ -369,6 +373,7 @@ export default function Render(props) {
         goal: $goal
         title: $title
       ) {
+        id
         ...ProjectCreation_stage
       }
     }

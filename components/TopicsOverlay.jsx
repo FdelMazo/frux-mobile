@@ -67,6 +67,7 @@ Component.fragments = {
     fragment TopicsOverlay on CategoryConnection {
       edges {
         node {
+          id
           name
         }
       }

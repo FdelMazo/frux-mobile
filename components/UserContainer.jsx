@@ -36,6 +36,7 @@ export default function Component({ user, navigation }) {
 Component.fragments = {
   user: gql`
     fragment UserContainer on User {
+      id
       dbId
       username
       email

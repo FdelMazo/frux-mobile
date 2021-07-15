@@ -397,6 +397,7 @@ Component.fragments = {
   `,
   project: gql`
     fragment ProjectCreation_project on Project {
+      id
       currentState
       stages {
         edges {

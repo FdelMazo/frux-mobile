@@ -228,6 +228,7 @@ Component.fragments = {
       favoritesFrom {
         edges {
           node {
+            id
             userId
           }
         }
@@ -235,6 +236,7 @@ Component.fragments = {
       investors {
         edges {
           node {
+            id
             userId
           }
         }
@@ -243,6 +245,7 @@ Component.fragments = {
   `,
   user: gql`
     fragment ProjectFavAndInvest_user on User {
+      id
       dbId
     }
   `,

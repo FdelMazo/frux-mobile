@@ -85,6 +85,7 @@ Component.fragments = {
       interests {
         edges {
           node {
+            id
             name
           }
         }

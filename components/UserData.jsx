@@ -249,10 +249,12 @@ export default function Component({ data, isViewer, mutations }) {
 Component.fragments = {
   user: gql`
     fragment UserData on User {
+      id
       firstName
       lastName
       description
       wallet {
+        id
         balance
         address
       }

@@ -36,7 +36,9 @@ export default function Component({ data }) {
 Component.fragments = {
   project: gql`
     fragment ProjectSeer_project on Project {
+      id
       seer {
+        id
         dbId
         firstName
         username
@@ -46,6 +48,7 @@ Component.fragments = {
   `,
   user: gql`
     fragment ProjectSeer_user on User {
+      id
       dbId
     }
   `,

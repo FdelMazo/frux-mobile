@@ -77,8 +77,8 @@ export default function Component({ project, navigation }) {
 Component.fragments = {
   project: gql`
     fragment ProjectContainer on Project {
-      dbId
       id
+      dbId
       uriImage
       name
       currentState

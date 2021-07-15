@@ -202,6 +202,7 @@ export default function Component({ data, mutations, created }) {
 Component.fragments = {
   project: gql`
     fragment ProjectProgress on Project {
+      id
       amountCollected
       goal
       currentState
