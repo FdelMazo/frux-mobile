@@ -4,6 +4,7 @@ import ProjectCreation from "../components/ProjectCreation";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
+import ProjectMessages from "../components/ProjectMessages";
 import ProjectProgress from "../components/ProjectProgress";
 import ProjectRating from "../components/ProjectRating";
 import ProjectSeer from "../components/ProjectSeer";
@@ -43,6 +44,7 @@ function Screen({ data, navigation, mutations }) {
         <ProjectCreation data={data} created={created} mutations={mutations} />
         <ProjectProgress data={data} created={created} mutations={mutations} />
         <ProjectRating data={data} created={created} mutations={mutations} />
+        <ProjectMessages data={data} created={created} />
         <ProjectSeer data={data} />
       </MainView>
     </View>
@@ -60,10 +62,10 @@ export default function Render(props) {
       project(dbId: $dbId) {
         id
         dbId
-
         ...ProjectRating
         ...ProjectHeader_project
         ...ProjectData
+        ...ProjectMessages
         ...ProjectFavAndInvest_project
         ...ProjectCreation_project
         ...ProjectProgress
@@ -84,6 +86,7 @@ export default function Render(props) {
     ${ProjectCreation.fragments.project}
     ${ProjectProgress.fragments.project}
     ${ProjectRating.fragments.project}
+    ${ProjectMessages.fragments.project}
     ${ProjectSeer.fragments.project}
     ${ProjectSeer.fragments.user}
   `;
