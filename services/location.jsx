@@ -3,7 +3,13 @@ import { googleMapsConfig } from "../constants/Config";
 
 export const useCurrentLocation = async () => {
   await Location.setGoogleApiKey(googleMapsConfig.GOOGLE_APIKEY);
-  await Location.requestForegroundPermissionsAsync();
+  const { status: existingStatus } =
+    await Location.getBackgroundPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    finalStatus = status;
+  }
   const userLocation = await Location.getCurrentPositionAsync();
   return userLocation.coords;
 };

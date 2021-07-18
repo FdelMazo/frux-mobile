@@ -3,7 +3,13 @@ import firebase from "firebase/app";
 import "firebase/storage";
 
 export const uploadImage = async () => {
-  await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const { status: existingStatus } =
+    await ImagePicker.getMediaLibraryPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    finalStatus = status;
+  }
   const image = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
