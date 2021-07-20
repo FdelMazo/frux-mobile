@@ -1,10 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import throttle from "lodash.throttle";
 import * as React from "react";
+import { Button, Div, Text } from "react-native-magnus";
 import DiscoverFilters from "../components/DiscoverFilters";
 import DiscoverSeeds from "../components/DiscoverSeeds";
 import Header from "../components/Header";
 import { MainView, View } from "../components/Themed";
+import { notificationHandshake } from "../services/notifications";
 import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
@@ -14,6 +16,11 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
     throttle((f) => refetch({ filters: f }), 1500),
     []
   );
+
+  React.useEffect(() => {
+    if (!data.profile) return;
+    notificationHandshake(data.profile.dbId);
+  }, [data.profile]);
 
   return (
     <View>
@@ -51,6 +58,7 @@ export default function Render(props) {
       }
       profile @include(if: $isLogged) {
         id
+        dbId
         ...DiscoverFilters_user
       }
     }

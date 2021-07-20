@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "89871581360",
+    "project_id": "frux-mobile",
+    "storage_bucket": "frux-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89871581360:android:352b3a19e81966ecf4bb75",
+        "android_client_info": {
+          "package_name": "com.fdelmazo.fruxmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhtwiwWEvIIki4WjzLAFuedP_-XeI3SDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

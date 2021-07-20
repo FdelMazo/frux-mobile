@@ -23,6 +23,7 @@ export default () => {
           backgroundColor: "#ffffff",
         },
         package: "com.fdelmazo.fruxmobile",
+        googleServicesFile: "./google-services.json",
         config: {
           googleMaps: {
             apiKey: process.env.GOOGLE_APIKEY,
@@ -32,6 +33,14 @@ export default () => {
       web: {
         favicon: "./assets/images/favicon.png",
       },
+      plugins: [
+        [
+          "expo-notifications",
+          {
+            icon: "./assets/images/favicon.png",
+          },
+        ],
+      ],
     },
   };
 };

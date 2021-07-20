@@ -56,7 +56,8 @@
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.16.2",
     "underscore": "^1.13.1",
-    "validate-color": "^2.1.1"
+    "validate-color": "^2.1.1",
+    "expo-notifications": "~0.11.6"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

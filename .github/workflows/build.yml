@@ -29,3 +29,4 @@ jobs:
           GOOGLE_APIKEY: ${{secrets.GOOGLE_APIKEY}}
           OAUTH_CLIENT_ID: ${{secrets.OAUTH_CLIENT_ID}}
           OAUTH_CLIENT_SECRET: ${{secrets.OAUTH_CLIENT_SECRET}}
+          NOTIFICATIONS_ENDPOINT: ${{secrets.NOTIFICATIONS_ENDPOINT}}

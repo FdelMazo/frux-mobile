@@ -31,7 +31,7 @@ This mobile app is developed in [React Native](https://reactnative.dev/) with tr
 
 ## Try it out!
 
-Go to your favourite Android device and download the [Expo Go](https://expo.io/client) app. After that you can either input the Expo link or scan the Expo QR to try out the latest build (thanks to some Github CI magic)
+Go to your favourite Android device and download the [Expo Go](https://expo.io/client) app. After that you can either input the Expo link or scan the Expo QR to try out the latest build (thanks to some Github CI magic). Keep in mind that there are some features (mostly those regarding third-party calls, like notifications and oauth) that only work on the APK, because those are mostly production env stuff.
 
 [`exp://exp.host/@fdelmazo/frux-mobile`](https://expo.io/@fdelmazo/frux-mobile)
 
