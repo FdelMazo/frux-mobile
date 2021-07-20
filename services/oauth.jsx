@@ -17,7 +17,7 @@ export async function redirectToGithub() {
     path: "oauth",
   });
   const response = await startAsync({
-    authUrl: `https://github.com/login/oauth/authorize?client_id=${OAUTH_CLIENT_ID}&scope=identity&redirect_uri=${returnUrl}`,
+    authUrl: `https://github.com/login/oauth/authorize?client_id=${OAUTH_CLIENT_ID}&scope=user&redirect_uri=${returnUrl}`,
     returnUrl,
   });
   if (response.type === "cancel" || response.type === "dismiss")
