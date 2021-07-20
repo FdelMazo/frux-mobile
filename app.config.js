@@ -2,6 +2,7 @@ export default () => {
   return {
     expo: {
       name: "Frux",
+      primaryColor: "#18aa5e",
       slug: "frux-mobile",
       version: "1.0.0",
       orientation: "portrait",
