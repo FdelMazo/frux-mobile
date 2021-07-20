@@ -29,11 +29,17 @@ Frux is currently being developed by
 
 ## How does frux-mobile look?
 
-<img src="docs/screenshot1.png" alt="screenshot1" width="500px">
-<img src="docs/screenshot2.png" alt="screenshot2" width="500px">
-<img src="docs/screenshot3.png" alt="screenshot3" width="500px">
-<img src="docs/screenshot4.png" alt="screenshot4" width="500px">
-
+<table align="center">
+    <tr>
+        <td><img src="docs/screenshot1.jpg" alt="screenshot1" height="400px"></td>
+        <td><img src="docs/screenshot2.jpg" alt="screenshot2" height="400px"></td>
+    </tr>
+    <tr>
+        <td><img src="docs/screenshot3.jpg" alt="screenshot3" height="400px"></td>
+        <td><img src="docs/screenshot4.jpg" alt="screenshot4" height="400px"></td>
+    </tr>
+</table>
+  
 ## Tech Stack
 
 This mobile app is developed in [React Native](https://reactnative.dev/) with tremendous help from [Expo](https://expo.io/). The UI framework used is [Magnus](https://magnus-ui.com/), and is truly one of the best mobile UI frameworks out there.
