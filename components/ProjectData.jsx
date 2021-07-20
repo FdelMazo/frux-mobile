@@ -24,7 +24,8 @@ export default function Component({ data, created, mutations, navigation }) {
   const [locationSet, setLocationSet] = React.useState(
     data.project.latitude !== "0.0"
   );
-  const [locationText, setLocationText] = React.useState("Include my location");
+  const [locationLoading, setLocationLoading] = React.useState(false);
+  const [locationText, setLocationText] = React.useState("");
 
   React.useEffect(() => {
     let toAdd = newHashtag;
@@ -152,19 +153,23 @@ export default function Component({ data, created, mutations, navigation }) {
       </Div>
       <Div row w="90%" justifyContent="space-between">
         <Div>
-          {((created && !locationSet) || !!locationSet) && (
+          {((created && !locationSet && !!locationText) ||
+            (!!locationSet && !!locationText)) && (
             <TouchableOpacity
+              disabled={locationLoading}
               activeOpacity={created && !locationSet ? 0.2 : 1}
               onPress={
                 created && !locationSet
                   ? async () => {
-                      mutations.mutateUpdateProject({
+                      setLocationLoading(true);
+                      await mutations.mutateUpdateProject({
                         variables: {
                           idProject: data.project.dbId,
                           latitude: data.project.owner.latitude,
                           longitude: data.project.owner.longitude,
                         },
                       });
+                      setLocationLoading(false);
                       setLocationSet(true);
                     }
                   : undefined
@@ -172,16 +177,16 @@ export default function Component({ data, created, mutations, navigation }) {
             >
               <Div row>
                 <Icon
-                  name="location-outline"
-                  fontFamily="Ionicons"
+                  name={locationLoading ? "spinner" : "location-outline"}
+                  fontFamily={locationLoading ? "EvilIcons" : "Ionicons"}
                   fontSize="xl"
-                  color="blue600"
+                  color={locationLoading ? "gray500" : "blue600"}
                 />
                 <Text
                   py="sm"
                   px={0}
                   bg={undefined}
-                  color="blue500"
+                  color={locationLoading ? "gray500" : "blue500"}
                   fontSize="sm"
                 >
                   {locationText}
