@@ -4,7 +4,7 @@ import { googleMapsConfig } from "../constants/Config";
 export const useCurrentLocation = async () => {
   await Location.setGoogleApiKey(googleMapsConfig.GOOGLE_APIKEY);
   const { status: existingStatus } =
-    await Location.getBackgroundPermissionsAsync();
+    await Location.getForegroundPermissionsAsync();
   let finalStatus = existingStatus;
   if (existingStatus !== "granted") {
     const { status } = await Location.requestForegroundPermissionsAsync();
