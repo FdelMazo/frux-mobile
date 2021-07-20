@@ -27,6 +27,13 @@ Frux is currently being developed by
 - [@JuampiRombola](https://www.github.com/JuampiRombola)
 - [@JDSanto](https://www.github.com/JDSanto)
 
+## How does frux-mobile look?
+
+<img src="docs/screenshot1.png" alt="screenshot1" width="500px">
+<img src="docs/screenshot2.png" alt="screenshot2" width="500px">
+<img src="docs/screenshot3.png" alt="screenshot3" width="500px">
+<img src="docs/screenshot4.png" alt="screenshot4" width="500px">
+
 ## Tech Stack
 
 This mobile app is developed in [React Native](https://reactnative.dev/) with tremendous help from [Expo](https://expo.io/). The UI framework used is [Magnus](https://magnus-ui.com/), and is truly one of the best mobile UI frameworks out there.
