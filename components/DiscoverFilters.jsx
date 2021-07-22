@@ -121,7 +121,8 @@ export default function Component({ data, isLogged, refetchSeeds }) {
               onPress={() => toggler(progressFilters, setProgressFilters, k)}
             >
               <Tag
-                mx="sm"
+                mx="xs"
+                fontSize="md"
                 bg={progressFilters.includes(k) ? color + 300 : color + 100}
                 borderColor={color + 700}
                 borderWidth={1}
