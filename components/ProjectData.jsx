@@ -198,7 +198,7 @@ export default function Component({ data, created, mutations, navigation }) {
         <Div row>
           <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
             {dateRepresentation(data.project.creationDate)} ~{" "}
-            {dateRepresentation(data.project.deadline)}
+            {dateRepresentation(data.project.deadline + "-03:00")}
           </Text>
         </Div>
       </Div>

@@ -12,8 +12,6 @@ export default function Component({ mutations, navigation }) {
   const [projectError, setProjectError] = React.useState("");
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const inOneMonth = new Date();
-  inOneMonth.setMonth(inOneMonth.getMonth() + 1);
   const [newFinalizationDate, setNewFinalizationDate] = React.useState(null);
   const [selectDate, setSelectDate] = React.useState(false);
 
@@ -62,7 +60,7 @@ export default function Component({ mutations, navigation }) {
             block
             w="65%"
             mt="md"
-            borderColor={newFinalizationDate ? "gray700" : "gray900"}
+            borderColor="gray400"
             underlayColor="gray200"
             borderWidth={1}
             py="md"
@@ -73,14 +71,14 @@ export default function Component({ mutations, navigation }) {
                 name="calendar-outline"
                 position="absolute"
                 right={0}
-                color={newFinalizationDate ? "gray700" : "gray900"}
+                color="gray700"
                 fontFamily="Ionicons"
                 fontSize="lg"
               />
             }
           >
             <Div flex={1}>
-              <Text color={newFinalizationDate ? "gray700" : "gray900"}>
+              <Text color={newFinalizationDate ? "black" : "gray500"}>
                 {newFinalizationDate
                   ? formatDateInput(newFinalizationDate)
                   : "Delivered By..."}
@@ -139,7 +137,7 @@ export default function Component({ mutations, navigation }) {
 
         {selectDate && (
           <DateTimePicker
-            value={newFinalizationDate || inOneMonth}
+            value={newFinalizationDate || tomorrow}
             onChange={(e, selectedDate) => {
               setSelectDate(false);
               setNewFinalizationDate(selectedDate);
