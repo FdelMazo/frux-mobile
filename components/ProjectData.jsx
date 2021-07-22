@@ -32,7 +32,7 @@ export default function Component({ data, created, mutations, navigation }) {
     if (toAdd.includes(" ")) {
       if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
       toAdd = toAdd.trim();
-      toggler(hashtags, setHashtags, toAdd);
+      if (toAdd) toggler(hashtags, setHashtags, toAdd);
       setNewHashtag("");
     }
   }, [newHashtag]);
@@ -259,7 +259,7 @@ export default function Component({ data, created, mutations, navigation }) {
             let toAdd = newHashtag;
             if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
             toAdd = toAdd.trim();
-            toggler(hashtags, setHashtags, toAdd);
+            if (toAdd) toggler(hashtags, setHashtags, toAdd);
             setNewHashtag("");
           }}
           focusBorderColor="fruxgreen"
