@@ -153,8 +153,8 @@ export default function Render(props) {
     variables: { isLogged: !!user },
   });
   if (error) return <Error errors={[error]} />;
-  if (loading) return <Loading />;
-  if (!!data.profile)
+  if (!!data?.profile)
     return <User dbId={data.profile.dbId} navigation={props.navigation} />;
+  if (loading) return <Loading />;
   return <WelcomeScreen navigation={props.navigation} />;
 }
