@@ -9,6 +9,8 @@ import { States } from "../constants/Constants";
 import { toggler } from "../services/helpers";
 
 export default function Component({ data, isLogged, refetchSeeds }) {
+  const [emptyFilters, setEmptyFilters] = React.useState(true);
+
   const [searchText, setSearchText] = React.useState("");
   const [progressFilters, setProgressFilters] = React.useState([]);
   const [topicsFilter, setTopicsFilter] = React.useState([]);
@@ -23,37 +25,39 @@ export default function Component({ data, isLogged, refetchSeeds }) {
   React.useEffect(() => {
     let hashtags = [];
     let nonHashtagWords = [];
-    searchText
-      .trim()
-      .split(" ")
-      .forEach((w) => {
-        w[0] === "#"
-          ? hashtags.push(w.substr(1).toLowerCase())
-          : nonHashtagWords.push(w);
-      });
-    const nameAndDescription = "%" + nonHashtagWords.join("%") + "%";
+    if (searchText) {
+      searchText
+        .trim()
+        .split(" ")
+        .forEach((w) => {
+          w[0] === "#"
+            ? hashtags.push(w.substr(1).toLowerCase())
+            : nonHashtagWords.push(w);
+        });
+    }
+    const nameAndDescription = nonHashtagWords.length
+      ? "%" + nonHashtagWords.join("%") + "%"
+      : undefined;
 
-    const filters = {
-      categoryNameIn: (topicsFilter.length && topicsFilter) || undefined,
-      currentStateIn: (progressFilters.length && progressFilters) || undefined,
-      isCloserThan:
-        (!!location.latitude && [
-          location.latitude,
-          location.longitude,
-          radius / 1000 || 10,
-        ]) ||
-        undefined,
-      or:
-        (nameAndDescription && [
-          { or: [{ nameIlike: nameAndDescription }] },
-          {
-            or: [{ descriptionIlike: nameAndDescription }],
-          },
-        ]) ||
-        undefined,
-      hasHashtag: (hashtags.length && hashtags) || undefined,
-    };
+    const filters = {};
+    if (topicsFilter.length) filters.categoryNameIn = topicsFilter;
+    if (progressFilters.length) filters.currentStateIn = progressFilters;
+    if (location.latitude)
+      filters.isCloserThan = [
+        location.latitude,
+        location.longitude,
+        radius / 1000 || 10,
+      ];
+    if (nameAndDescription)
+      filters.or = [
+        { or: [{ nameIlike: nameAndDescription }] },
+        {
+          or: [{ descriptionIlike: nameAndDescription }],
+        },
+      ];
+    if (hashtags.length) filters.hasHashtag = hashtags;
 
+    setEmptyFilters(!Object.keys(filters).length);
     refetchSeeds(filters);
   }, [searchText, location, radius, progressFilters, topicsFilter]);
 
@@ -62,26 +66,39 @@ export default function Component({ data, isLogged, refetchSeeds }) {
       <Div w="65%" row alignItems="center">
         {isLogged && (data.profile.latitude || data.profile.interests) && (
           <TouchableOpacity
-            onPress={() => {
-              if (data.profile.latitude) {
-                setLocation({
-                  latitude: data.profile.latitude,
-                  longitude: data.profile.longitude,
-                });
-                setRadius(10000);
-              }
-              if (data.profile.interests.edges.length) {
-                setTopicsFilter(
-                  data.profile.interests.edges.map((n) => n.node.name)
-                );
-              }
-            }}
+            onPress={
+              emptyFilters
+                ? () => {
+                    if (data.profile.latitude) {
+                      setLocation({
+                        latitude: data.profile.latitude,
+                        longitude: data.profile.longitude,
+                      });
+                      setRadius(10000);
+                    }
+                    if (data.profile.interests.edges.length) {
+                      setTopicsFilter(
+                        data.profile.interests.edges.map((n) => n.node.name)
+                      );
+                    }
+                  }
+                : () => {
+                    setSearchText("");
+                    setProgressFilters([]);
+                    setTopicsFilter([]);
+                    setRadius(10000);
+                    setLocation({
+                      latitude: undefined,
+                      longitude: undefined,
+                    });
+                  }
+            }
           >
             <Icon
               m="sm"
               fontSize="3xl"
               color="fruxgreen"
-              name="color-wand"
+              name={emptyFilters ? "color-wand" : "close"}
               fontFamily="Ionicons"
             />
           </TouchableOpacity>
@@ -90,7 +107,7 @@ export default function Component({ data, isLogged, refetchSeeds }) {
         <DelayInput
           placeholder="Search"
           value={searchText}
-          minLength={3}
+          minLength={1}
           onChangeText={setSearchText}
           delayTimeout={500}
           style={{
