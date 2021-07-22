@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import { RefreshControl } from "react-native";
 import { Button, Div, Overlay, Text } from "react-native-magnus";
 import { MainView, View } from "../components/Themed";
 import UserData from "../components/UserData";
@@ -7,6 +8,7 @@ import UserEditionHeaderAndDropdown from "../components/UserEditionHeaderAndDrop
 import UserFavouriteTopics from "../components/UserFavouriteTopics";
 import UserProjects from "../components/UserProjects";
 import UserSupervisorBanner from "../components/UserSupervisorBanner";
+import Colors from "../constants/Colors";
 import { loggingOut, useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
@@ -32,14 +34,22 @@ function Screen({ data, navigation, mutations, refetch }) {
         mutations={mutations}
       />
 
-      <MainView>
+      <MainView
+        refreshControl={
+          <RefreshControl
+            onRefresh={refetch}
+            refreshing={false}
+            colors={[Colors.fruxgreen]}
+          />
+        }
+      >
         <UserData data={data} isViewer={isViewer} mutations={mutations} />
         <UserFavouriteTopics
           data={data}
           isViewer={isViewer}
           mutations={mutations}
         />
-        <UserProjects data={data} navigation={navigation} refetch={refetch} />
+        <UserProjects data={data} navigation={navigation} />
         <UserSupervisorBanner
           data={data}
           isViewer={isViewer}

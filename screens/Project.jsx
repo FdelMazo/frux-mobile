@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
+import { RefreshControl } from "react-native";
 import ProjectCreation from "../components/ProjectCreation";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
@@ -9,11 +10,12 @@ import ProjectProgress from "../components/ProjectProgress";
 import ProjectRating from "../components/ProjectRating";
 import ProjectSeer from "../components/ProjectSeer";
 import { MainView, View } from "../components/Themed";
+import Colors from "../constants/Colors";
 import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({ data, navigation, mutations }) {
+function Screen({ data, navigation, mutations, refetch }) {
   const { user } = useUser();
   const created = React.useMemo(
     () => user && data.project.owner.email === user.email,
@@ -28,14 +30,21 @@ function Screen({ data, navigation, mutations }) {
         mutations={mutations}
         navigation={navigation}
       />
-      <MainView>
+      <MainView
+        refreshControl={
+          <RefreshControl
+            onRefresh={refetch}
+            refreshing={false}
+            colors={[Colors.fruxgreen]}
+          />
+        }
+      >
         <ProjectData
           data={data}
           created={created}
           mutations={mutations}
           navigation={navigation}
         />
-
         <ProjectFavAndInvest
           data={data}
           created={created}
@@ -215,7 +224,7 @@ export default function Render(props) {
 
   const { user } = useUser();
   const isLogged = !!user;
-  const { loading, error, data } = useQuery(query, {
+  const { loading, error, data, refetch } = useQuery(query, {
     variables: {
       dbId: props.route.params.dbId,
       isLogged,
@@ -280,6 +289,7 @@ export default function Render(props) {
   return (
     <Screen
       data={data}
+      refetch={refetch}
       navigation={props.navigation}
       mutations={{
         mutateUpdateProject,

@@ -1,11 +1,12 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import throttle from "lodash.throttle";
 import * as React from "react";
-import { Button, Div, Text } from "react-native-magnus";
+import { RefreshControl } from "react-native";
 import DiscoverFilters from "../components/DiscoverFilters";
 import DiscoverSeeds from "../components/DiscoverSeeds";
 import Header from "../components/Header";
 import { MainView, View } from "../components/Themed";
+import Colors from "../constants/Colors";
 import { notificationHandshake } from "../services/notifications";
 import { useUser } from "../services/user";
 import Error from "./Error";
@@ -31,17 +32,21 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
         icon="discover"
         mutations={mutations}
       />
-      <MainView>
+      <MainView
+        refreshControl={
+          <RefreshControl
+            onRefresh={refetch}
+            refreshing={false}
+            colors={[Colors.fruxgreen]}
+          />
+        }
+      >
         <DiscoverFilters
           refetchSeeds={refetchSeeds}
           data={data}
           isLogged={isLogged}
         />
-        <DiscoverSeeds
-          data={data}
-          navigation={navigation}
-          refetchSeeds={refetchSeeds}
-        />
+        <DiscoverSeeds data={data} navigation={navigation} />
       </MainView>
     </View>
   );

@@ -38,7 +38,6 @@ export function MainView(props) {
           },
           style,
         ]}
-        {...otherProps}
       >
         {props.children}
       </DefaultView>

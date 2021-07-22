@@ -4,7 +4,7 @@ import { FlatList } from "react-native";
 import { Div, Text } from "react-native-magnus";
 import ProjectContainer from "./ProjectContainer";
 
-export default function Component({ data, navigation, refetchSeeds }) {
+export default function Component({ data, navigation }) {
   return (
     <Div w="90%">
       <Div>
@@ -15,9 +15,6 @@ export default function Component({ data, navigation, refetchSeeds }) {
           <FlatList
             horizontal
             refreshing={false}
-            onRefresh={() => {
-              refetchSeeds();
-            }}
             data={data.allProjects.edges}
             keyExtractor={(item) => item.node.dbId.toString()}
             renderItem={({ item }) => (
