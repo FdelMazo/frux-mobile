@@ -9,16 +9,21 @@ export default function Component({ data, isViewer, mutations }) {
   return (
     <>
       {isViewer && !data.user.isSeer && (
-        <Div w="65%" mt="2xl">
+        <Div
+          w="65%"
+          my="2xl"
+          borderColor="fruxgreen"
+          rounded="md"
+          borderWidth={1}
+        >
           <Button
             block
             bg="white"
             onPress={() => {
               setSeerOverlay(true);
             }}
-            borderColor="fruxgreen"
             color="fruxgreen"
-            borderWidth={1}
+            fontSize="sm"
             prefix={
               <Image
                 mx="md"
