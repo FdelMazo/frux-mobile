@@ -1,7 +1,8 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as React from "react";
-import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
+import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import { formatDateInput } from "../services/helpers";
+import FruxOverlay from "./FruxOverlay";
 
 export default function Component({ mutations, navigation }) {
   const [projectId, setProjectId] = React.useState(null);
@@ -37,120 +38,104 @@ export default function Component({ mutations, navigation }) {
         <Icon name="add" color="white" fontFamily="Ionicons" fontSize="2xl" />
       </Button>
 
-      <Overlay visible={createProjectOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          Create New Project
-        </Text>
-        <Div my="md">
-          <Input
-            w="65%"
-            mt="md"
-            value={newProjectName}
-            onChangeText={setNewProjectName}
-            placeholder="Name"
-          />
-          <Input
-            w="65%"
-            mt="md"
-            multiline
-            maxLength={124}
-            numberOfLines={3}
-            textAlignVertical="top"
-            value={newProjectDescription}
-            onChangeText={setNewProjectDescription}
-            placeholder="Description"
-          />
-          <Button
-            block
-            w="65%"
-            mt="md"
-            borderColor="gray400"
-            underlayColor="gray200"
-            borderWidth={1}
-            py="md"
-            bg={undefined}
-            onPress={() => setSelectDate(true)}
-            suffix={
-              <Icon
-                name="calendar-outline"
-                position="absolute"
-                right={0}
-                color="gray700"
-                fontFamily="Ionicons"
-                fontSize="lg"
-              />
+      <FruxOverlay
+        visible={createProjectOverlay}
+        fail={{
+          title: "Cancel",
+          action: () => {
+            setCreateProjectOverlay(false);
+          },
+        }}
+        success={{
+          title: "Create",
+          action: async () => {
+            if (
+              !newProjectName ||
+              !newProjectDescription ||
+              !newFinalizationDate
+            ) {
+              return setProjectError("You must specify all fields!");
             }
-          >
-            <Div flex={1}>
-              <Text color={newFinalizationDate ? "black" : "gray500"}>
-                {newFinalizationDate
-                  ? formatDateInput(newFinalizationDate)
-                  : "Delivered By..."}
-              </Text>
-            </Div>
-          </Button>
-        </Div>
-        {projectError !== "" && (
-          <Text color="fruxred" textAlign="right" m="md">
-            {projectError}
-          </Text>
-        )}
-        <Div row alignSelf="flex-end">
-          <Button
-            mx="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setCreateProjectOverlay(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onPress={async () => {
-              if (
-                !newProjectName ||
-                !newProjectDescription ||
-                !newFinalizationDate
-              ) {
-                return setProjectError("You must specify all fields!");
+
+            setCreateProjectOverlay(false);
+
+            const newProject = await mutations.mutateProject({
+              variables: {
+                name: newProjectName,
+                description: newProjectDescription,
+                deadline: formatDateInput(newFinalizationDate),
+              },
+            });
+            setProjectId(newProject.data.mutateProject.dbId);
+          },
+        }}
+        title="Create New Project"
+        body={
+          <>
+            <Input
+              mt="md"
+              value={newProjectName}
+              onChangeText={setNewProjectName}
+              placeholder="Name"
+            />
+            <Input
+              mt="md"
+              multiline
+              maxLength={124}
+              numberOfLines={3}
+              textAlignVertical="top"
+              value={newProjectDescription}
+              onChangeText={setNewProjectDescription}
+              placeholder="Description"
+            />
+            <Button
+              block
+              mt="md"
+              borderColor="gray400"
+              underlayColor="gray200"
+              borderWidth={1}
+              py="md"
+              bg={undefined}
+              onPress={() => setSelectDate(true)}
+              suffix={
+                <Icon
+                  name="calendar-outline"
+                  position="absolute"
+                  right={0}
+                  color="gray700"
+                  fontFamily="Ionicons"
+                  fontSize="lg"
+                />
               }
+            >
+              <Div flex={1}>
+                <Text color={newFinalizationDate ? "black" : "gray500"}>
+                  {newFinalizationDate
+                    ? formatDateInput(newFinalizationDate)
+                    : "Delivered By..."}
+                </Text>
+              </Div>
+            </Button>
+            {projectError !== "" && (
+              <Text color="fruxred" textAlign="right" m="md">
+                {projectError}
+              </Text>
+            )}
 
-              setCreateProjectOverlay(false);
-
-              const newProject = await mutations.mutateProject({
-                variables: {
-                  name: newProjectName,
-                  description: newProjectDescription,
-                  deadline: formatDateInput(newFinalizationDate),
-                },
-              });
-              setProjectId(newProject.data.mutateProject.dbId);
-            }}
-            mx="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Create
-          </Button>
-        </Div>
-
-        {selectDate && (
-          <DateTimePicker
-            value={newFinalizationDate || tomorrow}
-            onChange={(e, selectedDate) => {
-              setSelectDate(false);
-              setNewFinalizationDate(selectedDate);
-            }}
-            minimumDate={tomorrow}
-            display="default"
-          />
-        )}
-      </Overlay>
+            {selectDate && (
+              <DateTimePicker
+                value={newFinalizationDate || tomorrow}
+                onChange={(e, selectedDate) => {
+                  setSelectDate(false);
+                  setNewFinalizationDate(selectedDate);
+                }}
+                minimumDate={tomorrow}
+                display="default"
+              />
+            )}
+          </>
+        }
+      />
     </>
   );
 }
