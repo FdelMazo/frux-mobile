@@ -33,7 +33,7 @@ export default function Component({ project, navigation }) {
       }}
     >
       <Div w={250}>
-        <Div rounded="xl" h={150} w={250} bgImg={{ uri: uriImage }}>
+        <Div rounded="lg" h={150} bgImg={{ uri: uriImage }}>
           <Div
             bg={States[project.currentState].color + "500"}
             rounded="md"
@@ -47,9 +47,9 @@ export default function Component({ project, navigation }) {
             </Text>
           </Div>
         </Div>
-        <Div mx="sm" row alignItems="center" justifyContent="space-between">
-          <Div mt="sm" maxW="70%">
-            <Text fontWeight="bold" lineBreakMode="clip" fontSize="xl">
+        <Div m="sm" row justifyContent="space-between">
+          <Div maxW="70%">
+            <Text fontWeight="bold" fontSize="xl">
               {project.name}
             </Text>
             <Text color="gray500" fontSize="sm">
@@ -57,13 +57,13 @@ export default function Component({ project, navigation }) {
             </Text>
           </Div>
           {!!project.goal && (
-            <Div row alignSelf="flex-start" mt="sm">
-              <Text color="fruxgreen" fontWeight="bold" fontSize="2xl">
+            <Div row alignSelf="flex-start">
+              <Text color="fruxgreen" fontWeight="bold" fontSize="xl">
                 {"$"}
                 {amountCollectedDollars}
               </Text>
-              <Text color="gray500" fontWeight="bold" fontSize="lg">
-                {"  /"}
+              <Text color="gray500" fontWeight="bold" fontSize="sm">
+                {" /"}
                 {goalDollars}
               </Text>
             </Div>
