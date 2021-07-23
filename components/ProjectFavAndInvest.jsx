@@ -152,6 +152,13 @@ export default function Component({ data, mutations, created }) {
             <Text fontSize="xl" fontWeight="bold">
               How much do you want to chip in?
             </Text>
+            <Text>
+              By funding this project you are helping it get done! After it gets
+              all of it's funding covered, it'll enter the{" "}
+              <Text color="fruxgreen">In Progress</Text> phase, where it will be
+              developed until it's finished. Don't worry! You'll be notified of
+              each step in the process
+            </Text>
             <Div alignSelf="center">
               <MultiSlider
                 selectedStyle={{ backgroundColor: Colors.fruxgreen }}
