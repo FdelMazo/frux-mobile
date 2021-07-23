@@ -23,8 +23,8 @@ export const UserIcons = [
 ];
 
 export const States = {
-  CREATED: { name: "Created", color: "pink" },
-  FUNDING: { name: "Funding", color: "blue" },
+  CREATED: { name: "Created", color: "orange" },
+  FUNDING: { name: "Funding", color: "pink" },
   IN_PROGRESS: { name: "In Progress", color: "indigo" },
   COMPLETE: { name: "Complete", color: "green" },
 };
