@@ -139,7 +139,7 @@ export default function Component({ data, mutations, created }) {
 
       <Overlay visible={stageOverlay} key={shownStage}>
         <Div row justifyContent="space-between">
-          <Text fontSize="xl" fontWeight="bold">
+          <Text maxW="75%" fontSize="xl" fontWeight="bold">
             Stage #{shownStage}: {stages[shownStage]?.title}
           </Text>
           <Div row>
