@@ -27,6 +27,11 @@ export default function Component({ data, created, mutations, navigation }) {
   const [locationLoading, setLocationLoading] = React.useState(false);
   const [locationText, setLocationText] = React.useState("");
 
+  const overdue = React.useMemo(
+    () => new Date() > new Date(data.project.deadline + "-03:00"),
+    [data.project.deadline]
+  );
+
   React.useEffect(() => {
     let toAdd = newHashtag;
     if (toAdd.includes(" ")) {
@@ -153,8 +158,8 @@ export default function Component({ data, created, mutations, navigation }) {
       </Div>
       <Div row w="90%" justifyContent="space-between">
         <Div>
-          {((created && !locationSet && !!locationText) ||
-            (!!locationSet && !!locationText)) && (
+          {((!overdue && created && !locationSet && !!locationText) ||
+            (!overdue && !!locationSet && !!locationText)) && (
             <TouchableOpacity
               disabled={locationLoading}
               activeOpacity={created && !locationSet ? 0.2 : 1}
@@ -196,10 +201,25 @@ export default function Component({ data, created, mutations, navigation }) {
           )}
         </Div>
         <Div row>
-          <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
-            {dateRepresentation(data.project.creationDate)} ~{" "}
-            {dateRepresentation(data.project.deadline + "-03:00")}
-          </Text>
+          {overdue ? (
+            <Text
+              p="sm"
+              w="100%"
+              rounded="md"
+              textAlign="center"
+              color="white"
+              bg="fruxred"
+            >
+              Keep in mind, this project is overdue! It was supposed to end on{" "}
+              {dateRepresentation(data.project.deadline + "-03:00")} yet here we
+              are! I guess someone got a little bit lazy, huh?
+            </Text>
+          ) : (
+            <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
+              {dateRepresentation(data.project.creationDate)} ~{" "}
+              {dateRepresentation(data.project.deadline + "-03:00")}
+            </Text>
+          )}
         </Div>
       </Div>
 
