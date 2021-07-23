@@ -122,25 +122,24 @@ export default function Component({ data, isViewer, mutations }) {
           Hi, how are you?
         </Text>
         <Div>
-          <Div w="70%" row justifyContent="space-between">
-            <Input
-              w="45%"
-              mt="md"
-              value={firstName}
-              onChangeText={setFirstName}
-              placeholder="First Name"
-            />
-            <Input
-              w="45%"
-              mt="md"
-              value={lastName}
-              onChangeText={setLastName}
-              placeholder="Last Name"
-            />
-          </Div>
           <Input
-            w="70%"
             mt="md"
+            value={firstName}
+            onChangeText={setFirstName}
+            placeholder="First Name"
+          />
+          <Input
+            mt="md"
+            value={lastName}
+            onChangeText={setLastName}
+            placeholder="Last Name"
+          />
+          <Input
+            mt="md"
+            multiline
+            maxLength={124}
+            numberOfLines={3}
+            textAlignVertical="top"
             value={description}
             onChangeText={setDescription}
             placeholder="Description"
@@ -149,6 +148,7 @@ export default function Component({ data, isViewer, mutations }) {
 
         <Div row alignSelf="flex-end">
           <Button
+            mt="lg"
             onPress={() => {
               mutations.mutateUpdateUser({
                 variables: {
