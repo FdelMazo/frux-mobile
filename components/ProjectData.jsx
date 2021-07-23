@@ -69,8 +69,10 @@ export default function Component({ data, created, mutations, navigation }) {
   return (
     <>
       <Div w="90%" mt="lg">
-        <Div row>
-          <UserContainer user={data.project.owner} navigation={navigation} />
+        <Div row my="xs">
+          <Div mx="xs">
+            <UserContainer user={data.project.owner} navigation={navigation} />
+          </Div>
 
           <Div flex={1} ml="lg">
             <TouchableOpacity

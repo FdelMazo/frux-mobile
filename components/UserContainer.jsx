@@ -11,7 +11,7 @@ export default function Component({ user, navigation }) {
     <TouchableOpacity
       onPress={() => navigation.navigate("UserScreen", { dbId: user.dbId })}
     >
-      <Div alignItems="center" m="sm">
+      <Div alignItems="center">
         <Icon
           bg="fruxbrown"
           h={45}
