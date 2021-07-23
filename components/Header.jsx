@@ -51,25 +51,25 @@ export default function Component({
       <TouchableOpacity activeOpacity={onPress ? 0.2 : 1} onPress={onPress}>
         {icon === "logo" ? (
           <Image
+            m="md"
             h={50}
             w={50}
-            borderWidth={2}
-            borderColor="black"
             rounded="circle"
+            borderWidth={2}
             source={require("../assets/images/logo.png")}
           />
         ) : (
           <Icon
             m="md"
-            bg="fruxbrown"
             h={50}
             w={50}
             rounded="circle"
+            borderWidth={2}
             name={AppIcons[icon].name}
             color="fruxgreen"
-            borderWidth={2}
-            fontSize="2xl"
+            bg="fruxbrown"
             fontFamily={AppIcons[icon].fontFamily}
+            fontSize="2xl"
           />
         )}
       </TouchableOpacity>
