@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Div, Icon } from "react-native-magnus";
+import { Button, Div, Icon } from "react-native-magnus";
 import { getImageUri, uploadImage } from "../services/media";
+import FruxOverlay from "./FruxOverlay";
 import TopicContainer from "./TopicContainer";
-import TopicsOverlay from "./TopicsOverlay";
 
 export default function Component({ data, mutations, created }) {
   const [uriImage, setUriImage] = React.useState(null);
@@ -103,13 +103,37 @@ export default function Component({ data, mutations, created }) {
         </TouchableOpacity>
       </Div>
 
-      <TopicsOverlay
-        topics={topic}
-        setTopics={setTopic}
+      <FruxOverlay
         visible={topicOverlay}
-        setVisible={setTopicOverlay}
-        multiple={false}
-        data={data}
+        title="Project Topic"
+        body={
+          <Div justifyContent="center" row flexWrap="wrap">
+            {data.allCategories.edges.map((item) => (
+              <Button
+                key={item.node.name}
+                bg={undefined}
+                p={0}
+                underlayColor="fruxgreen"
+                onPress={() => {
+                  setTopic(item.node.name);
+                }}
+                m="sm"
+              >
+                <TopicContainer
+                  active={topic === item.node.name}
+                  showName={true}
+                  name={item.node.name}
+                />
+              </Button>
+            ))}
+          </Div>
+        }
+        success={{
+          title: "Done",
+          action: () => {
+            setTopicOverlay(false);
+          },
+        }}
       />
     </Div>
   );
@@ -126,8 +150,12 @@ Component.fragments = {
   `,
   allCategories: gql`
     fragment ProjectHeader_allCategories on CategoryConnection {
-      ...TopicsOverlay
+      edges {
+        node {
+          id
+          name
+        }
+      }
     }
-    ${TopicsOverlay.fragments.allCategories}
   `,
 };

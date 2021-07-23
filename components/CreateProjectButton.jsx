@@ -40,35 +40,6 @@ export default function Component({ mutations, navigation }) {
 
       <FruxOverlay
         visible={createProjectOverlay}
-        fail={{
-          title: "Cancel",
-          action: () => {
-            setCreateProjectOverlay(false);
-          },
-        }}
-        success={{
-          title: "Create",
-          action: async () => {
-            if (
-              !newProjectName ||
-              !newProjectDescription ||
-              !newFinalizationDate
-            ) {
-              return setProjectError("You must specify all fields!");
-            }
-
-            setCreateProjectOverlay(false);
-
-            const newProject = await mutations.mutateProject({
-              variables: {
-                name: newProjectName,
-                description: newProjectDescription,
-                deadline: formatDateInput(newFinalizationDate),
-              },
-            });
-            setProjectId(newProject.data.mutateProject.dbId);
-          },
-        }}
         title="Create New Project"
         body={
           <>
@@ -135,6 +106,35 @@ export default function Component({ mutations, navigation }) {
             )}
           </>
         }
+        fail={{
+          title: "Cancel",
+          action: () => {
+            setCreateProjectOverlay(false);
+          },
+        }}
+        success={{
+          title: "Create",
+          action: async () => {
+            if (
+              !newProjectName ||
+              !newProjectDescription ||
+              !newFinalizationDate
+            ) {
+              return setProjectError("You must specify all fields!");
+            }
+
+            setCreateProjectOverlay(false);
+
+            const newProject = await mutations.mutateProject({
+              variables: {
+                name: newProjectName,
+                description: newProjectDescription,
+                deadline: formatDateInput(newFinalizationDate),
+              },
+            });
+            setProjectId(newProject.data.mutateProject.dbId);
+          },
+        }}
       />
     </>
   );

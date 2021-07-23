@@ -2,8 +2,9 @@ import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Text } from "react-native-magnus";
+import { toggler } from "../services/helpers";
+import FruxOverlay from "./FruxOverlay";
 import TopicContainer from "./TopicContainer";
-import TopicsOverlay from "./TopicsOverlay";
 
 export default function Component({ data, isViewer, mutations }) {
   const [myTopics, setMyTopics] = React.useState(
@@ -63,13 +64,38 @@ export default function Component({ data, isViewer, mutations }) {
           </>
         )}
       </Div>
-      <TopicsOverlay
-        topics={myTopics}
-        setTopics={setMyTopics}
+
+      <FruxOverlay
         visible={myTopicsOverlay}
-        setVisible={setMyTopicsOverlay}
-        multiple={true}
-        data={data}
+        title="My Favourite Topics"
+        body={
+          <Div justifyContent="center" row flexWrap="wrap">
+            {data.allCategories.edges.map((item) => (
+              <Button
+                key={item.node.name}
+                bg={undefined}
+                p={0}
+                underlayColor="fruxgreen"
+                onPress={() => {
+                  toggler(myTopics, setMyTopics, item.node.name);
+                }}
+                m="sm"
+              >
+                <TopicContainer
+                  active={myTopics.includes(item.node.name)}
+                  showName={true}
+                  name={item.node.name}
+                />
+              </Button>
+            ))}
+          </Div>
+        }
+        success={{
+          title: "Done",
+          action: () => {
+            setMyTopicsOverlay(false);
+          },
+        }}
       />
     </>
   );
@@ -78,9 +104,13 @@ export default function Component({ data, isViewer, mutations }) {
 Component.fragments = {
   allCategories: gql`
     fragment UserFavouriteTopics_allCategories on CategoryConnection {
-      ...TopicsOverlay
+      edges {
+        node {
+          id
+          name
+        }
+      }
     }
-    ${TopicsOverlay.fragments.allCategories}
   `,
   user: gql`
     fragment UserFavouriteTopics_user on User {
