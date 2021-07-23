@@ -1,14 +1,13 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
-import { RefreshControl } from "react-native";
-import { Button, Div, Overlay, Text } from "react-native-magnus";
+import { Div, Text } from "react-native-magnus";
+import FruxOverlay from "../components/FruxOverlay";
 import { MainView, View } from "../components/Themed";
 import UserData from "../components/UserData";
 import UserEditionHeaderAndDropdown from "../components/UserEditionHeaderAndDropdown";
 import UserFavouriteTopics from "../components/UserFavouriteTopics";
 import UserProjects from "../components/UserProjects";
 import UserSupervisorBanner from "../components/UserSupervisorBanner";
-import Colors from "../constants/Colors";
 import { loggingOut, useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
@@ -35,49 +34,47 @@ function Screen({ data, navigation, mutations, refetch }) {
       />
 
       <MainView refetch={refetch}>
-        <UserData data={data} isViewer={isViewer} mutations={mutations} />
-        <UserFavouriteTopics
-          data={data}
-          isViewer={isViewer}
-          mutations={mutations}
-        />
-        <UserProjects data={data} navigation={navigation} />
-        <UserSupervisorBanner
-          data={data}
-          isViewer={isViewer}
-          mutations={mutations}
-        />
+        <Div />
+        <Div w="100%">
+          <UserData data={data} isViewer={isViewer} mutations={mutations} />
+        </Div>
+        <Div w="90%" my="md">
+          <UserFavouriteTopics
+            data={data}
+            isViewer={isViewer}
+            mutations={mutations}
+          />
+        </Div>
+        <Div h={235} my="md">
+          <UserProjects data={data} navigation={navigation} />
+        </Div>
+        <Div my="lg">
+          <UserSupervisorBanner
+            data={data}
+            isViewer={isViewer}
+            mutations={mutations}
+          />
+        </Div>
       </MainView>
 
-      <Overlay visible={blockedOverlay}>
-        <Text fontSize="xl" fontWeight="bold" color="fruxred">
-          User Blocked
-        </Text>
-        <Div my="md">
+      <FruxOverlay
+        visible={blockedOverlay}
+        title="User Blocked"
+        body={
           <Text>
             Your user is blocked. Please contact a{" "}
             <Text color="fruxgreen">Frux</Text> administrator to unblock your
             account.
           </Text>
-        </Div>
-        <Div row alignSelf="flex-end">
-          <Button
-            onPress={() => {
-              loggingOut();
-              setBlockedOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            borderColor="fruxgreen"
-            borderWidth={1}
-            rounded="sm"
-            bg={undefined}
-            color="fruxgreen"
-          >
-            Done
-          </Button>
-        </Div>
-      </Overlay>
+        }
+        success={{
+          title: "Close",
+          action: () => {
+            loggingOut();
+            setBlockedOverlay(false);
+          },
+        }}
+      />
     </View>
   );
 }

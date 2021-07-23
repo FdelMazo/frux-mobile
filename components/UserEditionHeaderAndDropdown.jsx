@@ -19,6 +19,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
   });
   const [locationOverlay, setLocationOverlay] = React.useState(false);
   React.useEffect(() => {
+    if (!isViewer) return;
     mutations.mutateUpdateUser({
       variables: {
         latitude: location.latitude,
@@ -47,13 +48,10 @@ export default function Component({ data, isViewer, mutations, navigation }) {
       <Dropdown
         ref={dropdownRef}
         title={
-          <Div alignSelf="center">
-            <Div row justifyContent="space-between">
-              <Text mb="sm" fontSize="sm">
-                {data.user.email}
-              </Text>
+          <Div w="65%" alignSelf="center">
+            <Div mb="sm" row justifyContent="space-between">
+              <Text fontSize="sm">{data.user.email}</Text>
               <Text
-                mb="sm"
                 onPress={() => {
                   if (emailSent) return;
                   resetPassword(data.user.email).then(() => setEmailSent(true));
@@ -66,7 +64,6 @@ export default function Component({ data, isViewer, mutations, navigation }) {
             </Div>
             <Input
               placeholder="Username"
-              w="65%"
               focusBorderColor="blue700"
               value={username}
               onChangeText={setUsername}

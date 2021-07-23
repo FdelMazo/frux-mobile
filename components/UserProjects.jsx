@@ -15,8 +15,8 @@ export default function Component({ data, navigation }) {
       (!!data.user.seerProjects.edges.length && data.user.seerProjects)
   );
   return (
-    <Div w="90%" mt="xl">
-      <Div row>
+    <Div>
+      <Div my="sm" row justifyContent="center">
         {!!data.user.createdProjects.edges.length && (
           <TouchableOpacity
             onPress={() => setProjectsShown(data.user.createdProjects)}
@@ -41,9 +41,9 @@ export default function Component({ data, navigation }) {
             onPress={() => setProjectsShown(data.user.projectInvestments)}
           >
             <Tag
-              fontSize="sm"
-              rounded="circle"
               mx="sm"
+              rounded="circle"
+              fontSize="sm"
               bg={
                 projectsShown === data.user.projectInvestments
                   ? "blue400"
@@ -92,21 +92,23 @@ export default function Component({ data, navigation }) {
         )}
       </Div>
 
-      <Div mt="sm">
+      <Div my="sm">
         <FlatList
           horizontal
           keyExtractor={(item) => item.node.id}
           data={projectsShown.edges}
           renderItem={({ item }) => (
-            <ProjectContainer
-              navigation={navigation}
-              project={
-                projectsShown === data?.user?.createdProjects ||
-                projectsShown === data?.user?.seerProjects
-                  ? item.node
-                  : item.node.project
-              }
-            />
+            <Div mx="sm">
+              <ProjectContainer
+                navigation={navigation}
+                project={
+                  projectsShown === data?.user?.createdProjects ||
+                  projectsShown === data?.user?.seerProjects
+                    ? item.node
+                    : item.node.project
+                }
+              />
+            </Div>
           )}
         />
       </Div>

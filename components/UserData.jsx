@@ -12,7 +12,7 @@ import {
   Text,
 } from "react-native-magnus";
 import { toDollars } from "../services/helpers";
-
+import FruxOverlay from "./FruxOverlay";
 export default function Component({ data, isViewer, mutations }) {
   const [firstName, setFirstName] = React.useState(data.user.firstName);
   const [lastName, setLastName] = React.useState(data.user.lastName);
@@ -35,7 +35,7 @@ export default function Component({ data, isViewer, mutations }) {
 
   return (
     <>
-      <Div w="100%" mt="lg">
+      <Div>
         <Div
           row
           mx="lg"
@@ -143,57 +143,48 @@ export default function Component({ data, isViewer, mutations }) {
         </Div>
       </Div>
 
-      <Overlay visible={basicDataOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          Hi, how are you?
-        </Text>
-        <Div>
-          <Input
-            mt="md"
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholder="First Name"
-          />
-          <Input
-            mt="md"
-            value={lastName}
-            onChangeText={setLastName}
-            placeholder="Last Name"
-          />
-          <Input
-            mt="md"
-            multiline
-            maxLength={124}
-            numberOfLines={3}
-            textAlignVertical="top"
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Description"
-          />
-        </Div>
-
-        <Div row alignSelf="flex-end">
-          <Button
-            mt="lg"
-            onPress={() => {
-              mutations.mutateUpdateUser({
-                variables: {
-                  firstName,
-                  lastName,
-                  description,
-                },
-              });
-              setBasicDataOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Done
-          </Button>
-        </Div>
-      </Overlay>
+      <FruxOverlay
+        visible={basicDataOverlay}
+        title="Hi, how are you?"
+        body={
+          <>
+            <Input
+              mt="md"
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholder="First Name"
+            />
+            <Input
+              mt="md"
+              value={lastName}
+              onChangeText={setLastName}
+              placeholder="Last Name"
+            />
+            <Input
+              mt="md"
+              multiline
+              maxLength={124}
+              numberOfLines={3}
+              textAlignVertical="top"
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Description"
+            />
+          </>
+        }
+        success={{
+          action: () => {
+            mutations.mutateUpdateUser({
+              variables: {
+                firstName,
+                lastName,
+                description,
+              },
+            });
+            setBasicDataOverlay(false);
+          },
+        }}
+      />
 
       <Overlay visible={walletOverlay}>
         <Div row justifyContent="space-between">
@@ -262,11 +253,8 @@ export default function Component({ data, isViewer, mutations }) {
             }}
             mx="sm"
             p="md"
-            borderColor="fruxgreen"
-            borderWidth={1}
-            rounded="sm"
-            bg={undefined}
-            color="fruxgreen"
+            bg="fruxgreen"
+            color="white"
           >
             Done
           </Button>

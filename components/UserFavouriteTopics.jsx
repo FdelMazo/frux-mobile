@@ -12,29 +12,21 @@ export default function Component({ data, isViewer, mutations }) {
   );
   const [myTopicsOverlay, setMyTopicsOverlay] = React.useState(false);
 
-  React.useEffect(() => {
-    mutations.mutateUpdateUser({
-      variables: {
-        interests: myTopics,
-      },
-    });
-  }, [myTopics]);
-
   return (
     <>
-      <Div w="90%" mt="xl">
+      <Div>
         {myTopics.length ? (
           <TouchableOpacity
             activeOpacity={isViewer ? 0.2 : 1}
             onPress={isViewer ? () => setMyTopicsOverlay(true) : undefined}
           >
             <>
-              <Div alignSelf="flex-start">
+              <Div>
                 <Text fontSize="xl" fontWeight="bold">
                   {isViewer ? "My Topics" : "Favourite Topics"}
                 </Text>
               </Div>
-              <Div row my="md" flexWrap="wrap">
+              <Div row flexWrap="wrap">
                 {myTopics.map((t) => (
                   <Div key={t} m="sm">
                     <TopicContainer showName={true} name={t} />
@@ -46,7 +38,7 @@ export default function Component({ data, isViewer, mutations }) {
         ) : (
           <>
             {isViewer && (
-              <Div row alignItems="center">
+              <Div row>
                 <TopicContainer active showName={false} name="Other" />
                 <Button
                   bg="white"
@@ -93,6 +85,11 @@ export default function Component({ data, isViewer, mutations }) {
         success={{
           title: "Done",
           action: () => {
+            mutations.mutateUpdateUser({
+              variables: {
+                interests: myTopics,
+              },
+            });
             setMyTopicsOverlay(false);
           },
         }}

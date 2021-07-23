@@ -8,7 +8,6 @@ export default function Component({ data, navigation }) {
   return (
     <FlatList
       horizontal
-      refreshing={false}
       data={data.allProjects.edges}
       keyExtractor={(item) => item.node.dbId.toString()}
       ListEmptyComponent={

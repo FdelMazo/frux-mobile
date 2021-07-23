@@ -1,125 +1,126 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
-import { Button, Div, Image, Overlay, Text } from "react-native-magnus";
-
+import { Div, Image, Text } from "react-native-magnus";
+import FruxOverlay from "./FruxOverlay";
 export default function Component({ data, isViewer, mutations }) {
   const [seerOverlay, setSeerOverlay] = React.useState(false);
+  const [stopSeerOverlay, setStopSeerOverlay] = React.useState(false);
 
   return (
     <>
-      {isViewer && !data.user.isSeer && (
-        <Div
-          w="65%"
-          my="2xl"
-          borderColor="fruxgreen"
-          rounded="md"
-          borderWidth={1}
-        >
-          <Button
-            block
-            bg="white"
-            onPress={() => {
-              setSeerOverlay(true);
-            }}
-            color="fruxgreen"
-            fontSize="sm"
-            prefix={
-              <Image
-                mx="md"
-                w={35}
-                h={35}
-                source={require("../assets/images/no-seer.png")}
-              />
-            }
-          >
-            Become a project supervisor
-          </Button>
-        </Div>
-      )}
-
-      {data.user.isSeer && (
-        <Div row my="2xl" w="50%" justifyContent="center" alignItems="center">
-          <Image
-            mx="md"
-            w={35}
-            h={35}
-            source={require("../assets/images/seer.png")}
-          />
-          <TouchableOpacity
-            activeOpacity={isViewer ? 1 : 0.2}
-            onPress={
-              isViewer
-                ? undefined
+      {(data.user.isSeer || isViewer) && (
+        <TouchableOpacity
+          activeOpacity={isViewer ? 0.2 : 1}
+          onPress={
+            isViewer
+              ? data.user.isSeer
+                ? () => {
+                    setStopSeerOverlay(true);
+                  }
                 : () => {
                     setSeerOverlay(true);
                   }
-            }
+              : undefined
+          }
+        >
+          <Div
+            row
+            p="lg"
+            borderColor="fruxgreen"
+            rounded="md"
+            borderWidth={data.user.isSeer ? 0 : 1}
           >
-            <Div>
-              <Text color="fruxgreen">
-                {isViewer
-                  ? "Thanks for being a supervisor!"
+            <Image
+              w={30}
+              h={30}
+              source={
+                data.user.isSeer
+                  ? require("../assets/images/seer.png")
+                  : require("../assets/images/no-seer.png")
+              }
+            />
+            <Text mx="md" color="fruxgreen" fontSize="sm">
+              {data.user.isSeer
+                ? isViewer
+                  ? "Thanks for being a project supervisor!"
                   : `${
                       data.user.username || data.user.email.split("@")[0]
-                    } is part of our supervisor program, you can also join us!`}
-              </Text>
-            </Div>
-          </TouchableOpacity>
-        </Div>
+                    } is part of our supervisor program!`
+                : "Become a project supervisor"}
+            </Text>
+          </Div>
+        </TouchableOpacity>
       )}
 
-      <Overlay visible={seerOverlay}>
-        <Text fontSize="xl" fontWeight="bold">
-          Become a Project Supervisor
-        </Text>
-        <Div>
-          <Text my="md">
-            A project supervisor is a volunteer who verifies the correct
-            development of a project, guaranteeing that the funds are being
-            correctly spent and the deadlines are being met.
-          </Text>
+      <FruxOverlay
+        visible={stopSeerOverlay}
+        title="Stop being a Project Supervisor"
+        body={
+          <>
+            <Text my="md">
+              Thanks for all your work! We won't assign you any more projects
+              for you to supervise.
+            </Text>
 
-          <Text my="md">
-            By agreeing on this terms, you'll be selected to supervise a random
-            project out of the thousands that make
-            <Text color="fruxgreen"> Frux</Text> what it is today.
-          </Text>
+            <Text my="md">
+              Don't forget to see through the rest of your assigned projects
+              until they are done!
+            </Text>
+          </>
+        }
+        fail={{
+          title: "Cancel",
+          action: () => {
+            setStopSeerOverlay(false);
+          },
+        }}
+        success={{
+          title: "Confirm",
+          action: () => {
+            // mutations.mutateSetSeer();
+            setStopSeerOverlay(false);
+          },
+        }}
+      />
 
-          <Text my="md">
-            Don't worry! When a project is selected for you, you'll see it right
-            here in your profile screen.
-          </Text>
-        </Div>
+      <FruxOverlay
+        visible={seerOverlay}
+        title="Become a Project Supervisor"
+        body={
+          <>
+            <Text my="md">
+              A project supervisor is a volunteer who verifies the correct
+              development of a project, guaranteeing that the funds are being
+              correctly spent and the deadlines are being met.
+            </Text>
 
-        <Div row alignSelf="flex-end">
-          <Button
-            mx="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setSeerOverlay(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onPress={() => {
-              mutations.mutateSetSeer();
-              setSeerOverlay(false);
-            }}
-            mx="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Confirm
-          </Button>
-        </Div>
-      </Overlay>
+            <Text my="md">
+              By agreeing on this terms, you'll be selected to supervise a
+              random project out of the thousands that make
+              <Text color="fruxgreen"> Frux</Text> what it is today.
+            </Text>
+
+            <Text my="md">
+              Don't worry! When a project is selected for you, you'll see it
+              right here in your profile screen.
+            </Text>
+          </>
+        }
+        fail={{
+          title: "Cancel",
+          action: () => {
+            setSeerOverlay(false);
+          },
+        }}
+        success={{
+          title: "Confirm",
+          action: () => {
+            mutations.mutateSetSeer();
+            setSeerOverlay(false);
+          },
+        }}
+      />
     </>
   );
 }
