@@ -48,7 +48,7 @@ export default function Component({ project, navigation }) {
           </Div>
         </Div>
         <Div mx="sm" row alignItems="center" justifyContent="space-between">
-          <Div mt="sm" w="70%">
+          <Div mt="sm" maxW="70%">
             <Text fontWeight="bold" fontSize="xl">
               {project.name}
             </Text>
