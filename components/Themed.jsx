@@ -30,6 +30,13 @@ export function MainView(props) {
 
   return (
     <DefaultScrollView
+      contentContainerStyle={[
+        {
+          flexGrow: 1,
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+      ]}
       style={[{ backgroundColor }, style]}
       refreshControl={
         props.refetch ? (
@@ -42,20 +49,7 @@ export function MainView(props) {
       }
       {...otherProps}
     >
-      <DefaultView
-        style={[
-          { backgroundColor },
-          {
-            flex: 1,
-            alignItems: "center",
-            marginVertical: 16,
-            marginHorizontal: 8,
-          },
-          style,
-        ]}
-      >
-        {props.children}
-      </DefaultView>
+      {props.children}
     </DefaultScrollView>
   );
 }

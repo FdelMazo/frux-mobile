@@ -31,7 +31,9 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
         icon="discover"
         mutations={mutations}
       />
+
       <MainView refetch={refetch}>
+        <Div mt="lg"></Div>
         <Div>
           <DiscoverFilters
             refetchSeeds={refetchSeeds}
@@ -45,7 +47,7 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
           w="80%"
           my="xl"
         />
-        <Div>
+        <Div h={220}>
           <DiscoverSeeds data={data} navigation={navigation} />
         </Div>
       </MainView>

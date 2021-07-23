@@ -49,7 +49,7 @@ export default function Component({ project, navigation }) {
         </Div>
         <Div mx="sm" row alignItems="center" justifyContent="space-between">
           <Div mt="sm" maxW="70%">
-            <Text fontWeight="bold" fontSize="xl">
+            <Text fontWeight="bold" lineBreakMode="clip" fontSize="xl">
               {project.name}
             </Text>
             <Text color="gray500" fontSize="sm">
