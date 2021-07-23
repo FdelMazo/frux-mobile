@@ -78,7 +78,6 @@ export default function Component({ data, isViewer, mutations }) {
                 <Text
                   fontSize="4xl"
                   fontFamily="latinmodernroman-bold"
-                  fontWeight="bold"
                   color="fruxgreen"
                 >
                   {firstName ? lastName + ", " : lastName}
@@ -88,7 +87,6 @@ export default function Component({ data, isViewer, mutations }) {
                 <Text
                   fontSize="4xl"
                   fontFamily="latinmodernroman-bold"
-                  fontWeight="bold"
                   color="fruxbrown"
                 >
                   {firstName}

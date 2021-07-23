@@ -89,7 +89,6 @@ export default function Component({ data, created, mutations, navigation }) {
                     fontSize="4xl"
                     lineHeight={25}
                     fontFamily="latinmodernroman-bold"
-                    fontWeight="bold"
                   >
                     {data.project.name}
                   </Text>

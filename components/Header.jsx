@@ -45,7 +45,7 @@ export default function Component({
         </>
       )}
 
-      <Text fontSize="5xl" fontFamily="latinmodernroman-bold" fontWeight="bold">
+      <Text fontSize="5xl" fontFamily="latinmodernroman-bold">
         {title}
       </Text>
       <TouchableOpacity activeOpacity={onPress ? 0.2 : 1} onPress={onPress}>

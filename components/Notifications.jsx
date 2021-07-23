@@ -26,11 +26,7 @@ function Component({ data, navigation }) {
 
       <Drawer direction="right" ref={notificationsRef}>
         <Div my="xl" mx="lg" row justifyContent="space-between">
-          <Text
-            fontSize="3xl"
-            fontFamily="latinmodernroman-bold"
-            fontWeight="bold"
-          >
+          <Text fontSize="3xl" fontFamily="latinmodernroman-bold">
             Notifications
           </Text>
           <Icon

@@ -17,7 +17,6 @@ export default function useCachedResources() {
           ...Ionicons.font,
           "space-mono": require("../assets/fonts/SpaceMono-Regular.ttf"),
           "latinmodernroman-bold": require("../assets/fonts/lmroman10-bold.otf"),
-          "latinmodernroman-regular": require("../assets/fonts/lmromandemi10-regular.otf"),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
