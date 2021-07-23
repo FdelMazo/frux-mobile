@@ -102,7 +102,9 @@ export default function Component({ data, mutations, created }) {
       </Div>
 
       <Overlay visible={sponsorOverlay}>
-        {created ? (
+        {(data.project.currentState === "FUNDING" && created) ||
+        data.project.currentState === "IN_PROGRESS" ||
+        data.project.currentState === "COMPLETED" ? (
           <>
             <Text fontSize="xl" fontWeight="bold">
               Investors
@@ -155,9 +157,9 @@ export default function Component({ data, mutations, created }) {
             <Text>
               By funding this project you are helping it get done! After it gets
               all of it's funding covered, it'll enter the{" "}
-              <Text color="fruxgreen">In Progress</Text> phase, where it will be
-              developed until it's finished. Don't worry! You'll be notified of
-              each step in the process
+              <Text color="fruxgreen">In Progress</Text> phase where it'll be
+              developed until it's finished, and you won't be able to take back
+              your investment.
             </Text>
             <Div alignSelf="center">
               <MultiSlider
