@@ -44,30 +44,7 @@ function Component({ data, navigation }) {
           {data.notifications.map((n) => (
             <Div key={n.title}>
               <Collapse>
-                <Collapse.Header
-                  bg={undefined}
-                  borderWidth={1}
-                  suffix={
-                    <Icon
-                      px="lg"
-                      name="chevron-down"
-                      fontFamily="Feather"
-                      position="absolute"
-                      right={0}
-                      color="black"
-                    />
-                  }
-                  activeSuffix={
-                    <Icon
-                      px="lg"
-                      name="chevron-up"
-                      fontFamily="Feather"
-                      position="absolute"
-                      right={0}
-                      color="black"
-                    />
-                  }
-                >
+                <Collapse.Header bg={undefined} borderWidth={1}>
                   <Div>
                     <Text fontSize="xs">{n.timestamp}</Text>
                     <Text fontSize="xs">{n.title.toUpperCase()}</Text>
