@@ -40,7 +40,7 @@ export default function Component({ data, created, mutations }) {
         <Div>
           {data.project.reviews.edges.length ? (
             data.project.reviews.edges.map((r) => (
-              <>
+              <Div key={r.node.user.id}>
                 <Div row justifyContent="space-between" my="xs">
                   <Text color="fruxgreen">
                     {r.node.user.username || r.node.user.email.split("@")[0]}
@@ -59,7 +59,7 @@ export default function Component({ data, created, mutations }) {
                 >
                   {r.node.description}
                 </Text>
-              </>
+              </Div>
             ))
           ) : (
             <Text my="sm">
@@ -142,7 +142,6 @@ export default function Component({ data, created, mutations }) {
     </>
   );
 }
-
 
 Component.fragments = {
   project: gql`
