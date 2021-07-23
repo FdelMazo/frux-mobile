@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import throttle from "lodash.throttle";
 import * as React from "react";
+import { Div } from "react-native-magnus";
 import DiscoverFilters from "../components/DiscoverFilters";
 import DiscoverSeeds from "../components/DiscoverSeeds";
 import Header from "../components/Header";
@@ -31,12 +32,22 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
         mutations={mutations}
       />
       <MainView refetch={refetch}>
-        <DiscoverFilters
-          refetchSeeds={refetchSeeds}
-          data={data}
-          isLogged={isLogged}
+        <Div>
+          <DiscoverFilters
+            refetchSeeds={refetchSeeds}
+            data={data}
+            isLogged={isLogged}
+          />
+        </Div>
+        <Div
+          borderBottomColor="fruxgreen"
+          borderBottomWidth={1}
+          w="80%"
+          my="xl"
         />
-        <DiscoverSeeds data={data} navigation={navigation} />
+        <Div>
+          <DiscoverSeeds data={data} navigation={navigation} />
+        </Div>
       </MainView>
     </View>
   );

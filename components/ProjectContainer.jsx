@@ -32,7 +32,7 @@ export default function Component({ project, navigation }) {
         navigation.navigate("ProjectScreen", { dbId: project.dbId });
       }}
     >
-      <Div my="sm" mr="lg" w={250}>
+      <Div w={250}>
         <Div rounded="xl" h={150} w={250} bgImg={{ uri: uriImage }}>
           <Div
             bg={States[project.currentState].color + "500"}

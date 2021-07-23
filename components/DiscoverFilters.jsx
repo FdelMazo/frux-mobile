@@ -61,121 +61,125 @@ export default function Component({ data, isLogged, refetchSeeds }) {
   }, [searchText, location, radius, progressFilters, topicsFilter]);
 
   return (
-    <Div alignItems="center">
-      <Div row alignItems="center" justifyContent="center">
-        <Div w="10%">
-          {!emptyFilters && (
-            <TouchableOpacity
-              onPress={() => {
-                setSearchText("");
-                setProgressFilters([]);
-                setTopicsFilter([]);
-                setRadius(10000);
-                setLocation({
-                  latitude: undefined,
-                  longitude: undefined,
-                });
-              }}
-            >
-              <Icon
-                fontSize="3xl"
-                color="fruxgreen"
-                name="close"
-                fontFamily="Ionicons"
-              />
-            </TouchableOpacity>
-          )}
-          {emptyFilters &&
-            isLogged &&
-            (data.profile.latitude || data.profile.interests) && (
+    <>
+      <Div alignItems="center">
+        <Div row alignItems="center" justifyContent="center">
+          <Div w="10%">
+            {!emptyFilters && (
               <TouchableOpacity
                 onPress={() => {
-                  if (data.profile.latitude) {
-                    setLocation({
-                      latitude: data.profile.latitude,
-                      longitude: data.profile.longitude,
-                    });
-                    setRadius(10000);
-                  }
-                  if (data.profile.interests.edges.length) {
-                    setTopicsFilter(
-                      data.profile.interests.edges.map((n) => n.node.name)
-                    );
-                  }
+                  setSearchText("");
+                  setProgressFilters([]);
+                  setTopicsFilter([]);
+                  setRadius(10000);
+                  setLocation({
+                    latitude: undefined,
+                    longitude: undefined,
+                  });
                 }}
               >
                 <Icon
                   fontSize="3xl"
                   color="fruxgreen"
-                  name="color-wand"
+                  name="close"
                   fontFamily="Ionicons"
                 />
               </TouchableOpacity>
             )}
-        </Div>
+            {emptyFilters &&
+              isLogged &&
+              (data.profile.latitude || data.profile.interests) && (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (data.profile.latitude) {
+                      setLocation({
+                        latitude: data.profile.latitude,
+                        longitude: data.profile.longitude,
+                      });
+                      setRadius(10000);
+                    }
+                    if (data.profile.interests.edges.length) {
+                      setTopicsFilter(
+                        data.profile.interests.edges.map((n) => n.node.name)
+                      );
+                    }
+                  }}
+                >
+                  <Icon
+                    fontSize="3xl"
+                    color="fruxgreen"
+                    name="color-wand"
+                    fontFamily="Ionicons"
+                  />
+                </TouchableOpacity>
+              )}
+          </Div>
 
-        <Div w="50%">
-          <Input
-            py="xs"
-            mx="xs"
-            placeholder="Search"
-            value={searchText}
-            onChangeText={setSearchText}
-          />
-        </Div>
-        <Div w="10%">
-          <TouchableOpacity onPress={() => setLocationOverlay(true)}>
-            <Icon
-              fontSize="3xl"
-              name={!!location.latitude ? "location-sharp" : "location-outline"}
-              color="gray900"
-              fontFamily="Ionicons"
+          <Div w="60%">
+            <Input
+              py="xs"
+              mx="xs"
+              placeholder="Search"
+              value={searchText}
+              onChangeText={setSearchText}
             />
-          </TouchableOpacity>
-        </Div>
-      </Div>
-
-      <Div w="100%" my="lg" row>
-        {Object.keys(States).map((k) => {
-          const { name, color } = States[k];
-          return (
-            <TouchableOpacity
-              key={name}
-              onPress={() => toggler(progressFilters, setProgressFilters, k)}
-            >
-              <Tag
-                mx="xs"
-                fontSize="md"
-                bg={progressFilters.includes(k) ? color + 300 : color + 100}
-                borderColor={color + 700}
-                borderWidth={1}
-              >
-                {name}
-              </Tag>
+          </Div>
+          <Div w="10%">
+            <TouchableOpacity onPress={() => setLocationOverlay(true)}>
+              <Icon
+                fontSize="3xl"
+                name={
+                  !!location.latitude ? "location-sharp" : "location-outline"
+                }
+                color="gray900"
+                fontFamily="Ionicons"
+              />
             </TouchableOpacity>
-          );
-        })}
-      </Div>
+          </Div>
+        </Div>
 
-      <Div w="85%" row my="md" flexWrap="wrap">
-        {data.allCategories.edges.map((item) => (
-          <Button
-            key={item.node.name}
-            bg={undefined}
-            p={0}
-            underlayColor="fruxgreen"
-            onPress={() => {
-              toggler(topicsFilter, setTopicsFilter, item.node.name);
-            }}
-          >
-            <TopicContainer
-              active={topicsFilter.includes(item.node.name)}
+        <Div w="100%" my="lg" row>
+          {Object.keys(States).map((k) => {
+            const { name, color } = States[k];
+            return (
+              <TouchableOpacity
+                key={name}
+                onPress={() => toggler(progressFilters, setProgressFilters, k)}
+              >
+                <Tag
+                  mx="xs"
+                  fontSize="md"
+                  bg={progressFilters.includes(k) ? color + 300 : color + 100}
+                  borderColor={color + 700}
+                  borderWidth={1}
+                >
+                  {name}
+                </Tag>
+              </TouchableOpacity>
+            );
+          })}
+        </Div>
+
+        <Div w="90%" row my="md" flexWrap="wrap">
+          {data.allCategories.edges.map((item) => (
+            <Button
               key={item.node.name}
-              showName={true}
-              name={item.node.name}
-            />
-          </Button>
-        ))}
+              bg={undefined}
+              p={0}
+              underlayColor="fruxgreen"
+              onPress={() => {
+                toggler(topicsFilter, setTopicsFilter, item.node.name);
+              }}
+            >
+              <TopicContainer
+                active={topicsFilter.includes(item.node.name)}
+                key={item.node.name}
+                showName={true}
+                name={item.node.name}
+              />
+            </Button>
+          ))}
+        </Div>
       </Div>
 
       <LocationOverlay
@@ -187,7 +191,7 @@ export default function Component({ data, isLogged, refetchSeeds }) {
         setRadius={setRadius}
         canRemove={true}
       />
-    </Div>
+    </>
   );
 }
 
