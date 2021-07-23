@@ -52,6 +52,10 @@ export default function Component({ mutations, navigation }) {
           <Input
             w="65%"
             mt="md"
+            multiline
+            maxLength={124}
+            numberOfLines={3}
+            textAlignVertical="top"
             value={newProjectDescription}
             onChangeText={setNewProjectDescription}
             placeholder="Description"

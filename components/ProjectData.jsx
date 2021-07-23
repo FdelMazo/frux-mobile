@@ -209,6 +209,10 @@ export default function Component({ data, created, mutations, navigation }) {
         <Input
           mt="sm"
           value={description}
+          multiline
+          maxLength={124}
+          numberOfLines={3}
+          textAlignVertical="top"
           onChangeText={setDescription}
           placeholder="Description"
         />
