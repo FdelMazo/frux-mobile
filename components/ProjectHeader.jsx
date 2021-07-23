@@ -88,7 +88,7 @@ export default function Component({ data, mutations, created }) {
         </Div>
       )}
 
-      <Div position="absolute" right={0} bottom={0}>
+      <Div position="absolute" right={0} bottom={0} m="xs">
         <TouchableOpacity
           activeOpacity={created ? 0.2 : 1}
           onPress={

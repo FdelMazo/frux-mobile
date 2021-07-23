@@ -166,6 +166,7 @@ export default function Component({ data, isLogged, refetchSeeds }) {
               key={item.node.name}
               bg={undefined}
               p={0}
+              m="sm"
               underlayColor="fruxgreen"
               onPress={() => {
                 toggler(topicsFilter, setTopicsFilter, item.node.name);

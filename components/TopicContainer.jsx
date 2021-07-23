@@ -4,12 +4,12 @@ import { TopicImage } from "../constants/Constants";
 
 export default function Component({ name, showName, active }) {
   return (
-    <Div alignItems="center" m="sm">
+    <Div alignItems="center">
       <Div
         p="md"
         h={45}
         w={45}
-        m="md"
+        m={9} // Not quite sm, not quite md!
         bg="white"
         style={{ transform: [{ rotate: "45deg" }] }}
         borderWidth={active ? 2 : 1}

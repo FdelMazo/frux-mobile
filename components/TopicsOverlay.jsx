@@ -26,6 +26,7 @@ export default function Component({
                 ? toggler(topics, setTopics, item.node.name)
                 : setTopics(item.node.name);
             }}
+            m="sm"
           >
             <TopicContainer
               active={

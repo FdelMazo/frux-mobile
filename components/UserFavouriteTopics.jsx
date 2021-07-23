@@ -35,7 +35,9 @@ export default function Component({ data, isViewer, mutations }) {
               </Div>
               <Div row my="md" flexWrap="wrap">
                 {myTopics.map((t) => (
-                  <TopicContainer showName={true} name={t} key={t} />
+                  <Div key={t} m="sm">
+                    <TopicContainer showName={true} name={t} />
+                  </Div>
                 ))}
               </Div>
             </>
