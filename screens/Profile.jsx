@@ -19,8 +19,10 @@ const WelcomeScreen = ({ navigation }) => {
     <View>
       <Header navigation={navigation} title="Welcome to FRUX" icon="logo" />
       <MainView>
-        <Div w="65%" mt="xl">
+        <Div></Div>
+        <Div w="65%">
           <Input
+            my="xs"
             value={email}
             onChangeText={setEmail}
             placeholder="Mail"
@@ -29,7 +31,7 @@ const WelcomeScreen = ({ navigation }) => {
           />
 
           <Input
-            mt="sm"
+            my="xs"
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
@@ -41,52 +43,56 @@ const WelcomeScreen = ({ navigation }) => {
           <Text my="md" color="fruxred">
             {errors}
           </Text>
-          <Button
-            mt="md"
-            onPress={async () => {
-              setErrors("");
-              setLoading(true);
-              try {
-                await signIn(email, password);
-              } catch (err) {
-                setErrors(err.message);
-                setLoading(false);
-              }
-            }}
-            bg="fruxgreen"
-            color="white"
-            w="100%"
-            loading={loading}
-          >
-            Login
-          </Button>
 
-          <Button
-            mt="md"
-            bg="white"
-            onPress={async () => {
-              setErrors("");
-              setLoading(true);
-              try {
-                await registration(email, password);
-              } catch (err) {
-                setErrors(err.message);
-                setLoading(false);
-              }
-            }}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            borderWidth={1}
-            disabled={loading}
-            w="100%"
-          >
-            Sign Up
-          </Button>
+          <Div my="md">
+            <Button
+              my="xs"
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                try {
+                  await signIn(email, password);
+                } catch (err) {
+                  setErrors(err.message);
+                  setLoading(false);
+                }
+              }}
+              bg="fruxgreen"
+              color="white"
+              w="100%"
+              loading={loading}
+            >
+              Login
+            </Button>
+
+            <Button
+              my="xs"
+              bg="white"
+              onPress={async () => {
+                setErrors("");
+                setLoading(true);
+                try {
+                  await registration(email, password);
+                } catch (err) {
+                  setErrors(err.message);
+                  setLoading(false);
+                }
+              }}
+              borderColor="fruxgreen"
+              color="fruxgreen"
+              borderWidth={1}
+              disabled={loading}
+              w="100%"
+            >
+              Sign Up
+            </Button>
+          </Div>
         </Div>
 
-        <Div w="65%" mt="2xl">
+        <Div w="65%" my="lg">
           <Button
             block
+            my="xs"
             bg="white"
             onPress={async () => {
               setErrors("");
@@ -117,6 +123,7 @@ const WelcomeScreen = ({ navigation }) => {
           </Button>
 
           <Button
+            my="xs"
             onPress={async () => {
               setErrors("");
               setLoading(true);
