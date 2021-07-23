@@ -34,8 +34,34 @@ export default function Component({ data, isViewer, mutations }) {
 
   return (
     <>
-      <Div row w="90%" mt="xl" justifyContent="space-between">
-        <Div w="80%" alignSelf="center">
+      <Div w="100%" mt="lg">
+        <Div
+          row
+          mx="lg"
+          mb="xs"
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
+          {isViewer && !firstName && !lastName && !description && (
+            <TouchableOpacity
+              activeOpacity={isViewer ? 0.2 : 1}
+              onPress={
+                isViewer
+                  ? () => {
+                      setBasicDataOverlay(true);
+                    }
+                  : undefined
+              }
+            >
+              <Text
+                fontSize="xl"
+                fontFamily="latinmodernroman-bold"
+                color="gray600"
+              >
+                Tell us your name!
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             activeOpacity={isViewer ? 0.2 : 1}
             onPress={
@@ -46,16 +72,6 @@ export default function Component({ data, isViewer, mutations }) {
                 : undefined
             }
           >
-            {isViewer && !firstName && !lastName && !description && (
-              <Text
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                Tell us your name!
-              </Text>
-            )}
             <Div row>
               {!!lastName && (
                 <Text
@@ -78,40 +94,51 @@ export default function Component({ data, isViewer, mutations }) {
                 </Text>
               )}
             </Div>
-            <Div>
-              {!!description && (
-                <Text
-                  lineHeight={20}
-                  fontSize="xl"
-                  fontFamily="latinmodernroman-bold"
-                  color="gray600"
-                >
-                  {description}
-                </Text>
-              )}
-            </Div>
           </TouchableOpacity>
+          <Div>
+            {isViewer && (
+              <TouchableOpacity
+                onPress={() => {
+                  setWalletOverlay(true);
+                }}
+              >
+                <Icon
+                  name="wallet"
+                  color="fruxgreen"
+                  fontFamily="AntDesign"
+                  h={40}
+                  w={40}
+                  borderColor="fruxgreen"
+                  borderWidth={1}
+                  rounded="sm"
+                  fontSize="xl"
+                  bg="white"
+                />
+              </TouchableOpacity>
+            )}
+          </Div>
         </Div>
 
-        <Div alignSelf="center">
-          {isViewer && (
+        <Div mx="lg">
+          {!!description && (
             <TouchableOpacity
-              onPress={() => {
-                setWalletOverlay(true);
-              }}
+              activeOpacity={isViewer ? 0.2 : 1}
+              onPress={
+                isViewer
+                  ? () => {
+                      setBasicDataOverlay(true);
+                    }
+                  : undefined
+              }
             >
-              <Icon
-                name="wallet"
-                color="fruxgreen"
-                fontFamily="AntDesign"
-                h={40}
-                w={40}
-                borderColor="fruxgreen"
-                borderWidth={1}
-                rounded="sm"
+              <Text
+                lineHeight={20}
                 fontSize="xl"
-                bg="white"
-              />
+                fontFamily="latinmodernroman-bold"
+                color="gray600"
+              >
+                {description}
+              </Text>
             </TouchableOpacity>
           )}
         </Div>
