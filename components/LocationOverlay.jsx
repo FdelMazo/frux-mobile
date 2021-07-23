@@ -54,24 +54,26 @@ export default function Component({
         )}
       </MapView>
 
+      {!!location.latitude && !!radius && (
+        <Div justifyContent="center" alignItems="center">
+          <MultiSlider
+            selectedStyle={{ backgroundColor: Colors.fruxgreen }}
+            markerStyle={{
+              backgroundColor: Colors.fruxgreen,
+            }}
+            values={[radius / 1000]}
+            sliderLength={250}
+            onValuesChangeFinish={(v) => {
+              setRadius(Math.floor(v * 1000));
+            }}
+            step={3}
+            min={1}
+            max={55}
+          />
+        </Div>
+      )}
       <Div my="md" row justifyContent="space-between">
         <Div alignSelf="center">
-          {!!location.latitude && !!radius && (
-            <MultiSlider
-              selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-              markerStyle={{
-                backgroundColor: Colors.fruxgreen,
-              }}
-              values={[radius / 1000]}
-              sliderLength={200}
-              onValuesChangeFinish={(v) => {
-                setRadius(Math.floor(v * 1000));
-              }}
-              step={3}
-              min={1}
-              max={55}
-            />
-          )}
           <Button
             py={0}
             px={0}
@@ -95,7 +97,7 @@ export default function Component({
               />
             }
           >
-            Use My Location
+            Use My Current Location
           </Button>
           {canRemove && (
             <Button
