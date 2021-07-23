@@ -27,6 +27,7 @@ const Component = ({ errors }) => {
                   borderColor="fruxred"
                   rounded="md"
                   m="md"
+                  key={e}
                 >
                   <Collapse.Header
                     bg={undefined}
