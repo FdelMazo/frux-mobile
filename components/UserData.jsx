@@ -20,6 +20,7 @@ export default function Component({ data, isViewer, mutations }) {
 
   const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
   const [walletOverlay, setWalletOverlay] = React.useState(false);
+  const [walletShown, setWalletShown] = React.useState(false);
   const snackbarRef = React.createRef();
 
   const [dollarBalance, setDollarBalance] = React.useState(0);
@@ -224,13 +225,17 @@ export default function Component({ data, isViewer, mutations }) {
             p={0}
             onPress={() => {
               Clipboard.setString(data.user.wallet.address);
-              if (snackbarRef.current) {
+              if (snackbarRef.current && !walletShown) {
                 snackbarRef.current.show(
                   "Wallet address copied to clipboard!",
                   {
                     duration: 2000,
                   }
                 );
+                setWalletShown(true);
+                setTimeout(() => {
+                  setWalletShown(false);
+                }, 2500);
               }
             }}
           >
