@@ -34,15 +34,7 @@ function Screen({ data, navigation, mutations, refetch }) {
         mutations={mutations}
       />
 
-      <MainView
-        refreshControl={
-          <RefreshControl
-            onRefresh={refetch}
-            refreshing={false}
-            colors={[Colors.fruxgreen]}
-          />
-        }
-      >
+      <MainView refetch={refetch}>
         <UserData data={data} isViewer={isViewer} mutations={mutations} />
         <UserFavouriteTopics
           data={data}

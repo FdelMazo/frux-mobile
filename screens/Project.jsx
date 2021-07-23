@@ -1,6 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
-import { RefreshControl } from "react-native";
 import ProjectCreation from "../components/ProjectCreation";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
@@ -10,7 +9,6 @@ import ProjectProgress from "../components/ProjectProgress";
 import ProjectRating from "../components/ProjectRating";
 import ProjectSeer from "../components/ProjectSeer";
 import { MainView, View } from "../components/Themed";
-import Colors from "../constants/Colors";
 import { useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
@@ -24,21 +22,8 @@ function Screen({ data, navigation, mutations, refetch }) {
 
   return (
     <View>
-      <ProjectHeader
-        data={data}
-        created={created}
-        mutations={mutations}
-        navigation={navigation}
-      />
-      <MainView
-        refreshControl={
-          <RefreshControl
-            onRefresh={refetch}
-            refreshing={false}
-            colors={[Colors.fruxgreen]}
-          />
-        }
-      >
+      <ProjectHeader data={data} created={created} mutations={mutations} />
+      <MainView refetch={refetch}>
         <ProjectData
           data={data}
           created={created}

@@ -6,7 +6,7 @@ import { getImageUri, uploadImage } from "../services/media";
 import TopicContainer from "./TopicContainer";
 import TopicsOverlay from "./TopicsOverlay";
 
-export default function Component({ data, navigation, mutations, created }) {
+export default function Component({ data, mutations, created }) {
   const [uriImage, setUriImage] = React.useState(null);
   const [topic, setTopic] = React.useState(
     data.project.categoryName || "Other"

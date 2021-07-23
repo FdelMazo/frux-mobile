@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  RefreshControl,
   ScrollView as DefaultScrollView,
   StyleSheet,
   View as DefaultView,
@@ -28,7 +29,19 @@ export function MainView(props) {
   const backgroundColor = Colors.background;
 
   return (
-    <DefaultScrollView style={[{ backgroundColor }, style]} {...otherProps}>
+    <DefaultScrollView
+      style={[{ backgroundColor }, style]}
+      refreshControl={
+        props.refetch ? (
+          <RefreshControl
+            onRefresh={props.refetch}
+            refreshing={false}
+            colors={[Colors.fruxgreen]}
+          />
+        ) : undefined
+      }
+      {...otherProps}
+    >
       <DefaultView
         style={[
           { backgroundColor },
