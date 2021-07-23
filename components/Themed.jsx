@@ -33,7 +33,7 @@ export function MainView(props) {
       contentContainerStyle={[
         {
           flexGrow: 1,
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
         },
       ]}

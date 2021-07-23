@@ -34,8 +34,7 @@ function Screen({ data, navigation, mutations, refetch }) {
       />
 
       <MainView refetch={refetch}>
-        <Div />
-        <Div w="100%">
+        <Div w="100%" my="md">
           <UserData data={data} isViewer={isViewer} mutations={mutations} />
         </Div>
         <Div w="90%" my="md">

@@ -33,8 +33,7 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
       />
 
       <MainView refetch={refetch}>
-        <Div mt="lg" />
-        <Div>
+        <Div my="md">
           <DiscoverFilters
             refetchSeeds={refetchSeeds}
             data={data}
