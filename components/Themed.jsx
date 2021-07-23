@@ -48,6 +48,8 @@ export function MainView(props) {
           {
             flex: 1,
             alignItems: "center",
+            marginVertical: 16,
+            marginHorizontal: 8,
           },
           style,
         ]}

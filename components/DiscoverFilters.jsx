@@ -1,8 +1,7 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
-import DelayInput from "react-native-debounce-input";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, Div, Icon, Tag } from "react-native-magnus";
+import { Button, Div, Icon, Input, Tag } from "react-native-magnus";
 import LocationOverlay from "../components/LocationOverlay";
 import TopicContainer from "../components/TopicContainer";
 import { States } from "../constants/Constants";
@@ -62,74 +61,81 @@ export default function Component({ data, isLogged, refetchSeeds }) {
   }, [searchText, location, radius, progressFilters, topicsFilter]);
 
   return (
-    <Div mt="xl" alignItems="center">
-      <Div w="65%" row alignItems="center">
-        {isLogged && (data.profile.latitude || data.profile.interests) && (
-          <TouchableOpacity
-            onPress={
-              emptyFilters
-                ? () => {
-                    if (data.profile.latitude) {
-                      setLocation({
-                        latitude: data.profile.latitude,
-                        longitude: data.profile.longitude,
-                      });
-                      setRadius(10000);
-                    }
-                    if (data.profile.interests.edges.length) {
-                      setTopicsFilter(
-                        data.profile.interests.edges.map((n) => n.node.name)
-                      );
-                    }
-                  }
-                : () => {
-                    setSearchText("");
-                    setProgressFilters([]);
-                    setTopicsFilter([]);
-                    setRadius(10000);
+    <Div alignItems="center">
+      <Div row alignItems="center" justifyContent="center">
+        <Div w="10%">
+          {!emptyFilters && (
+            <TouchableOpacity
+              onPress={() => {
+                setSearchText("");
+                setProgressFilters([]);
+                setTopicsFilter([]);
+                setRadius(10000);
+                setLocation({
+                  latitude: undefined,
+                  longitude: undefined,
+                });
+              }}
+            >
+              <Icon
+                fontSize="3xl"
+                color="fruxgreen"
+                name="close"
+                fontFamily="Ionicons"
+              />
+            </TouchableOpacity>
+          )}
+          {emptyFilters &&
+            isLogged &&
+            (data.profile.latitude || data.profile.interests) && (
+              <TouchableOpacity
+                onPress={() => {
+                  if (data.profile.latitude) {
                     setLocation({
-                      latitude: undefined,
-                      longitude: undefined,
+                      latitude: data.profile.latitude,
+                      longitude: data.profile.longitude,
                     });
+                    setRadius(10000);
                   }
-            }
-          >
+                  if (data.profile.interests.edges.length) {
+                    setTopicsFilter(
+                      data.profile.interests.edges.map((n) => n.node.name)
+                    );
+                  }
+                }}
+              >
+                <Icon
+                  fontSize="3xl"
+                  color="fruxgreen"
+                  name="color-wand"
+                  fontFamily="Ionicons"
+                />
+              </TouchableOpacity>
+            )}
+        </Div>
+
+        <Div w="50%">
+          <Input
+            py="xs"
+            mx="xs"
+            placeholder="Search"
+            value={searchText}
+            onChangeText={setSearchText}
+          />
+        </Div>
+        <Div w="10%">
+          <TouchableOpacity onPress={() => setLocationOverlay(true)}>
             <Icon
-              m="sm"
               fontSize="3xl"
-              color="fruxgreen"
-              name={emptyFilters ? "color-wand" : "close"}
+              name={!!location.latitude ? "location-sharp" : "location-outline"}
+              color="gray900"
               fontFamily="Ionicons"
             />
           </TouchableOpacity>
-        )}
-
-        <DelayInput
-          placeholder="Search"
-          value={searchText}
-          minLength={1}
-          onChangeText={setSearchText}
-          delayTimeout={500}
-          style={{
-            paddingHorizontal: 10,
-            borderWidth: 1,
-            borderColor: "gray",
-            borderRadius: 3,
-            width: "80%",
-          }}
-        />
-        <TouchableOpacity onPress={() => setLocationOverlay(true)}>
-          <Icon
-            m="sm"
-            fontSize="3xl"
-            name={!!location.latitude ? "location-sharp" : "location-outline"}
-            color="gray900"
-            fontFamily="Ionicons"
-          />
-        </TouchableOpacity>
+        </Div>
       </Div>
 
-      <Div my="lg" flexDir="row">
+      <Div w="100%" my="lg" row>
         {Object.keys(States).map((k) => {
           const { name, color } = States[k];
           return (
@@ -150,7 +156,8 @@ export default function Component({ data, isLogged, refetchSeeds }) {
           );
         })}
       </Div>
-      <Div w="90%" row my="md" flexWrap="wrap">
+
+      <Div w="85%" row my="md" flexWrap="wrap">
         {data.allCategories.edges.map((item) => (
           <Button
             key={item.node.name}
