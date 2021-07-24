@@ -5,7 +5,6 @@ import Header from "../components/Header";
 import { MainView, View } from "../components/Themed";
 import { redirectToGithub, signInWithGithub } from "../services/oauth";
 import { registration, resetPassword, signIn, useUser } from "../services/user";
-import Error from "./Error";
 import Loading from "./Loading";
 import User from "./User";
 
@@ -159,9 +158,11 @@ export default function Render(props) {
   const { loading, error, data } = useQuery(query, {
     variables: { isLogged: !!user },
   });
-  if (error) return <Error errors={[error]} />;
-  if (!!data?.profile)
-    return <User dbId={data.profile.dbId} navigation={props.navigation} />;
+  // if (error) return <Error errors={[error]} />;
   if (loading) return <Loading />;
-  return <WelcomeScreen navigation={props.navigation} />;
+  return !!data?.profile ? (
+    <User dbId={data.profile.dbId} navigation={props.navigation} />
+  ) : (
+    <WelcomeScreen navigation={props.navigation} />
+  );
 }
