@@ -99,20 +99,21 @@ export default function Component({ data, mutations, created }) {
       <FruxOverlay
         visible={sponsorOverlay}
         title={
-          data.project.currentState === "FUNDING" && !created
+          data.project.currentState === "FUNDING" && !created && !investedByUser
             ? "How much do you want to chip in?"
             : "Investors"
         }
         body={
           <>
-            {data.project.currentState === "FUNDING" && !created ? (
+            {data.project.currentState === "FUNDING" &&
+            !created &&
+            !investedByUser ? (
               <>
                 <Text>
-                  By funding this project you are helping it get done! After it
-                  gets all of it's funding covered, it'll enter the{" "}
-                  <Text color="fruxgreen">In Progress</Text> phase where it'll
-                  be developed until it's finished, and you won't be able to
-                  take back your investment.
+                  By funding this project you are helping it get done! Keep in
+                  mind, you <Text fontWeight="bold">won't</Text> be able to take
+                  back your investment once it's set, so make sure that you
+                  really love this project and would like to contribute to it!
                 </Text>
 
                 <Div alignSelf="center">
@@ -212,7 +213,7 @@ export default function Component({ data, mutations, created }) {
           </>
         }
         fail={
-          data.project.currentState === "FUNDING" && !created
+          data.project.currentState === "FUNDING" && !created && !investedByUser
             ? {
                 title: "Cancel",
                 action: () => {
@@ -224,11 +225,17 @@ export default function Component({ data, mutations, created }) {
         }
         success={{
           title:
-            data.project.currentState === "FUNDING" && !created
+            data.project.currentState === "FUNDING" &&
+            !created &&
+            !investedByUser
               ? "Seed"
               : "Close",
           action: async () => {
-            if (data.project.currentState === "FUNDING" && !created) {
+            if (
+              data.project.currentState === "FUNDING" &&
+              !created &&
+              !investedByUser
+            ) {
               if (data.profile?.wallet.balance - toSponsor <= 0) {
                 setErrors("Insufficient funds!");
                 return;
