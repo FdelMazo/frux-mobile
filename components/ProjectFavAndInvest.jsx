@@ -186,8 +186,10 @@ export default function Component({ data, mutations, created }) {
               <>
                 {data.project.investors.edges.length ? (
                   data.project.investors.edges.map((i) => (
-                    <Text m="lg" key={i.node.user.dbId}>
+                    <Text my="xs" mx="lg" key={i.node.user.dbId}>
+                      ◆
                       <Text color="fruxgreen">
+                        {" "}
                         {i.node.user.username ||
                           i.node.user.email.split("@")[0]}{" "}
                       </Text>
