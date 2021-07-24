@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
-import { Button, Div, Image, Overlay, Text } from "react-native-magnus";
-import Colors from "../constants/Colors";
+import { Div, Image, Text } from "react-native-magnus";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 import { dateRepresentation, toDollars, toEth } from "../services/helpers";
-
+import FruxOverlay from "./FruxOverlay";
 export default function Component({ data, mutations, created }) {
   const likedByUser = React.useMemo(() => {
     if (!data.profile) return false;
@@ -40,7 +40,7 @@ export default function Component({ data, mutations, created }) {
 
   return (
     <>
-      <Div row my="lg">
+      <Div row justifyContent="center">
         <TouchableOpacity
           activeOpacity={data.profile ? 0.2 : 1}
           onPress={
@@ -61,39 +61,40 @@ export default function Component({ data, mutations, created }) {
               : undefined
           }
         >
-          <Div>
+          <Div mx="xs">
             <Image
               mx="xs"
-              w={45}
-              h={45}
+              w={40}
+              h={40}
               source={
                 likedByUser
                   ? require("../assets/images/heart.png")
                   : require("../assets/images/no-heart.png")
               }
             />
-            <Text textAlign="center" fontWeight="bold">
+            <Text textAlign="center" fontWeight="bold" fontSize="sm">
               {data.project.favoritesFrom.edges.length || ""}
             </Text>
           </Div>
         </TouchableOpacity>
+
         {data.project.currentState !== "CREATED" && (
           <TouchableOpacity
             activeOpacity={data.profile ? 0.2 : 1}
             onPress={data.profile ? () => setSponsorOverlay(true) : undefined}
           >
-            <Div>
+            <Div mx="xs">
               <Image
                 mx="xs"
-                w={45}
-                h={45}
+                w={40}
+                h={40}
                 source={
                   investedByUser
                     ? require("../assets/images/wallet.png")
                     : require("../assets/images/no-wallet.png")
                 }
               />
-              <Text textAlign="center" fontWeight="bold">
+              <Text textAlign="center" fontWeight="bold" fontSize="sm">
                 {data.project.investors.edges.length || ""}
               </Text>
             </Div>
@@ -101,158 +102,140 @@ export default function Component({ data, mutations, created }) {
         )}
       </Div>
 
-      <Overlay visible={sponsorOverlay}>
-        {(data.project.currentState === "FUNDING" && created) ||
-        data.project.currentState === "IN_PROGRESS" ||
-        data.project.currentState === "COMPLETED" ? (
+      <FruxOverlay
+        visible={sponsorOverlay}
+        title={
+          data.project.currentState === "FUNDING" && !created
+            ? "How much do you want to chip in?"
+            : "Investors"
+        }
+        body={
           <>
-            <Text fontSize="xl" fontWeight="bold">
-              Investors
-            </Text>
-            {data.project.investors.edges.length ? (
-              data.project.investors.edges.map((i) => (
-                <Text m="lg" key={i.node.user.dbId}>
-                  <Text color="fruxgreen">
-                    {i.node.user.username || i.node.user.email.split("@")[0]}{" "}
-                  </Text>
-                  invested{" "}
-                  <Text color="fruxgreen">
-                    {i.node.investedAmount.toFixed(4)} ETH
-                  </Text>
-                  {" on "}
-                  <Text color="fruxbrown">
-                    {dateRepresentation(i.node.dateOfInvestment)}
-                  </Text>
+            {data.project.currentState === "FUNDING" && !created ? (
+              <>
+                <Text>
+                  By funding this project you are helping it get done! After it
+                  gets all of it's funding covered, it'll enter the{" "}
+                  <Text color="fruxgreen">In Progress</Text> phase where it'll
+                  be developed until it's finished, and you won't be able to
+                  take back your investment.
                 </Text>
-              ))
-            ) : (
-              <Text>
-                There are no current investors for your project. But don't cry
-                for me Argentina! Wait a bit more and keep your hopes up! Maybe
-                try sharing a little bit about it on social media?
-              </Text>
-            )}
-            <Div row alignSelf="flex-end" my="lg">
-              <Button
-                mx="sm"
-                fontSize="sm"
-                p="md"
-                bg={undefined}
-                borderWidth={1}
-                borderColor="fruxgreen"
-                color="fruxgreen"
-                onPress={() => {
-                  setSponsorOverlay(false);
-                }}
-              >
-                Close
-              </Button>
-            </Div>
-          </>
-        ) : (
-          <>
-            <Text fontSize="xl" fontWeight="bold">
-              How much do you want to chip in?
-            </Text>
-            <Text>
-              By funding this project you are helping it get done! After it gets
-              all of it's funding covered, it'll enter the{" "}
-              <Text color="fruxgreen">In Progress</Text> phase where it'll be
-              developed until it's finished, and you won't be able to take back
-              your investment.
-            </Text>
-            <Div alignSelf="center">
-              <MultiSlider
-                selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-                enabledOne={false}
-                markerStyle={{
-                  borderRadius: 0,
-                  width: 7,
-                  backgroundColor: Colors.fruxgreen,
-                }}
-                values={[
-                  Math.floor((amountCollectedDollars / goalDollars) * 10),
-                  Math.floor(
-                    ((amountCollectedDollars + toSponsor) / goalDollars) * 10
-                  ),
-                ]}
-                onValuesChange={(v) => {
-                  setToSponsor(
-                    Math.floor(
-                      v[1] * 0.1 * goalDollars - amountCollectedDollars
-                    )
-                  );
-                }}
-                step={0.5}
-                sliderLength={250}
-              />
-            </Div>
-            <Div>
-              <Div row>
-                <Text mx="md" fontSize="5xl" color="gray600">
-                  {"$"}
-                  {amountCollectedDollars}
-                </Text>
+
+                <Div alignSelf="center">
+                  <MultiSlider
+                    selectedStyle={{ backgroundColor: Colors.fruxgreen }}
+                    enabledOne={false}
+                    markerStyle={{
+                      borderRadius: 0,
+                      width: 7,
+                      backgroundColor: Colors.fruxgreen,
+                    }}
+                    // values={[
+                    //   Math.floor((amountCollectedDollars / goalDollars) * 10),
+                    //   Math.floor(
+                    //     ((amountCollectedDollars + toSponsor) / goalDollars) *
+                    //       10
+                    //   ),
+                    // ]}
+                    // onValuesChange={(v) => {
+                    //   setToSponsor(
+                    //     Math.floor(
+                    //       v[1] * 0.1 * goalDollars - amountCollectedDollars
+                    //     )
+                    //   );
+                    // }}
+                    step={0.5}
+                    sliderLength={250}
+                  />
+                </Div>
+
                 <Div row>
-                  <Text fontSize="5xl" color="fruxgreen">
-                    {"+ $"}
-                    {toSponsor}
-                    {"  "}
+                  <Text mx="md" fontSize="5xl" color="gray600">
+                    {"$"}
+                    {amountCollectedDollars}
                   </Text>
-                  <Text fontSize="xl" color="gray600">
-                    {"("}
-                    {toSponsorETH} ETH)
+                  <Div row>
+                    <Text fontSize="5xl" color="fruxgreen">
+                      {"+ $"}
+                      {toSponsor}
+                      {"  "}
+                    </Text>
+                    <Text fontSize="xl" color="gray600">
+                      {"("}
+                      {toSponsorETH} ETH)
+                    </Text>
+                  </Div>
+                </Div>
+
+                <Div>
+                  <Text
+                    mx="md"
+                    lineHeight={20}
+                    fontSize="xl"
+                    fontFamily="latinmodernroman-bold"
+                    color="gray600"
+                  >
+                    With a goal of ${goalDollars}
                   </Text>
                 </Div>
-              </Div>
-
-              <Text
-                mx="md"
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                With a goal of ${goalDollars}
-              </Text>
-            </Div>
-            <Div row alignSelf="flex-end" my="lg">
-              <Button
-                mx="sm"
-                fontSize="sm"
-                p="md"
-                bg={undefined}
-                borderWidth={1}
-                borderColor="fruxgreen"
-                color="fruxgreen"
-                onPress={() => {
-                  setSponsorOverlay(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onPress={() => {
-                  mutations.mutateInvestProject({
-                    variables: {
-                      investedAmount: toSponsorETH,
-                      idProject: data.project.dbId,
-                    },
-                  });
-                  setSponsorOverlay(false);
-                }}
-                mx="sm"
-                fontSize="sm"
-                p="md"
-                bg="fruxgreen"
-                color="white"
-              >
-                Seed
-              </Button>
-            </Div>
+              </>
+            ) : (
+              <>
+                {data.project.investors.edges.length ? (
+                  data.project.investors.edges.map((i) => (
+                    <Text m="lg" key={i.node.user.dbId}>
+                      <Text color="fruxgreen">
+                        {i.node.user.username ||
+                          i.node.user.email.split("@")[0]}{" "}
+                      </Text>
+                      invested{" "}
+                      <Text color="fruxgreen">
+                        {i.node.investedAmount.toFixed(4)} ETH
+                      </Text>
+                      {" on "}
+                      <Text color="fruxbrown">
+                        {dateRepresentation(i.node.dateOfInvestment)}
+                      </Text>
+                    </Text>
+                  ))
+                ) : (
+                  <Text>
+                    There are no current investors for your project. But don't
+                    cry for me Argentina! Wait a bit more and keep your hopes
+                    up! Maybe try sharing a little bit about it on social media?
+                  </Text>
+                )}
+              </>
+            )}
           </>
-        )}
-      </Overlay>
+        }
+        fail={
+          data.project.currentState === "FUNDING" && !created
+            ? {
+                title: "Cancel",
+                action: () => {
+                  setSponsorOverlay(false);
+                },
+              }
+            : undefined
+        }
+        success={{
+          title:
+            data.project.currentState === "FUNDING" && !created
+              ? "Seed"
+              : "Close",
+          action: () => {
+            if (data.project.currentState === "FUNDING" && !created)
+              mutations.mutateInvestProject({
+                variables: {
+                  investedAmount: toSponsorETH,
+                  idProject: data.project.dbId,
+                },
+              });
+            setSponsorOverlay(false);
+          },
+        }}
+      />
     </>
   );
 }

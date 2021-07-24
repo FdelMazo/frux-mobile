@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import * as React from "react";
-import ProjectCreation from "../components/ProjectCreation";
+import { Div } from "react-native-magnus";
 import ProjectData from "../components/ProjectData";
 import ProjectFavAndInvest from "../components/ProjectFavAndInvest";
 import ProjectHeader from "../components/ProjectHeader";
@@ -8,6 +8,7 @@ import ProjectMessages from "../components/ProjectMessages";
 import ProjectProgress from "../components/ProjectProgress";
 import ProjectRating from "../components/ProjectRating";
 import ProjectSeer from "../components/ProjectSeer";
+import ProjectStatus from "../components/ProjectStatus";
 import { MainView, View } from "../components/Themed";
 import { useUser } from "../services/user";
 import Error from "./Error";
@@ -30,16 +31,48 @@ function Screen({ data, navigation, mutations, refetch }) {
           mutations={mutations}
           navigation={navigation}
         />
-        <ProjectFavAndInvest
-          data={data}
-          created={created}
-          mutations={mutations}
-        />
-        <ProjectCreation data={data} created={created} mutations={mutations} />
-        <ProjectProgress data={data} created={created} mutations={mutations} />
-        <ProjectRating data={data} created={created} mutations={mutations} />
-        <ProjectMessages data={data} created={created} />
-        <ProjectSeer data={data} />
+        <Div alignItems="center">
+          <Div w="90%">
+            <ProjectFavAndInvest
+              data={data}
+              created={created}
+              mutations={mutations}
+            />
+          </Div>
+          <Div my="sm">
+            {data.project.currentStatus !== "CREATED" && (
+              <ProjectRating
+                data={data}
+                created={created}
+                mutations={mutations}
+              />
+            )}
+          </Div>
+          <Div mx="md" my="xs">
+            <ProjectStatus data={data} created={created} />
+          </Div>
+        </Div>
+
+        <Div w="85%" my="lg">
+          <ProjectProgress
+            data={data}
+            created={created}
+            mutations={mutations}
+          />
+        </Div>
+
+        <Div w="100%" my="lg">
+          {!!user && (
+            <Div>
+              <ProjectMessages data={data} created={created} />
+            </Div>
+          )}
+          {!!data.project.seer && (
+            <Div my="xs">
+              <ProjectSeer data={data} />
+            </Div>
+          )}
+        </Div>
       </MainView>
     </View>
   );
@@ -56,13 +89,17 @@ export default function Render(props) {
       project(dbId: $dbId) {
         id
         dbId
+        currentState
+        seer {
+          id
+        }
         ...ProjectRating
         ...ProjectHeader_project
         ...ProjectData
         ...ProjectMessages
         ...ProjectFavAndInvest_project
-        ...ProjectCreation_project
-        ...ProjectProgress
+        ...ProjectProgress_project
+        ...ProjectStatus
         ...ProjectSeer_project
         owner {
           email
@@ -77,10 +114,10 @@ export default function Render(props) {
     ${ProjectData.fragments.project}
     ${ProjectFavAndInvest.fragments.project}
     ${ProjectFavAndInvest.fragments.user}
-    ${ProjectCreation.fragments.project}
     ${ProjectProgress.fragments.project}
     ${ProjectRating.fragments.project}
     ${ProjectMessages.fragments.project}
+    ${ProjectStatus.fragments.project}
     ${ProjectSeer.fragments.project}
     ${ProjectSeer.fragments.user}
   `;
@@ -161,10 +198,10 @@ export default function Render(props) {
     mutation seerMutation($idProject: Int!) {
       mutateSeerProject(idProject: $idProject) {
         id
-        ...ProjectCreation_project
+        ...ProjectProgress_project
       }
     }
-    ${ProjectCreation.fragments.project}
+    ${ProjectProgress.fragments.project}
   `;
 
   const stageMutation = gql`
@@ -181,10 +218,10 @@ export default function Render(props) {
         title: $title
       ) {
         id
-        ...ProjectCreation_stage
+        ...ProjectProgress_stage
       }
     }
-    ${ProjectCreation.fragments.stage}
+    ${ProjectProgress.fragments.stage}
   `;
 
   const reviewMutation = gql`

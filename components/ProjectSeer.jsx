@@ -9,26 +9,24 @@ export default function Component({ data }) {
   }, [data.project.seer, data.profile]);
 
   return (
-    !!data.project.seer && (
-      <Div row my="2xl" w="50%" justifyContent="center" alignItems="center">
-        <Image
-          mx="md"
-          w={35}
-          h={35}
-          source={require("../assets/images/seer.png")}
-        />
-        <Div>
-          <Text color="fruxgreen">
-            {supervisedByUser
-              ? "Thanks for supervising this project!"
-              : `${
-                  data.project.seer.username ||
-                  data.project.seer.email.split("@")[0]
-                } is supervising this project!`}
-          </Text>
-        </Div>
+    <Div row justifyContent="center" alignItems="center">
+      <Image
+        mx="md"
+        w={35}
+        h={35}
+        source={require("../assets/images/seer.png")}
+      />
+      <Div>
+        <Text color="fruxgreen">
+          {supervisedByUser
+            ? "Thanks for supervising this project!"
+            : `${
+                data.project.seer.username ||
+                data.project.seer.email.split("@")[0]
+              } is supervising this project!`}
+        </Text>
       </Div>
-    )
+    </Div>
   );
 }
 

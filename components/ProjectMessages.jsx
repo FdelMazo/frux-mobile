@@ -6,7 +6,7 @@ export default function Component({ data, created }) {
   const [question, setQuestion] = React.useState("");
   const messages = ["a"];
   return created ? (
-    <Div w="65%">
+    <Div>
       <Button
         block
         bg="white"
@@ -37,12 +37,13 @@ export default function Component({ data, created }) {
   ) : (
     <Div
       row
-      w="95%"
+      mx="xl"
       alignItems="center"
       justifyContent="space-between"
       alignSelf="flex-start"
     >
       <Input
+        fontSize="sm"
         w="80%"
         m="md"
         placeholder={`Ask ${

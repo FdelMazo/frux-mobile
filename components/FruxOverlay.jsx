@@ -4,13 +4,9 @@ import { Button, Div, Overlay, Text } from "react-native-magnus";
 export default function Component({ visible, success, fail, title, body }) {
   return (
     <Overlay visible={visible}>
-      {typeof title === "string" ? (
-        <Text fontSize="xl" fontWeight="bold">
-          {title}
-        </Text>
-      ) : (
-        title
-      )}
+      <Text fontSize="xl" fontWeight="bold">
+        {title}
+      </Text>
       <Div my="md">{body}</Div>
       <Div row alignSelf="flex-end">
         {!!fail && (

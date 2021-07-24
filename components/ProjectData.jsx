@@ -1,10 +1,11 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
+import { Button, Div, Icon, Input, Text } from "react-native-magnus";
 import { States } from "../constants/Constants";
 import { dateRepresentation, toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
+import FruxOverlay from "./FruxOverlay";
 import UserContainer from "./UserContainer";
 
 export default function Component({ data, created, mutations, navigation }) {
@@ -69,265 +70,251 @@ export default function Component({ data, created, mutations, navigation }) {
   return (
     <>
       <Div w="90%" mt="lg">
-        <Div row my="xs">
-          <Div mx="xs">
-            <UserContainer user={data.project.owner} navigation={navigation} />
-          </Div>
-
-          <Div flex={1} ml="lg">
-            <TouchableOpacity
-              activeOpacity={created ? 0.2 : 1}
-              onPress={
-                created
-                  ? () => {
-                      setDataOverlay(true);
-                    }
-                  : undefined
-              }
-            >
-              <Div row justifyContent="space-between">
-                <Div w="70%">
-                  <Text
-                    fontSize="4xl"
-                    lineHeight={25}
-                    fontFamily="latinmodernroman-bold"
-                  >
-                    {data.project.name}
-                  </Text>
-                </Div>
-                <Div
-                  alignSelf="flex-start"
-                  bg={States[data.project.currentState].color + "500"}
-                  rounded="md"
-                  px="xs"
-                >
-                  <Text color="white" fontSize="xs">
-                    {States[data.project.currentState].name.toUpperCase()}
-                  </Text>
-                </Div>
-              </Div>
-              <Text
-                lineHeight={20}
-                fontSize="xl"
-                fontFamily="latinmodernroman-bold"
-                color="gray600"
-              >
-                {data.project.description}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={created ? 0.2 : 1}
-              onPress={
-                created
-                  ? () => {
-                      setHashtagOverlay(true);
-                    }
-                  : undefined
-              }
-            >
-              {hashtags.length ? (
-                <Div row flexWrap="wrap">
-                  {hashtags.map((h) => (
-                    <Text
-                      key={h}
-                      px={0}
-                      mr="xs"
-                      bg={undefined}
-                      color="fruxgreen"
-                      fontSize="sm"
-                    >
-                      {"# "}
-                      {h}
-                    </Text>
-                  ))}
-                </Div>
-              ) : (
-                <Text
-                  px={0}
-                  bg={undefined}
-                  mx="sm"
-                  color="fruxgreen"
-                  fontSize="sm"
-                >
-                  ####
-                </Text>
-              )}
-            </TouchableOpacity>
-          </Div>
-        </Div>
-      </Div>
-      <Div row w="90%" justifyContent="space-between">
         <Div>
-          {((!overdue && created && !locationSet && !!locationText) ||
-            (!overdue && !!locationSet && !!locationText)) && (
-            <TouchableOpacity
-              disabled={locationLoading}
-              activeOpacity={created && !locationSet ? 0.2 : 1}
-              onPress={
-                created && !locationSet
-                  ? async () => {
-                      setLocationLoading(true);
-                      await mutations.mutateUpdateProject({
-                        variables: {
-                          idProject: data.project.dbId,
-                          latitude: data.project.owner.latitude,
-                          longitude: data.project.owner.longitude,
-                        },
-                      });
-                      setLocationLoading(false);
-                      setLocationSet(true);
-                    }
-                  : undefined
-              }
-            >
-              <Div row>
-                <Icon
-                  name={locationLoading ? "spinner" : "location-outline"}
-                  fontFamily={locationLoading ? "EvilIcons" : "Ionicons"}
-                  fontSize="xl"
-                  color={locationLoading ? "gray500" : "blue600"}
-                />
+          <Div row>
+            <Div>
+              <UserContainer
+                user={data.project.owner}
+                navigation={navigation}
+              />
+            </Div>
+
+            <Div flex={1} ml="lg">
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setDataOverlay(true);
+                      }
+                    : undefined
+                }
+              >
+                <Div row justifyContent="space-between">
+                  <Div maxW="70%">
+                    <Text
+                      fontSize="4xl"
+                      lineHeight={25}
+                      fontFamily="latinmodernroman-bold"
+                    >
+                      {data.project.name}
+                    </Text>
+                  </Div>
+                  <Div
+                    alignSelf="flex-start"
+                    bg={States[data.project.currentState].color + "500"}
+                    rounded="md"
+                    px="xs"
+                  >
+                    <Text color="white" fontSize="xs">
+                      {States[data.project.currentState].name.toUpperCase()}
+                    </Text>
+                  </Div>
+                </Div>
                 <Text
-                  py="sm"
-                  px={0}
-                  bg={undefined}
-                  color={locationLoading ? "gray500" : "blue500"}
-                  fontSize="sm"
+                  lineHeight={20}
+                  fontSize="xl"
+                  fontFamily="latinmodernroman-bold"
+                  color="gray600"
                 >
-                  {locationText}
+                  {data.project.description}
                 </Text>
-              </Div>
-            </TouchableOpacity>
-          )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setHashtagOverlay(true);
+                      }
+                    : undefined
+                }
+              >
+                {hashtags.length ? (
+                  <Div row flexWrap="wrap">
+                    {hashtags.map((h) => (
+                      <Text
+                        key={h}
+                        px={0}
+                        mr="xs"
+                        bg={undefined}
+                        color="fruxgreen"
+                        fontSize="sm"
+                      >
+                        {"#"}
+                        {h}
+                      </Text>
+                    ))}
+                  </Div>
+                ) : (
+                  <Text
+                    px={0}
+                    bg={undefined}
+                    mx="sm"
+                    color="fruxgreen"
+                    fontSize="sm"
+                  >
+                    ####
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </Div>
+          </Div>
         </Div>
-        <Div row>
-          {overdue ? (
-            <Text
-              p="sm"
-              w="100%"
-              rounded="md"
-              textAlign="center"
-              color="white"
-              bg="fruxred"
-            >
-              Keep in mind, this project is overdue! It was supposed to end on{" "}
-              {dateRepresentation(data.project.deadline + "-03:00")} yet here we
-              are! I guess someone got a little bit lazy, huh?
-            </Text>
-          ) : (
-            <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
-              {dateRepresentation(data.project.creationDate)} ~{" "}
-              {dateRepresentation(data.project.deadline + "-03:00")}
-            </Text>
-          )}
+        <Div row justifyContent="space-between">
+          <Div>
+            {((!overdue && created && !locationSet && !!locationText) ||
+              (!overdue && !!locationSet && !!locationText)) && (
+              <TouchableOpacity
+                disabled={locationLoading}
+                activeOpacity={created && !locationSet ? 0.2 : 1}
+                onPress={
+                  created && !locationSet
+                    ? async () => {
+                        setLocationLoading(true);
+                        await mutations.mutateUpdateProject({
+                          variables: {
+                            idProject: data.project.dbId,
+                            latitude: data.project.owner.latitude,
+                            longitude: data.project.owner.longitude,
+                          },
+                        });
+                        setLocationLoading(false);
+                        setLocationSet(true);
+                      }
+                    : undefined
+                }
+              >
+                <Div row>
+                  <Icon
+                    name={locationLoading ? "spinner" : "location-outline"}
+                    fontFamily={locationLoading ? "EvilIcons" : "Ionicons"}
+                    fontSize="xl"
+                    color={locationSet ? "gray500" : "blue600"}
+                  />
+                  <Text
+                    py="sm"
+                    px={0}
+                    bg={undefined}
+                    color={locationSet ? "gray600" : "blue500"}
+                    fontSize="sm"
+                  >
+                    {locationText}
+                  </Text>
+                </Div>
+              </TouchableOpacity>
+            )}
+          </Div>
+          <Div row>
+            {overdue ? (
+              <Text
+                mt="xs"
+                p="sm"
+                rounded="md"
+                textAlign="center"
+                color="white"
+                bg="fruxred"
+              >
+                Keep in mind, this project is overdue! It was supposed to end on{" "}
+                {dateRepresentation(data.project.deadline + "-03:00")} yet here
+                we are! I guess someone got a little bit lazy, huh?
+              </Text>
+            ) : (
+              <Text py="sm" px={0} bg={undefined} color="gray600" fontSize="xs">
+                {dateRepresentation(data.project.creationDate)} ~{" "}
+                {dateRepresentation(data.project.deadline + "-03:00")}
+              </Text>
+            )}
+          </Div>
         </Div>
       </Div>
 
-      <Overlay visible={dataOverlay}>
-        <Input value={name} onChangeText={setName} placeholder="Name" />
+      <FruxOverlay
+        visible={dataOverlay}
+        title="Your Project"
+        body={
+          <>
+            <Input value={name} onChangeText={setName} placeholder="Name" />
 
-        <Input
-          mt="sm"
-          value={description}
-          multiline
-          maxLength={124}
-          numberOfLines={3}
-          textAlignVertical="top"
-          onChangeText={setDescription}
-          placeholder="Description"
-        />
+            <Input
+              mt="sm"
+              value={description}
+              multiline
+              maxLength={124}
+              numberOfLines={3}
+              textAlignVertical="top"
+              onChangeText={setDescription}
+              placeholder="Description"
+            />
+          </>
+        }
+        fail={{
+          title: "Cancel",
+          action: () => {
+            setDataOverlay(false);
+          },
+        }}
+        success={{
+          title: "Done",
+          action: () => {
+            mutations.mutateUpdateProject({
+              variables: {
+                idProject: data.project.dbId,
+                description,
+                name,
+              },
+            });
+            setDataOverlay(false);
+          },
+        }}
+      />
 
-        <Div row alignSelf="flex-end" mt="md">
-          <Button
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg={undefined}
-            borderWidth={1}
-            borderColor="fruxgreen"
-            color="fruxgreen"
-            onPress={() => {
-              setDataOverlay(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onPress={() => {
-              mutations.mutateUpdateProject({
-                variables: {
-                  idProject: data.project.dbId,
-                  description,
-                  name,
-                },
-              });
-              setDataOverlay(false);
-            }}
-            mx="sm"
-            fontSize="sm"
-            p="md"
-            bg="fruxgreen"
-            color="white"
-          >
-            Save
-          </Button>
-        </Div>
-      </Overlay>
-
-      <Overlay visible={hashtagOverlay}>
-        <Input
-          prefix={<Text color="fruxgreen">#</Text>}
-          value={newHashtag}
-          onChangeText={setNewHashtag}
-          onEndEditing={() => {
-            let toAdd = newHashtag;
-            if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
-            toAdd = toAdd.trim();
-            if (toAdd) toggler(hashtags, setHashtags, toAdd);
-            setNewHashtag("");
-          }}
-          focusBorderColor="fruxgreen"
-          placeholder="hashtag"
-        />
-
-        <Div mt="sm" row flexWrap="wrap">
-          {hashtags.map((h) => (
-            <Button
-              key={h}
-              bg={undefined}
-              p={0}
-              m="xs"
-              onPress={() => {
-                toggler(hashtags, setHashtags, h);
+      <FruxOverlay
+        visible={hashtagOverlay}
+        title="#Hashtags"
+        body={
+          <>
+            <Input
+              prefix={<Text color="fruxgreen">#</Text>}
+              value={newHashtag}
+              onChangeText={setNewHashtag}
+              onEndEditing={() => {
+                let toAdd = newHashtag;
+                if (toAdd.includes("#")) toAdd = toAdd.replace("#", "");
+                toAdd = toAdd.trim();
+                if (toAdd) toggler(hashtags, setHashtags, toAdd);
+                setNewHashtag("");
               }}
-            >
-              <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
-                <Text fontSize="xs">{`# ${h}`}</Text>
-              </Div>
-            </Button>
-          ))}
-        </Div>
+              focusBorderColor="fruxgreen"
+            />
 
-        <Div my="md" row justifyContent="space-between">
-          <Div alignSelf="center"></Div>
-
-          <Div row>
-            <Button
-              onPress={() => {
-                setHashtagOverlay(false);
-              }}
-              mx="sm"
-              fontSize="sm"
-              p="md"
-              bg="fruxgreen"
-              color="white"
-            >
-              Done
-            </Button>
-          </Div>
-        </Div>
-      </Overlay>
+            <Div mt="sm" row flexWrap="wrap">
+              {hashtags.map((h) => (
+                <Button
+                  key={h}
+                  bg={undefined}
+                  p={0}
+                  m="xs"
+                  onPress={() => {
+                    toggler(hashtags, setHashtags, h);
+                  }}
+                >
+                  <Div rounded="circle" py="xs" px="lg" bg={"fruxgreen"}>
+                    <Text fontSize="xs">{`# ${h}`}</Text>
+                  </Div>
+                </Button>
+              ))}
+            </Div>
+          </>
+        }
+        success={{
+          title: "Close",
+          action: () => {
+            setHashtagOverlay(false);
+          },
+        }}
+      />
     </>
   );
 }
