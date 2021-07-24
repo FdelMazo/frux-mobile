@@ -40,13 +40,6 @@ export default function Component({ data, mutations, created }) {
   const [shownStageNewGoal, setShownStageNewGoal] = React.useState(0);
   const [shownStageNewGoalDollars, setShownStageNewGoalDollars] =
     React.useState(0);
-  React.useEffect(() => {
-    async function dollars() {
-      let dollars = await toDollars(shownStageNewGoal);
-      setShownStageNewGoalDollars(dollars);
-    }
-    dollars();
-  }, [shownStageNewGoal]);
 
   const addStage = () => {
     const newStages = [...stages, { title: "", description: "", goal: 0 }];
@@ -83,7 +76,7 @@ export default function Component({ data, mutations, created }) {
       }
     }
     setCurrentStage(r + 1);
-  }, [data.project.amountCollected]);
+  }, [stages, data.project.amountCollected]);
 
   const drawerRef = React.createRef();
 
@@ -257,14 +250,14 @@ export default function Component({ data, mutations, created }) {
                 }}
               >
                 <Div row justifyContent="space-between" my="md">
-                  <Div row>
-                    <Image w={40} h={40} source={img} />
-                    <Text mx="md" maxW="40%" fontWeight="bold">
+                  <Div maxW="40%" row>
+                    <Image w={35} h={35} source={img} />
+                    <Text fontSize="sm" mx="md" fontWeight="bold">
                       {s.title || `Stage #${i}`}
                     </Text>
                   </Div>
 
-                  <Text mx="md" fontSize="2xl" color="fruxgreen">
+                  <Text mx="md" fontSize="xl" color="fruxgreen">
                     {showProjectInDollars
                       ? `\$${s.goalDollars || 0}`
                       : `${s.goal} ETH`}
@@ -303,47 +296,59 @@ export default function Component({ data, mutations, created }) {
 
       <Overlay visible={stageOverlay} key={shownStage}>
         <Div row justifyContent="space-between">
-          <Text fontSize="xl" fontWeight="bold">
+          <Text maxW="45%" fontSize="xl" fontWeight="bold">
             Stage #{shownStage}
             {!!stages[shownStage]?.title
               ? `: ${stages[shownStage]?.title}`
               : ""}
           </Text>
-          <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
-            {!!stages[shownStage]?.goal && (
-              <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
-                ${stages[shownStage]?.goal}
-              </Text>
+          <Div row maxW="50%">
+            {data.project.currentState === "FUNDING" && (
+              <>
+                {shownStage < currentStage ? (
+                  <>
+                    <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
+                      {stages[shownStage]?.goal} ETH
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    {shownStage === currentStage ? (
+                      <>
+                        <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
+                          {stages.reduce((acc, v, i) => {
+                            if (i < shownStage) {
+                              acc -= v.goal;
+                            }
+                            return acc;
+                          }, data.project.amountCollected)}
+                        </Text>
+                        <Text fontSize="xl" fontWeight="bold" color="gray600">
+                          /{stages[shownStage]?.goal} ETH
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
+                          0
+                        </Text>
+                        <Text fontSize="xl" fontWeight="bold" color="gray600">
+                          /{stages[shownStage]?.goal} ETH
+                        </Text>
+                      </>
+                    )}
+                  </>
+                )}
+              </>
             )}
 
-            {/* {data.project.currentState === "FUNDING" && shownStage < currentStage ? (
-              <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
-                ${stages[shownStage]?.goal}
-              </Text>
-            ) : (
-              <>
-                <Text fontSize="3xl" fontWeight="bold" color="fruxgreen">
-                  $
-                  {stages.reduce((acc, v, i) => {
-                    if (i < shownStage) {
-                      acc -= v.goal;
-                    }
-                    return acc;
-                  }, amountCollectedDollars) > 0
-                    ? stages.reduce((acc, v, i) => {
-                        if (i < shownStage) {
-                          acc -= v.goal;
-                        }
-                        return acc;
-                      }, amountCollectedDollars)
-                    : 0}
+            {!!stages[shownStage]?.goal &&
+              data.project.currentState !== "FUNDING" && (
+                <Text fontSize="xl" color={"fruxgreen"}>
+                  {stages[shownStage]?.goal} ETH
                 </Text>
-                <Text fontSize="3xl" fontWeight="bold" color="gray600">
-                  /${stages[shownStage]?.goal}
-                </Text>
-              </>
-            )} */}
-          </Text>
+              )}
+          </Div>
         </Div>
 
         <Div my="md">
@@ -372,64 +377,67 @@ export default function Component({ data, mutations, created }) {
           )}
         </Div>
 
-        <Div>
-          {!stages[shownStage]?.title && (
-            <Div>
-              <Input
-                mt="md"
-                value={shownStageNewName}
-                onChangeText={setShownStageNewName}
-                placeholder="Title"
-              />
-            </Div>
-          )}
-          {!stages[shownStage]?.description && (
-            <Div>
-              <Input
-                mt="md"
-                value={shownStageNewDescription}
-                onChangeText={setShownStageNewDescription}
-                placeholder="Description"
-              />
-            </Div>
-          )}
+        {!stages[shownStage]?.title && (
+          <Div>
+            <Input
+              mt="md"
+              value={shownStageNewName}
+              onChangeText={setShownStageNewName}
+              placeholder="Title"
+            />
+          </Div>
+        )}
+        {!stages[shownStage]?.description && (
+          <Div>
+            <Input
+              mt="md"
+              value={shownStageNewDescription}
+              onChangeText={setShownStageNewDescription}
+              placeholder="Description"
+            />
+          </Div>
+        )}
 
-          {!stages[shownStage]?.goal && (
-            <Div m="md">
-              <Div row>
-                <Text fontSize="3xl" color="fruxgreen">
-                  {""}
-                  {shownStageNewGoal}
-                  {" ETH"}
-                </Text>
-                <Text fontSize="lg" color="gray600">
-                  {"    "}($
-                  {shownStageNewGoalDollars})
-                </Text>
-              </Div>
-              <Div justifyContent="center" alignItems="center">
-                <MultiSlider
-                  selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-                  markerStyle={{
-                    backgroundColor: Colors.fruxgreen,
-                  }}
-                  values={[0]}
-                  sliderLength={250}
-                  onValuesChange={(v) => {
-                    setShownStageNewGoal(v[0].toFixed(4));
-                  }}
-                  step={0.0001}
-                  max={0.2}
-                />
-              </Div>
+        {!stages[shownStage]?.goal && (
+          <Div m="md">
+            <Div row>
+              <Text fontSize="3xl" color="fruxgreen">
+                {""}
+                {shownStageNewGoal}
+                {" ETH"}
+              </Text>
+              <Text fontSize="lg" color="gray600">
+                {"    "}($
+                {shownStageNewGoalDollars})
+              </Text>
             </Div>
-          )}
-          {errors !== "" && (
-            <Text color="fruxred" textAlign="right" m="md">
-              {errors}
-            </Text>
-          )}
-        </Div>
+            <Div justifyContent="center" alignItems="center">
+              <MultiSlider
+                selectedStyle={{ backgroundColor: Colors.fruxgreen }}
+                markerStyle={{
+                  backgroundColor: Colors.fruxgreen,
+                }}
+                values={[0]}
+                sliderLength={250}
+                onValuesChange={(v) => {
+                  setShownStageNewGoal(parseFloat(v[0].toFixed(4)));
+                }}
+                onValuesChangeFinish={async () => {
+                  let dollars = await toDollars(shownStageNewGoal);
+                  setShownStageNewGoalDollars(dollars);
+                }}
+                step={0.0001}
+                max={0.2}
+              />
+            </Div>
+          </Div>
+        )}
+
+        {errors !== "" && (
+          <Text color="fruxred" textAlign="right" m="md">
+            {errors}
+          </Text>
+        )}
 
         <Div row alignSelf="flex-end">
           <Button
