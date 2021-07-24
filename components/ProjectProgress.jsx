@@ -13,7 +13,7 @@ import {
   Text,
 } from "react-native-magnus";
 import Colors from "../constants/Colors";
-import { toDollars, toEth } from "../services/helpers";
+import { toDollars } from "../services/helpers";
 import FruxOverlay from "./FruxOverlay";
 export default function Component({ data, mutations, created }) {
   const [stages, setStages] = React.useState([]);
@@ -38,13 +38,14 @@ export default function Component({ data, mutations, created }) {
   const [shownStageNewDescription, setShownStageNewDescription] =
     React.useState("");
   const [shownStageNewGoal, setShownStageNewGoal] = React.useState(0);
-  const [shownStageNewGoalETH, setShownStageNewGoalETH] = React.useState(0);
+  const [shownStageNewGoalDollars, setShownStageNewGoalDollars] =
+    React.useState(0);
   React.useEffect(() => {
-    async function eth() {
-      let eth = await toEth(shownStageNewGoal);
-      setShownStageNewGoalETH(eth);
+    async function dollars() {
+      let dollars = await toDollars(shownStageNewGoal);
+      setShownStageNewGoalDollars(dollars);
     }
-    eth();
+    dollars();
   }, [shownStageNewGoal]);
 
   const addStage = () => {
@@ -76,7 +77,7 @@ export default function Component({ data, mutations, created }) {
     let r = -1;
     let accum = 0;
     for (let s of stages) {
-      if (amountCollectedDollars >= accum + s.goal) {
+      if (data.project.amountCollected >= accum + s.goal) {
         accum += s.goal;
         r = stages.indexOf(s);
       }
@@ -244,13 +245,12 @@ export default function Component({ data, mutations, created }) {
                     h={40}
                     source={
                       !!s.title
-                        ? require("../assets/images/stage.png")
+                        ? i <= currentStage
+                          ? i < currentStage
+                            ? require("../assets/images/stage.png")
+                            : require("../assets/images/current-stage.png")
+                          : require("../assets/images/no-stage.png")
                         : require("../assets/images/no-stage.png")
-                      // i <= currentStage
-                      //   ? i < currentStage
-                      // require("../assets/images/stage.png")
-                      //   : require("../assets/images/current-stage.png")
-                      // : require("../assets/images/no-stage.png")
                     }
                   />
                   <Text mx="md" fontWeight="bold">
@@ -260,7 +260,7 @@ export default function Component({ data, mutations, created }) {
 
                 <Text mx="md" fontSize="2xl" color="fruxgreen">
                   {showProjectInDollars
-                    ? `\$${s.goalDollars}`
+                    ? `\$${s.goalDollars || 0}`
                     : `${s.goal} ETH`}
                 </Text>
               </Div>
@@ -390,14 +390,14 @@ export default function Component({ data, mutations, created }) {
           {!stages[shownStage]?.goal && (
             <Div m="md">
               <Div row>
-                <Text fontSize="5xl" color="fruxgreen">
-                  {"$"}
-                  {shownStageNewGoal || 0}
-                  {"  "}
+                <Text fontSize="3xl" color="fruxgreen">
+                  {""}
+                  {shownStageNewGoal}
+                  {" ETH"}
                 </Text>
-                <Text fontSize="xl" color="gray600">
-                  {"("}
-                  {shownStageNewGoalETH} ETH)
+                <Text fontSize="lg" color="gray600">
+                  {"    "}($
+                  {shownStageNewGoalDollars})
                 </Text>
               </Div>
               <Div justifyContent="center" alignItems="center">
@@ -406,13 +406,13 @@ export default function Component({ data, mutations, created }) {
                   markerStyle={{
                     backgroundColor: Colors.fruxgreen,
                   }}
-                  values={[shownStageNewGoal]}
+                  values={[0]}
                   sliderLength={250}
                   onValuesChange={(v) => {
-                    setShownStageNewGoal(Math.floor(v));
+                    setShownStageNewGoal(v[0].toFixed(4));
                   }}
-                  step={50}
-                  max={500}
+                  step={0.0001}
+                  max={0.2}
                 />
               </Div>
             </Div>
@@ -458,7 +458,7 @@ export default function Component({ data, mutations, created }) {
                     idProject: data.project.dbId,
                     title: shownStageNewName,
                     description: shownStageNewDescription,
-                    goal: shownStageNewGoalETH,
+                    goal: shownStageNewGoal,
                   },
                 });
                 setErrors("");

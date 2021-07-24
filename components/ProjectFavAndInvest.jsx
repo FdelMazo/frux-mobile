@@ -3,8 +3,8 @@ import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import { Div, Image, Text } from "react-native-magnus";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { dateRepresentation, toDollars, toEth } from "../services/helpers";
+import Colors from "../constants/Colors";
+import { dateRepresentation, toDollars } from "../services/helpers";
 import FruxOverlay from "./FruxOverlay";
 export default function Component({ data, mutations, created }) {
   const likedByUser = React.useMemo(() => {
@@ -21,21 +21,15 @@ export default function Component({ data, mutations, created }) {
 
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
   const [toSponsor, setToSponsor] = React.useState(0);
-  const [toSponsorETH, setToSponsorETH] = React.useState(0);
-  const [goalDollars, setGoalDollars] = React.useState(0);
-  const [amountCollectedDollars, setAmountCollectedDollars] = React.useState(0);
+  const [errors, setErrors] = React.useState("");
+  const [toSponsorDollars, setToSponsorDollars] = React.useState(0);
+
   React.useEffect(() => {
-    async function convert() {
-      let _goalDollars = await toDollars(data.project.goal);
-      let _amountCollectedDollars = await toDollars(
-        data.project.amountCollected
-      );
-      let _toSponsorETH = await toEth(toSponsor);
-      setGoalDollars(_goalDollars);
-      setAmountCollectedDollars(_amountCollectedDollars);
-      setToSponsorETH(_toSponsorETH);
+    async function dollars() {
+      let _toSponsorDollars = await toDollars(toSponsor);
+      setToSponsorDollars(_toSponsorDollars);
     }
-    convert();
+    dollars();
   }, [data.project.goal, data.project.amountCollected, toSponsor]);
 
   return (
@@ -124,45 +118,38 @@ export default function Component({ data, mutations, created }) {
                 <Div alignSelf="center">
                   <MultiSlider
                     selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-                    enabledOne={false}
                     markerStyle={{
-                      borderRadius: 0,
-                      width: 7,
                       backgroundColor: Colors.fruxgreen,
                     }}
-                    // values={[
-                    //   Math.floor((amountCollectedDollars / goalDollars) * 10),
-                    //   Math.floor(
-                    //     ((amountCollectedDollars + toSponsor) / goalDollars) *
-                    //       10
-                    //   ),
-                    // ]}
-                    // onValuesChange={(v) => {
-                    //   setToSponsor(
-                    //     Math.floor(
-                    //       v[1] * 0.1 * goalDollars - amountCollectedDollars
-                    //     )
-                    //   );
-                    // }}
-                    step={0.5}
+                    enabledOne={false}
+                    values={[
+                      data.project.amountCollected / data.project.goal,
+                      data.project.amountCollected / data.project.goal,
+                    ]}
                     sliderLength={250}
+                    onValuesChange={(v) => {
+                      setToSponsor(
+                        ((v[1] - v[0]) * data.project.goal).toFixed(4)
+                      );
+                    }}
+                    step={0.0001}
+                    max={1}
                   />
                 </Div>
 
                 <Div row>
-                  <Text mx="md" fontSize="5xl" color="gray600">
-                    {"$"}
-                    {amountCollectedDollars}
+                  <Text mx="md" fontSize="3xl" color="gray600">
+                    {data.project.amountCollected}
                   </Text>
                   <Div row>
-                    <Text fontSize="5xl" color="fruxgreen">
-                      {"+ $"}
+                    <Text fontSize="3xl" color="fruxgreen">
+                      {"+ "}
                       {toSponsor}
-                      {"  "}
+                      {" ETH"}
                     </Text>
-                    <Text fontSize="xl" color="gray600">
-                      {"("}
-                      {toSponsorETH} ETH)
+                    <Text fontSize="lg" color="gray600">
+                      {"    "}($
+                      {toSponsorDollars})
                     </Text>
                   </Div>
                 </Div>
@@ -170,14 +157,29 @@ export default function Component({ data, mutations, created }) {
                 <Div>
                   <Text
                     mx="md"
-                    lineHeight={20}
-                    fontSize="xl"
+                    fontSize="sm"
                     fontFamily="latinmodernroman-bold"
-                    color="gray600"
+                    color="fruxbrown"
                   >
-                    With a goal of ${goalDollars}
+                    {data.profile?.wallet.balance === 0 ? (
+                      `You don't have funds in your ETH Wallet!`
+                    ) : (
+                      <>
+                        {data.profile?.wallet.balance - toSponsor < 0
+                          ? `You can't seed more than what you have!`
+                          : `You'll be left with ${(
+                              data.profile?.wallet.balance - toSponsor
+                            ).toFixed(4)} ETH`}
+                      </>
+                    )}
                   </Text>
                 </Div>
+
+                {errors !== "" && (
+                  <Text color="fruxred" textAlign="right" m="md">
+                    {errors}
+                  </Text>
+                )}
               </>
             ) : (
               <>
@@ -214,6 +216,7 @@ export default function Component({ data, mutations, created }) {
             ? {
                 title: "Cancel",
                 action: () => {
+                  setErrors("");
                   setSponsorOverlay(false);
                 },
               }
@@ -224,15 +227,34 @@ export default function Component({ data, mutations, created }) {
             data.project.currentState === "FUNDING" && !created
               ? "Seed"
               : "Close",
-          action: () => {
-            if (data.project.currentState === "FUNDING" && !created)
-              mutations.mutateInvestProject({
-                variables: {
-                  investedAmount: toSponsorETH,
-                  idProject: data.project.dbId,
-                },
-              });
-            setSponsorOverlay(false);
+          action: async () => {
+            if (data.project.currentState === "FUNDING" && !created) {
+              if (data.profile?.wallet.balance - toSponsor <= 0) {
+                setErrors("Insufficient funds!");
+                return;
+              }
+              if (toSponsor <= 0) {
+                setErrors("You didn't specify how much!");
+                return;
+              }
+              try {
+                await mutations.mutateInvestProject({
+                  variables: {
+                    investedAmount: toSponsor,
+                    idProject: data.project.dbId,
+                  },
+                });
+              } catch (e) {
+                if (e.message.includes("Insufficient funds!")) {
+                  setErrors(
+                    "Every ETH transaction includes a small gas fee. You don't have the funds to cover this tax!"
+                  );
+                  return;
+                }
+              }
+              setErrors("");
+              setSponsorOverlay(false);
+            }
           },
         }}
       />
@@ -276,6 +298,10 @@ Component.fragments = {
     fragment ProjectFavAndInvest_user on User {
       id
       dbId
+      wallet {
+        id
+        balance
+      }
     }
   `,
 };

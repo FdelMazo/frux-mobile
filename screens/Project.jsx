@@ -191,8 +191,9 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.project}
   `;
 
-  const [mutateInvestProject, { error: mutateInvestProjectError }] =
-    useMutation(investMutation);
+  // We are not catching this errors in the usual <Error> flow.
+  // We want to try doing the transaction to see if the gas fee is covered
+  const [mutateInvestProject] = useMutation(investMutation);
 
   const seerMutation = gql`
     mutation seerMutation($idProject: Int!) {
@@ -302,7 +303,6 @@ export default function Render(props) {
     mutateUpdateProjectError,
     mutateProjectStageError,
     mutateSeerProjectError,
-    mutateInvestProjectError,
     mutateReviewProjectError,
   ];
 
