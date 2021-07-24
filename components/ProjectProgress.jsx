@@ -72,8 +72,8 @@ export default function Component({ data, mutations, created }) {
     for (let s of stages) {
       if (data.project.amountCollected >= accum + s.goal) {
         accum += s.goal;
-        r = stages.indexOf(s);
-      }
+        r += 1;
+      } else break;
     }
     setCurrentStage(r + 1);
   }, [stages, data.project.amountCollected]);
@@ -210,7 +210,7 @@ export default function Component({ data, mutations, created }) {
                     Out of{" "}
                     {showProjectInDollars
                       ? `\$${goalDollars}`
-                      : `${data.project.goal} ETH`}
+                      : `${data.project.goal.toFixed(4)} ETH`}
                   </Text>
                 )}
               </Div>
@@ -329,11 +329,8 @@ export default function Component({ data, mutations, created }) {
                       </>
                     ) : (
                       <>
-                        <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
-                          0
-                        </Text>
                         <Text fontSize="xl" fontWeight="bold" color="gray600">
-                          /{stages[shownStage]?.goal} ETH
+                          {stages[shownStage]?.goal} ETH
                         </Text>
                       </>
                     )}
