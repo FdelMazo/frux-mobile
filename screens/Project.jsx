@@ -40,7 +40,7 @@ function Screen({ data, navigation, mutations, refetch }) {
             />
           </Div>
           <Div my="sm">
-            {data.project.currentStatus !== "CREATED" && (
+            {data.project.currentState !== "CREATED" && (
               <ProjectRating
                 data={data}
                 created={created}

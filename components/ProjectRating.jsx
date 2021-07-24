@@ -27,7 +27,7 @@ export default function Component({ data, created, mutations }) {
       <TouchableOpacity onPress={() => setReviewOverlay(true)}>
         <Div row>
           <StarRating
-            rating={parseFloat(data.project.generalScore.toFixed(1))}
+            rating={Math.round(data.project.generalScore * 2) / 2}
             size={25}
           />
         </Div>
