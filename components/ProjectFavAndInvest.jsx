@@ -261,9 +261,9 @@ export default function Component({ data, mutations, created }) {
                   return;
                 }
               }
-              setErrors("");
-              setSponsorOverlay(false);
             }
+            setErrors("");
+            setSponsorOverlay(false);
           },
         }}
       />
