@@ -23,13 +23,16 @@ export default function Component({ data, mutations, created }) {
         data.project.stages.edges.map(async (s) => ({
           title: s.node.title,
           description: s.node.description,
-          goal: await toDollars(s.node.goal),
+          goal: s.node.goal,
+          goalDollars: await toDollars(s.node.goal),
         }))
       );
       setStages(x);
     };
     _stages();
   }, [data.project.stages]);
+
+  const [showProjectInDollars, setShowProjectInDollars] = React.useState(true);
 
   const [shownStageNewName, setShownStageNewName] = React.useState("");
   const [shownStageNewDescription, setShownStageNewDescription] =
@@ -190,9 +193,7 @@ export default function Component({ data, mutations, created }) {
           <>
             <TouchableOpacity
               onPress={() => {
-                if (drawerRef.current) {
-                  drawerRef.current.open();
-                }
+                setShowProjectInDollars(!showProjectInDollars);
               }}
             >
               <Div>
@@ -202,8 +203,9 @@ export default function Component({ data, mutations, created }) {
                   color="fruxgreen"
                   textAlign="right"
                 >
-                  {"$"}
-                  {amountCollectedDollars}
+                  {showProjectInDollars
+                    ? `\$${amountCollectedDollars}`
+                    : `${data.project.amountCollected} ETH`}
                 </Text>
                 {data.project.currentState === "FUNDING" && (
                   <Text
@@ -213,7 +215,10 @@ export default function Component({ data, mutations, created }) {
                     fontFamily="latinmodernroman-bold"
                     color="gray600"
                   >
-                    Out of ${goalDollars}
+                    Out of{" "}
+                    {showProjectInDollars
+                      ? `\$${goalDollars}`
+                      : `${data.project.goal} ETH`}
                   </Text>
                 )}
               </Div>
@@ -248,13 +253,15 @@ export default function Component({ data, mutations, created }) {
                       // : require("../assets/images/no-stage.png")
                     }
                   />
-                  <Text mx="md" w="55%" fontWeight="bold">
+                  <Text mx="md" fontWeight="bold">
                     {s.title || `Stage #${i}`}
                   </Text>
                 </Div>
 
                 <Text mx="md" fontSize="2xl" color="fruxgreen">
-                  ${s.goal}
+                  {showProjectInDollars
+                    ? `\$${s.goalDollars}`
+                    : `${s.goal} ETH`}
                 </Text>
               </Div>
             </TouchableOpacity>
