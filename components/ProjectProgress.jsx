@@ -122,13 +122,11 @@ export default function Component({ data, mutations, created }) {
             <Div>
               {data.project.currentState === "FUNDING" ? (
                 <>
-                  <Div row>
+                  <Div maxW="70%" row>
                     <Text fontSize="lg" fontWeight="bold">
                       Stage #{currentStage}:{"  "}
                     </Text>
-                    <Text fontSize="lg" textAlign="right">
-                      {stages[currentStage]?.title}
-                    </Text>
+                    <Text fontSize="lg">{stages[currentStage]?.title}</Text>
                   </Div>
                   <MultiSlider
                     selectedStyle={{ backgroundColor: Colors.fruxgreen }}
@@ -230,42 +228,51 @@ export default function Component({ data, mutations, created }) {
 
       <Drawer ref={drawerRef}>
         <Div my="xl" mx="lg">
-          {stages.map((s, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => {
-                setShownStage(i);
-                setStageOverlay(true);
-              }}
-            >
-              <Div row justifyContent="space-between" my="md">
-                <Div row>
-                  <Image
-                    w={40}
-                    h={40}
-                    source={
-                      !!s.title
-                        ? i <= currentStage
-                          ? i < currentStage
-                            ? require("../assets/images/stage.png")
-                            : require("../assets/images/current-stage.png")
-                          : require("../assets/images/no-stage.png")
-                        : require("../assets/images/no-stage.png")
-                    }
-                  />
-                  <Text mx="md" fontWeight="bold">
-                    {s.title || `Stage #${i}`}
+          {stages.map((s, i) => {
+            let img = undefined;
+            if (data.project.currentState === "CREATED") {
+              if (!s.title) img = require("../assets/images/no-stage.png");
+              else img = require("../assets/images/stage.png");
+            }
+            if (data.project.currentState === "FUNDING") {
+              if (i < currentStage) img = require("../assets/images/stage.png");
+              else if (i === currentStage)
+                img = require("../assets/images/current-stage.png");
+              else img = require("../assets/images/no-stage.png");
+            }
+            if (data.project.currentState === "IN_PROGRESS") {
+              // if (TENGOLOSFUNDS) img = require("../assets/images/seer.png");
+              // else img = require("../assets/images/no-seer.png");
+            }
+            if (data.project.currentState === "COMPLETE") {
+              img = require("../assets/images/stage.png");
+            }
+
+            return (
+              <TouchableOpacity
+                key={i}
+                onPress={() => {
+                  setShownStage(i);
+                  setStageOverlay(true);
+                }}
+              >
+                <Div row justifyContent="space-between" my="md">
+                  <Div row>
+                    <Image w={40} h={40} source={img} />
+                    <Text mx="md" maxW="40%" fontWeight="bold">
+                      {s.title || `Stage #${i}`}
+                    </Text>
+                  </Div>
+
+                  <Text mx="md" fontSize="2xl" color="fruxgreen">
+                    {showProjectInDollars
+                      ? `\$${s.goalDollars || 0}`
+                      : `${s.goal} ETH`}
                   </Text>
                 </Div>
-
-                <Text mx="md" fontSize="2xl" color="fruxgreen">
-                  {showProjectInDollars
-                    ? `\$${s.goalDollars || 0}`
-                    : `${s.goal} ETH`}
-                </Text>
-              </Div>
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            );
+          })}
           {data.project.currentState === "CREATED" &&
             created &&
             (!stages.length || !!stages[stages.length - 1]?.title) && (

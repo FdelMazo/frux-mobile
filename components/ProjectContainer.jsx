@@ -12,7 +12,7 @@ export default function Component({ project, navigation }) {
   const [amountCollectedDollars, setAmountCollectedDollars] = React.useState(0);
   React.useEffect(() => {
     async function dollars() {
-      let _goalDollars = await toDollars(project.goal);
+      let _goalDollars = await toDollars(project?.goal || 0);
       let _amountCollectedDollars = await toDollars(project.amountCollected);
       setGoalDollars(_goalDollars);
       setAmountCollectedDollars(_amountCollectedDollars);
@@ -56,7 +56,7 @@ export default function Component({ project, navigation }) {
               {project.categoryName}
             </Text>
           </Div>
-          {!!project.goal && (
+          {!!project?.goal && (
             <Div row alignSelf="flex-start">
               <Text color="fruxgreen" fontWeight="bold" fontSize="xl">
                 {"$"}
