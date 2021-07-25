@@ -395,6 +395,7 @@ export default function Component({ data, mutations, created }) {
           <Div>
             <Input
               mt="md"
+              maxLength={35}
               value={shownStageNewName}
               onChangeText={setShownStageNewName}
               placeholder="Title"
@@ -405,6 +406,10 @@ export default function Component({ data, mutations, created }) {
           <Div>
             <Input
               mt="md"
+              multiline
+              maxLength={124}
+              numberOfLines={3}
+              textAlignVertical="top"
               value={shownStageNewDescription}
               onChangeText={setShownStageNewDescription}
               placeholder="Description"

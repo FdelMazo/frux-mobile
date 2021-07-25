@@ -45,6 +45,7 @@ export default function Component({ mutations, navigation }) {
           <>
             <Input
               mt="md"
+              maxLength={35}
               value={newProjectName}
               onChangeText={setNewProjectName}
               placeholder="Name"

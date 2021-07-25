@@ -63,6 +63,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
               </Text>
             </Div>
             <Input
+              maxLength={14}
               placeholder="Username"
               focusBorderColor="blue700"
               value={username}

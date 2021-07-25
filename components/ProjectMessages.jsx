@@ -44,6 +44,7 @@ export default function Component({ data, created }) {
     >
       <Input
         fontSize="sm"
+        maxLength={124}
         w="80%"
         m="md"
         placeholder={`Ask ${

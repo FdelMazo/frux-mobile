@@ -150,12 +150,14 @@ export default function Component({ data, isViewer, mutations }) {
           <>
             <Input
               mt="md"
+              maxLength={10}
               value={firstName}
               onChangeText={setFirstName}
               placeholder="First Name"
             />
             <Input
               mt="md"
+              maxLength={10}
               value={lastName}
               onChangeText={setLastName}
               placeholder="Last Name"

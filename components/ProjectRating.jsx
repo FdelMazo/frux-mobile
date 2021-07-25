@@ -76,6 +76,10 @@ export default function Component({ data, created, mutations }) {
                       <Input
                         w="60%"
                         my="md"
+                        multiline
+                        maxLength={124}
+                        numberOfLines={2}
+                        textAlignVertical="top"
                         value={comment}
                         onChangeText={setComment}
                         placeholder="Leave your Review"

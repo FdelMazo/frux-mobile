@@ -235,7 +235,12 @@ export default function Component({ data, created, mutations, navigation }) {
         title="Your Project"
         body={
           <>
-            <Input value={name} onChangeText={setName} placeholder="Name" />
+            <Input
+              maxLength={35}
+              value={name}
+              onChangeText={setName}
+              placeholder="Name"
+            />
 
             <Input
               mt="sm"
@@ -278,6 +283,7 @@ export default function Component({ data, created, mutations, navigation }) {
             <Input
               prefix={<Text color="fruxgreen">#</Text>}
               value={newHashtag}
+              maxLength={10}
               onChangeText={setNewHashtag}
               onEndEditing={() => {
                 let toAdd = newHashtag;
