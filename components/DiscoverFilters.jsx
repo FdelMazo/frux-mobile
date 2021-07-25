@@ -160,7 +160,7 @@ export default function Component({ data, isLogged, refetchSeeds }) {
           })}
         </Div>
 
-        <Div w="90%" row my="md" flexWrap="wrap">
+        <Div w="95%" row my="md" flexWrap="wrap" justifyContent="center">
           {data.allCategories.edges.map((item) => (
             <Button
               key={item.node.name}
