@@ -155,6 +155,16 @@ export default function Render(props) {
     ${UserSupervisorBanner.fragments.user}
   `;
 
+  const removeSeerMutation = gql`
+    mutation removeSeerMutation {
+      mutateRemoveSeer {
+        id
+        ...UserSupervisorBanner
+      }
+    }
+    ${UserSupervisorBanner.fragments.user}
+  `;
+
   const [mutateUpdateUser, { error: mutateUpdateUserError }] =
     useMutation(updateMutation);
 
@@ -165,6 +175,9 @@ export default function Render(props) {
   const [mutateSetSeer, { error: mutateSetSeerError }] =
     useMutation(seerMutation);
 
+  const [mutateRemoveSeer, { error: mutateRemoveSeerError }] =
+    useMutation(removeSeerMutation);
+
   const { loading, error, data, refetch } = useQuery(query, {
     variables: { dbId: props.dbId || props.route?.params.dbId },
   });
@@ -174,6 +187,7 @@ export default function Render(props) {
     mutateUpdateUserError,
     mutateProjectError,
     mutateSetSeerError,
+    mutateRemoveSeerError,
   ];
   if (errors.some((e) => e)) return <Error errors={errors} />;
   if (loading) return <Loading />;
@@ -181,7 +195,12 @@ export default function Render(props) {
     <Screen
       data={data}
       navigation={props.navigation}
-      mutations={{ mutateUpdateUser, mutateProject, mutateSetSeer }}
+      mutations={{
+        mutateUpdateUser,
+        mutateProject,
+        mutateSetSeer,
+        mutateRemoveSeer,
+      }}
       refetch={refetch}
     />
   );

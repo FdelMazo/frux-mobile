@@ -58,14 +58,18 @@ export default function Component({ data, isViewer, mutations }) {
         title="Stop being a Project Supervisor"
         body={
           <>
-            <Text my="md">
-              Thanks for all your work! We won't assign you any more projects
-              for you to supervise.
-            </Text>
+            <Text my="md">Thanks for all your work!</Text>
 
             <Text my="md">
               Don't forget to see through the rest of your assigned projects
-              until they are done!
+              until they are done! When all of your projects are{" "}
+              <Text color="fruxgreen">Complete</Text>, you can leave the
+              supervisor program and we'll stop assigning you new projects.
+            </Text>
+
+            <Text my="md">
+              Until then, you are ours. Forever. Okay, not literally forever,
+              but you get it man.
             </Text>
           </>
         }
@@ -75,13 +79,19 @@ export default function Component({ data, isViewer, mutations }) {
             setStopSeerOverlay(false);
           },
         }}
-        success={{
-          title: "Confirm",
-          action: () => {
-            // mutations.mutateSetSeer();
-            setStopSeerOverlay(false);
-          },
-        }}
+        success={
+          !data.user.seerProjects.edges.filter(
+            (p) => p.node.currentState !== "COMPLETE"
+          ).length
+            ? {
+                title: "Leave the program",
+                action: () => {
+                  mutations.mutateRemoveSeer();
+                  setStopSeerOverlay(false);
+                },
+              }
+            : undefined
+        }
       />
 
       <FruxOverlay
@@ -132,6 +142,14 @@ Component.fragments = {
       isSeer
       username
       email
+      seerProjects {
+        edges {
+          node {
+            id
+            currentState
+          }
+        }
+      }
     }
   `,
 };
