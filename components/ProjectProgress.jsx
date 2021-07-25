@@ -21,6 +21,8 @@ export default function Component({ data, mutations, created }) {
     const _stages = async () => {
       const x = await Promise.all(
         data.project.stages.edges.map(async (s) => ({
+          dbId: s.node.dbId,
+          fundsReleased: s.node.fundsReleased || undefined,
           title: s.node.title,
           description: s.node.description,
           goal: s.node.goal,
@@ -31,6 +33,11 @@ export default function Component({ data, mutations, created }) {
     };
     _stages();
   }, [data.project.stages]);
+
+  const supervisedByUser = React.useMemo(() => {
+    if (!data.profile || !data.project.seer) return false;
+    return data.project.seer.dbId === data.profile.dbId;
+  }, [data.project.seer, data.profile]);
 
   const [showProjectInDollars, setShowProjectInDollars] = React.useState(true);
 
@@ -234,8 +241,8 @@ export default function Component({ data, mutations, created }) {
               else img = require("../assets/images/no-stage.png");
             }
             if (data.project.currentState === "IN_PROGRESS") {
-              // if (TENGOLOSFUNDS) img = require("../assets/images/seer.png");
-              // else img = require("../assets/images/no-seer.png");
+              if (s.fundsReleased) img = require("../assets/images/seer.png");
+              else img = require("../assets/images/no-seer.png");
             }
             if (data.project.currentState === "COMPLETE") {
               img = require("../assets/images/stage.png");
@@ -374,6 +381,16 @@ export default function Component({ data, mutations, created }) {
           )}
         </Div>
 
+        {supervisedByUser && data.project.currentState === "IN_PROGRESS" && (
+          <Div my="sm">
+            <Text fontSize="sm">
+              {stages[shownStage]?.fundsReleased
+                ? "You already released the funds for this stage. The creator thanks you a lot! (probably)"
+                : "As the project supervisor, you get to decide when this project gets the funds to start developing a new stage. Keep in mind that releasing the funds for a stage also releases the funds for every previous stage."}
+            </Text>
+          </Div>
+        )}
+
         {!stages[shownStage]?.title && (
           <Div>
             <Input
@@ -487,6 +504,27 @@ export default function Component({ data, mutations, created }) {
               Create Stage
             </Button>
           )}
+          {supervisedByUser &&
+            !stages[shownStage]?.fundsReleased &&
+            data.project.currentState === "IN_PROGRESS" && (
+              <Button
+                onPress={() => {
+                  mutations.mutateCompleteStage({
+                    variables: {
+                      idProject: data.project.dbId,
+                      idStage: shownStage + 1,
+                    },
+                  });
+                  setStageOverlay(false);
+                }}
+                mx="sm"
+                p="md"
+                bg="fruxgreen"
+                color="white"
+              >
+                Release Funds
+              </Button>
+            )}
         </Div>
       </Overlay>
 
@@ -537,6 +575,7 @@ Component.fragments = {
     fragment ProjectProgress_stage on ProjectStage {
       id
       title
+      fundsReleased
       description
       goal
     }
@@ -547,16 +586,27 @@ Component.fragments = {
       amountCollected
       goal
       currentState
+      seer {
+        id
+        dbId
+      }
       stages {
         edges {
           node {
             id
+            fundsReleased
             title
             description
             goal
           }
         }
       }
+    }
+  `,
+  user: gql`
+    fragment ProjectProgress_user on User {
+      id
+      dbId
     }
   `,
 };

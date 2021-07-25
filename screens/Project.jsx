@@ -85,6 +85,7 @@ export default function Render(props) {
         id
         ...ProjectFavAndInvest_user
         ...ProjectSeer_user
+        ...ProjectProgress_user
       }
       project(dbId: $dbId) {
         id
@@ -115,6 +116,7 @@ export default function Render(props) {
     ${ProjectFavAndInvest.fragments.project}
     ${ProjectFavAndInvest.fragments.user}
     ${ProjectProgress.fragments.project}
+    ${ProjectProgress.fragments.user}
     ${ProjectRating.fragments.project}
     ${ProjectMessages.fragments.project}
     ${ProjectStatus.fragments.project}
@@ -245,6 +247,15 @@ export default function Render(props) {
     ${ProjectRating.fragments.project}
   `;
 
+  const completeStageMutation = gql`
+    mutation completeStageMutation($idProject: Int!, $idStage: Int!) {
+      mutateCompleteStage(idProject: $idProject, idStage: $idStage) {
+        ...ProjectProgress_project
+      }
+    }
+    ${ProjectProgress.fragments.project}
+  `;
+
   const { user } = useUser();
   const isLogged = !!user;
   const { loading, error, data, refetch } = useQuery(query, {
@@ -262,6 +273,9 @@ export default function Render(props) {
 
   const [mutateFavProject, { error: mutateFavProjectError }] =
     useMutation(favMutation);
+
+  const [mutateCompleteStage, { error: mutateCompleteStageError }] =
+    useMutation(completeStageMutation);
 
   const [mutateUnfavProject, { error: mutateUnfavProjectError }] = useMutation(
     unfavMutation,
@@ -304,6 +318,7 @@ export default function Render(props) {
     mutateProjectStageError,
     mutateSeerProjectError,
     mutateReviewProjectError,
+    mutateCompleteStageError,
   ];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
@@ -321,6 +336,7 @@ export default function Render(props) {
         mutateSeerProject,
         mutateInvestProject,
         mutateReviewProject,
+        mutateCompleteStage,
       }}
     />
   );
