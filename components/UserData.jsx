@@ -210,6 +210,10 @@ export default function Component({ data, isViewer, mutations }) {
             throught <Text color="fruxgreen">Frux</Text>.
           </Text>
 
+          <Text>
+            
+          </Text>
+
           <Button
             bg={undefined}
             underlayColor={"none"}
