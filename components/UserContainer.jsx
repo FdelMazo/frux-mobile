@@ -13,18 +13,24 @@ export default function Component({ user, navigation }) {
     >
       <Div alignItems="center">
         <Icon
-          bg="fruxbrown"
+          bg={user.isBlocked ? undefined : "fruxbrown"}
           h={45}
           w={45}
           rounded="circle"
-          name={AppIcons[userPicture].name}
-          color="fruxgreen"
+          name={user.isBlocked ? "block" : AppIcons[userPicture].name}
+          color={user.isBlocked ? "fruxred" : "fruxgreen"}
           borderWidth={1}
           fontSize="2xl"
-          fontFamily={AppIcons[userPicture].fontFamily}
+          fontFamily={
+            user.isBlocked ? "Entypo" : AppIcons[userPicture].fontFamily
+          }
         />
         <Div mt="xs">
-          <Text fontSize="xs" fontWeight="bold">
+          <Text
+            fontSize="xs"
+            fontWeight="bold"
+            color={user.isBlocked ? "fruxred" : "black"}
+          >
             {user.username || user.email.split("@")[0]}
           </Text>
         </Div>
@@ -40,6 +46,7 @@ Component.fragments = {
       dbId
       username
       email
+      isBlocked
       imagePath
     }
   `,

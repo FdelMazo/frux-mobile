@@ -228,6 +228,23 @@ export default function Component({ data, created, mutations, navigation }) {
             )}
           </Div>
         </Div>
+        <Div>
+          {data.project.owner.isBlocked && (
+            <Text
+              mt="xs"
+              p="sm"
+              rounded="md"
+              textAlign="center"
+              color="white"
+              bg="fruxred"
+            >
+              Keep in mind, the project creator was blocked by the Frux admins.
+              You can keep seeding this project, but the creator won't be able
+              to develop it until the issues are resolved, so that's probably
+              not the best way of spending your money!
+            </Text>
+          )}
+        </Div>
       </Div>
 
       <FruxOverlay
@@ -345,6 +362,7 @@ Component.fragments = {
       }
       dbId
       owner {
+        isBlocked
         dbId
         longitude
         latitude
