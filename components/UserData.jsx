@@ -189,10 +189,18 @@ export default function Component({ data, isViewer, mutations }) {
       />
 
       <Overlay visible={walletOverlay}>
-        <Div row justifyContent="space-between">
-          <Text fontSize="xl" fontWeight="bold">
-            Wallet
-          </Text>
+        <Div row justifyContent="space-between" alignItems="center">
+          <Div row>
+            <Icon
+              name="ethereum"
+              fontFamily="MaterialCommunityIcons"
+              color="gray900"
+              fontSize="2xl"
+            />
+            <Text fontSize="xl" fontWeight="bold">
+              Wallet
+            </Text>
+          </Div>
           <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
             {data.user.wallet.balance} ETH
           </Text>
@@ -210,9 +218,7 @@ export default function Component({ data, isViewer, mutations }) {
             throught <Text color="fruxgreen">Frux</Text>.
           </Text>
 
-          <Text>
-            
-          </Text>
+          <Text></Text>
 
           <Button
             bg={undefined}
