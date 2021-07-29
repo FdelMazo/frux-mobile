@@ -1,5 +1,6 @@
 import * as Notifications from "expo-notifications";
 import * as React from "react";
+import { ScrollView } from "react-native";
 import {
   Badge,
   Button,
@@ -10,23 +11,32 @@ import {
   Snackbar,
   Text,
 } from "react-native-magnus";
+import { formatDateInput } from "../services/helpers";
 import {
   clearNotifications,
+  getAllNotifications,
   getNotificationsCount,
 } from "../services/notifications";
 
-function Component({ data, navigation }) {
+export default function Component({ user_id, navigation }) {
   const notificationsRef = React.createRef();
   const [badge, setBadge] = React.useState(false);
-  const [showNotification, setShowNotification] = React.useState(false);
+  const [notifications, setNotifications] = React.useState([]);
   const snackbarRef = React.createRef();
+
+  const updateNotifications = async () => {
+    const notifs = await getAllNotifications(user_id);
+    setNotifications(notifs);
+  };
 
   React.useEffect(() => {
     const badgeCount = async () => {
       const count = await getNotificationsCount();
       setBadge(count > 0);
     };
+
     badgeCount();
+    updateNotifications();
   }, []);
 
   React.useEffect(() => {
@@ -34,8 +44,9 @@ function Component({ data, navigation }) {
     const snackbar = snackbarRef.current;
     const subscription = Notifications.addNotificationReceivedListener(
       (notif) => {
-        console.log(notif);
         setBadge(true);
+        updateNotifications();
+
         if (snackbar) {
           snackbar.show(
             <Button
@@ -43,7 +54,7 @@ function Component({ data, navigation }) {
               justifyContent="flex-start"
               onPress={() => {
                 navigation.navigate("ProjectScreen", {
-                  dbId: notif.request.content.data.projectId,
+                  dbId: notif.request.content.data.project_id,
                 });
               }}
               bg={undefined}
@@ -53,10 +64,16 @@ function Component({ data, navigation }) {
             >
               <Icon
                 mx="md"
-                name="checkcircle"
+                name={
+                  notif.request.content.data.chat ? "envelope" : "checkcircle"
+                }
                 color="white"
                 fontSize="md"
-                fontFamily="AntDesign"
+                fontFamily={
+                  notif.request.content.data.chat
+                    ? "SimpleLineIcons"
+                    : "AntDesign"
+                }
               />
               <Text color="white" fontSize="md" fontWeight="bold">
                 {notif.request.content.title}
@@ -111,47 +128,94 @@ function Component({ data, navigation }) {
             fontFamily="Ionicons"
           />
         </Div>
-        <Div mx="lg">
-          {data.notifications.map((n) => (
-            <Div key={n.title}>
+        <ScrollView>
+          <Div mx="lg">
+            {notifications.map((n) => (
+              <Div key={n.created_at}>
+                <Collapse>
+                  <Collapse.Header
+                    underlayColor="gray200"
+                    py="sm"
+                    bg={undefined}
+                    borderWidth={1}
+                    rounded="sm"
+                    m="xs"
+                    activeSuffix={<></>}
+                    suffix={<></>}
+                  >
+                    <Div w="100%">
+                      <Div row w="100%" justifyContent="flex-end" my="xs">
+                        <Icon
+                          mr="sm"
+                          name={n.chat ? "envelope" : "checkcircle"}
+                          fontSize="sm"
+                          color="gray700"
+                          fontFamily={n.chat ? "SimpleLineIcons" : "AntDesign"}
+                        />
+                        <Text
+                          mr="2xl"
+                          textAlign="right"
+                          fontSize="xs"
+                          color="gray800"
+                        >
+                          {formatDateInput(new Date(n.created_at))}
+                        </Text>
+                      </Div>
+                      <Text fontSize="md" mr="2xl">
+                        {n.title}
+                      </Text>
+                    </Div>
+                  </Collapse.Header>
+                  <Collapse.Body
+                    py={0}
+                    px={0}
+                    borderColor={"white"}
+                    borderWidth={1}
+                    rounded="sm"
+                    mx="xs"
+                  >
+                    <Button
+                      underlayColor="gray200"
+                      bg={undefined}
+                      onPress={() => {
+                        notificationsRef.current.close();
+                        navigation.navigate("ProjectScreen", {
+                          dbId: n.project_id,
+                        });
+                      }}
+                    >
+                      <Text w="100%">{n.body}</Text>
+                    </Button>
+                  </Collapse.Body>
+                </Collapse>
+              </Div>
+            ))}
+            {!notifications.length && (
               <Collapse>
-                <Collapse.Header bg={undefined} borderWidth={1}>
-                  <Div>
-                    <Text fontSize="xs">{n.timestamp}</Text>
-                    <Text fontSize="xs">{n.title.toUpperCase()}</Text>
+                <Collapse.Header
+                  underlayColor="gray200"
+                  py="sm"
+                  bg={undefined}
+                  borderWidth={1}
+                  borderStyle="dashed"
+                  borderColor="gray500"
+                  rounded="sm"
+                  m="xs"
+                  activeSuffix={<></>}
+                  suffix={<></>}
+                >
+                  <Div w="100%">
+                    <Text fontSize="md" color="gray600">
+                      Don't worry! You'll soon get lots of notifications! I
+                      promise!
+                    </Text>
                   </Div>
                 </Collapse.Header>
-                <Collapse.Body>
-                  <Text fontSize="xs">{n.body}</Text>
-                </Collapse.Body>
               </Collapse>
-            </Div>
-          ))}
-        </Div>
+            )}
+          </Div>
+        </ScrollView>
       </Drawer>
     </>
   );
-}
-
-export default function Render(props) {
-  const data = {
-    notifications: [
-      {
-        timestamp: "May 21",
-        title: "Escalectrix personal board arena",
-        body: "Escalectrix personal board arena has moved to Complete!",
-      },
-      {
-        timestamp: "May 20",
-        title: "Dragon ball coffee mugs",
-        body: "JDSanto started sponsoring your project!",
-      },
-      {
-        timestamp: "May 12",
-        title: "Tomatometer",
-        body: "Vorkin is watching your project.",
-      },
-    ],
-  };
-  return <Component data={data} navigation={props.navigation} />;
 }

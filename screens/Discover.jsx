@@ -25,6 +25,7 @@ function Screen({ data, refetch, navigation, isLogged, mutations }) {
   return (
     <View>
       <Header
+        viewerId={!!data.profile && data.profile.dbId}
         data={data}
         navigation={navigation}
         title="Discover"

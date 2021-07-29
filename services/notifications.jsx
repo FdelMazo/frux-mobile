@@ -33,3 +33,11 @@ export const notificationHandshake = async (user_id) => {
     }),
   });
 };
+
+export const getAllNotifications = async (user_id) => {
+  const notifs = await fetch(
+    `http://192.168.1.100:5500/user/${user_id}/notifications`
+  ).then((res) => res.json());
+
+  return notifs;
+};

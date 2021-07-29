@@ -83,6 +83,7 @@ export default function Render(props) {
       profile @include(if: $isLogged) {
         id
         ...UserData_profile
+        ...UserEditionHeaderAndDropdown_profile
       }
       user(dbId: $dbId) {
         dbId
@@ -90,7 +91,7 @@ export default function Render(props) {
         id
         email
         ...UserData_user
-        ...UserEditionHeaderAndDropdown
+        ...UserEditionHeaderAndDropdown_user
         ...UserProjects
         ...UserSupervisorBanner
         ...UserFavouriteTopics_user
@@ -104,6 +105,7 @@ export default function Render(props) {
     ${UserFavouriteTopics.fragments.user}
     ${UserProjects.fragments.user}
     ${UserEditionHeaderAndDropdown.fragments.user}
+    ${UserEditionHeaderAndDropdown.fragments.profile}
     ${UserFavouriteTopics.fragments.allCategories}
     ${UserSupervisorBanner.fragments.user}
   `;
@@ -131,7 +133,7 @@ export default function Render(props) {
       ) {
         id
         ...UserFavouriteTopics_user
-        ...UserEditionHeaderAndDropdown
+        ...UserEditionHeaderAndDropdown_user
         ...UserData_user
       }
     }

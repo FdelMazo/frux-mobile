@@ -2,20 +2,18 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { AppIcons } from "../constants/Constants";
-import { loggingOut, useUser } from "../services/user";
+import { loggingOut } from "../services/user";
 import CreateProjectButton from "./CreateProjectButton";
 import Notifications from "./Notifications";
 
 export default function Component({
-  data,
+  viewerId,
   icon,
   title,
   onPress,
   navigation,
   mutations,
 }) {
-  const { user } = useUser();
-
   return (
     <Div
       alignItems="center"
@@ -23,7 +21,7 @@ export default function Component({
       p="2xl"
       h={200}
     >
-      {user && (
+      {!!viewerId && (
         <>
           <Div position="absolute" right={0} bottom={0}>
             <Button bg={undefined} onPress={() => loggingOut()}>
@@ -41,7 +39,7 @@ export default function Component({
               mutations={mutations}
             />
           </Div>
-          <Notifications navigation={navigation} />
+          <Notifications user_id={viewerId} navigation={navigation} />
         </>
       )}
 

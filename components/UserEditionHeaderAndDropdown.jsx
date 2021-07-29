@@ -16,7 +16,7 @@ export default function Component({ data, isViewer, mutations, navigation }) {
   return (
     <>
       <Header
-        data={data}
+        viewerId={!!data.profile && data.profile.dbId}
         onPress={
           isViewer
             ? () => {
@@ -117,11 +117,17 @@ export default function Component({ data, isViewer, mutations, navigation }) {
 
 Component.fragments = {
   user: gql`
-    fragment UserEditionHeaderAndDropdown on User {
+    fragment UserEditionHeaderAndDropdown_user on User {
       id
       username
       email
       imagePath
+    }
+  `,
+  profile: gql`
+    fragment UserEditionHeaderAndDropdown_profile on User {
+      id
+      dbId
     }
   `,
 };
