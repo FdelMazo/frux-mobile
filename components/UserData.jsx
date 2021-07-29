@@ -11,7 +11,9 @@ import {
   Text,
 } from "react-native-magnus";
 import { toDollars } from "../services/helpers";
+import { getAddressName } from "../services/location";
 import FruxOverlay from "./FruxOverlay";
+import LocationOverlay from "./LocationOverlay";
 export default function Component({ data, isViewer, mutations }) {
   const [firstName, setFirstName] = React.useState(data.user.firstName);
   const [lastName, setLastName] = React.useState(data.user.lastName);
@@ -32,6 +34,37 @@ export default function Component({ data, isViewer, mutations }) {
     }
     dollars();
   }, [isViewer, data.profile.wallet.balance]);
+
+  const [location, setLocation] = React.useState({
+    latitude: data.user?.latitude,
+    longitude: data.user?.longitude,
+  });
+  const [locationText, setLocationText] = React.useState("");
+  const [locationOverlay, setLocationOverlay] = React.useState(false);
+  React.useEffect(() => {
+    if (!isViewer) return;
+    mutations.mutateUpdateUser({
+      variables: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+    });
+  }, [isViewer, location]);
+
+  React.useEffect(() => {
+    if (!isViewer) return;
+    async function _getAddress() {
+      let text = "Set Location";
+      if (data.user.latitude) {
+        text = await getAddressName({
+          latitude: parseFloat(data.user.latitude),
+          longitude: parseFloat(data.user.longitude),
+        });
+      }
+      setLocationText(text);
+    }
+    _getAddress();
+  }, [isViewer, data.user.latitude]);
 
   return (
     <>
@@ -141,6 +174,31 @@ export default function Component({ data, isViewer, mutations }) {
             </TouchableOpacity>
           )}
         </Div>
+
+        {isViewer && (
+          <Div row justifyContent="flex-start">
+            <Button
+              py="sm"
+              bg={undefined}
+              color="blue500"
+              underlayColor="blue100"
+              fontSize="sm"
+              onPress={() => {
+                setLocationOverlay(true);
+              }}
+              prefix={
+                <Icon
+                  name="location-outline"
+                  fontFamily="Ionicons"
+                  fontSize="xl"
+                  color="blue600"
+                />
+              }
+            >
+              {locationText}
+            </Button>
+          </Div>
+        )}
       </Div>
 
       <FruxOverlay
@@ -305,6 +363,13 @@ export default function Component({ data, isViewer, mutations }) {
           </Button>
         </Div>
       </Overlay>
+
+      <LocationOverlay
+        location={location}
+        setLocation={setLocation}
+        visible={locationOverlay}
+        setVisible={setLocationOverlay}
+      />
     </>
   );
 }
@@ -316,6 +381,8 @@ Component.fragments = {
       firstName
       lastName
       description
+      latitude
+      longitude
     }
   `,
   profile: gql`

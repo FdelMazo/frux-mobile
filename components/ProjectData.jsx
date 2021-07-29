@@ -207,7 +207,7 @@ export default function Component({ data, created, mutations, navigation }) {
                     name={locationLoading ? "spinner" : "location-outline"}
                     fontFamily={locationLoading ? "EvilIcons" : "Ionicons"}
                     fontSize="xl"
-                    color={locationSet ? "gray500" : "blue600"}
+                    color={locationSet ? "gray600" : "blue600"}
                   />
                   <Text
                     py="sm"

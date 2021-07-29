@@ -4,7 +4,6 @@ import { Button, Div, Dropdown, Icon, Input, Text } from "react-native-magnus";
 import { UserIcons } from "../constants/Constants";
 import { resetPassword } from "../services/user";
 import Header from "./Header";
-import LocationOverlay from "./LocationOverlay";
 
 export default function Component({ data, isViewer, mutations, navigation }) {
   // Why isn't this component divided in header and dropdown?
@@ -13,20 +12,6 @@ export default function Component({ data, isViewer, mutations, navigation }) {
   const [username, setUsername] = React.useState(defaultUsername);
   const [emailSent, setEmailSent] = React.useState(false);
   const dropdownRef = React.createRef();
-  const [location, setLocation] = React.useState({
-    latitude: data.user.latitude,
-    longitude: data.user.longitude,
-  });
-  const [locationOverlay, setLocationOverlay] = React.useState(false);
-  React.useEffect(() => {
-    if (!isViewer) return;
-    mutations.mutateUpdateUser({
-      variables: {
-        latitude: location.latitude,
-        longitude: location.longitude,
-      },
-    });
-  }, [location]);
 
   return (
     <>
@@ -88,29 +73,6 @@ export default function Component({ data, isViewer, mutations, navigation }) {
                 </>
               }
             />
-            <Div row justifyContent="flex-end">
-              <Button
-                py="sm"
-                px={0}
-                bg={undefined}
-                color="blue500"
-                underlayColor="blue100"
-                fontSize="sm"
-                onPress={() => {
-                  setLocationOverlay(true);
-                }}
-                suffix={
-                  <Icon
-                    name="location-outline"
-                    fontFamily="Ionicons"
-                    fontSize="xl"
-                    color="blue600"
-                  />
-                }
-              >
-                {location.longitude ? "Change Location" : "Set Location"}
-              </Button>
-            </Div>
           </Div>
         }
         showSwipeIndicator={true}
@@ -137,7 +99,10 @@ export default function Component({ data, isViewer, mutations, navigation }) {
                 color="fruxgreen"
                 borderWidth={2}
                 borderColor={
-                  item.name === data.user.imagePath ? "fruxgreen" : "black"
+                  item.name === data.user.imagePath ||
+                  (!data.user.imagePath && item.name === "seed")
+                    ? "fruxgreen"
+                    : "black"
                 }
                 fontSize="2xl"
                 fontFamily={item.fontFamily}
@@ -146,13 +111,6 @@ export default function Component({ data, isViewer, mutations, navigation }) {
           ))}
         </Dropdown.Option>
       </Dropdown>
-
-      <LocationOverlay
-        location={location}
-        setLocation={setLocation}
-        visible={locationOverlay}
-        setVisible={setLocationOverlay}
-      />
     </>
   );
 }
@@ -163,8 +121,6 @@ Component.fragments = {
       id
       username
       email
-      latitude
-      longitude
       imagePath
     }
   `,
