@@ -133,7 +133,7 @@ export default function Render(props) {
         id
         ...UserFavouriteTopics_user
         ...UserEditionHeaderAndDropdown
-        ...UserData
+        ...UserData_user
       }
     }
     ${UserData.fragments.user}
