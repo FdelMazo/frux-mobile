@@ -6,11 +6,11 @@ import React from "react";
 export const useUser = () => {
   const [state, setState] = React.useState(async () => {
     const user = firebase.auth().currentUser;
-    const token = await user?.getIdToken();
+    const token = await user?.getIdToken(true);
     return { initializing: !user, user, token };
   });
   async function onChange(user) {
-    const token = await user?.getIdToken();
+    const token = await user?.getIdToken(true);
 
     setState({ initializing: false, user, token });
   }
