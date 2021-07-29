@@ -450,7 +450,7 @@ export default function Component({ data, mutations, created }) {
                   setShownStageNewGoalDollars(dollars);
                 }}
                 step={0.0001}
-                max={0.2}
+                max={0.5}
               />
             </Div>
           </Div>
