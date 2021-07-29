@@ -2,7 +2,7 @@
 
 Android Client for Frux.
 
-<img src="docs/logo.png" alt="Logo" width="500px">
+<a href="https://www.notion.so/fdelmazo/frux-efab2dee3dd74d52b2a57311a1891bd4"><img src="docs/logo.png" alt="Logo" width="500px"></a>
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
@@ -10,7 +10,7 @@ Android Client for Frux.
 
 Frux is the newest crowdfunding app in town.
 
-This whole project is being documented in our own [**Notion** page](https://www.notion.so/fdelmazo/frux-efab2dee3dd74d52b2a57311a1891bd4) from where you'll get the latest news, updates, documentation, and everything in between.
+Before reading this repo, you should probably visit our [homepage](https://www.notion.so/fdelmazo/frux-efab2dee3dd74d52b2a57311a1891bd4), with lots of info on the development, latest news, and lots (*lots*) of documentation. 
 
 If you are only interested in the source code, check out the different repos!
 
