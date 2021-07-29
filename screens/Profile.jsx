@@ -13,6 +13,7 @@ const WelcomeScreen = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState("");
+  const [success, setSuccess] = React.useState("");
 
   return (
     <View>
@@ -39,15 +40,19 @@ const WelcomeScreen = ({ navigation }) => {
             secureTextEntry
           />
 
-          <Text my="md" color="fruxred">
-            {errors}
-          </Text>
+          <Div>
+            <Text my="md" color={!!success ? "fruxgreen" : "fruxred"}>
+              {errors}
+              {success}
+            </Text>
+          </Div>
 
           <Div my="md">
             <Button
               my="xs"
               onPress={async () => {
                 setErrors("");
+                setSuccess("");
                 setLoading(true);
                 try {
                   await signIn(email, password);
@@ -69,6 +74,7 @@ const WelcomeScreen = ({ navigation }) => {
               bg="white"
               onPress={async () => {
                 setErrors("");
+                setSuccess("");
                 setLoading(true);
                 try {
                   await registration(email, password);
@@ -95,6 +101,7 @@ const WelcomeScreen = ({ navigation }) => {
             bg="white"
             onPress={async () => {
               setErrors("");
+              setSuccess("");
               try {
                 setLoading(true);
                 const response = await redirectToGithub();
@@ -125,9 +132,10 @@ const WelcomeScreen = ({ navigation }) => {
             my="xs"
             onPress={async () => {
               setErrors("");
+              setSuccess("");
               setLoading(true);
               resetPassword(email)
-                .then(() => setErrors("Email Sent!"))
+                .then(() => setSuccess("Email Sent!"))
                 .catch((err) => setErrors(err.message));
               setLoading(false);
             }}
