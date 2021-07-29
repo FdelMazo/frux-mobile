@@ -27,7 +27,11 @@ export default function Component({ data, mutations, created }) {
           description: s.node.description,
           goal: s.node.goal,
           goalDollars: await toDollars(s.node.goal),
+          creationDate: s.node.creationDate,
         }))
+      );
+      x.sort(
+        (s1, s2) => new Date(s1?.creationDate) - new Date(s2?.creationDate)
       );
       setStages(x);
     };
@@ -582,6 +586,7 @@ Component.fragments = {
       title
       fundsReleased
       description
+      creationDate
       goal
     }
   `,
@@ -601,6 +606,7 @@ Component.fragments = {
             id
             fundsReleased
             title
+            creationDate
             description
             goal
           }
