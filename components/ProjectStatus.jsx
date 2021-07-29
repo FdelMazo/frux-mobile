@@ -1,9 +1,11 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
+import { TouchableOpacity } from "react-native";
 import { Div, Text } from "react-native-magnus";
 import { States } from "../constants/Constants";
-
+import StateOverlay from "./StateOverlay";
 export default function Component({ data, created }) {
+  const [stateOverlay, setStateOverlay] = React.useState(false);
   const description = {
     CREATED: created ? (
       <>
@@ -140,16 +142,22 @@ export default function Component({ data, created }) {
   };
 
   return (
-    <Div
-      p="sm"
-      borderColor={States[data.project.currentState].color}
-      borderWidth={1}
-      rounded="md"
-      justifyContent="center"
-      alignItems="center"
-    >
-      {description[data.project.currentState]}
-    </Div>
+    <>
+      <TouchableOpacity onPress={() => setStateOverlay(true)}>
+        <Div
+          p="sm"
+          borderColor={States[data.project.currentState].color}
+          borderWidth={1}
+          rounded="md"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {description[data.project.currentState]}
+        </Div>
+      </TouchableOpacity>
+
+      <StateOverlay visible={stateOverlay} setVisible={setStateOverlay} />
+    </>
   );
 }
 

@@ -6,6 +6,7 @@ import { States } from "../constants/Constants";
 import { dateRepresentation, toggler } from "../services/helpers";
 import { getAddressName } from "../services/location";
 import FruxOverlay from "./FruxOverlay";
+import StateOverlay from "./StateOverlay";
 import UserContainer from "./UserContainer";
 
 export default function Component({ data, created, mutations, navigation }) {
@@ -19,6 +20,7 @@ export default function Component({ data, created, mutations, navigation }) {
 
   const [newHashtag, setNewHashtag] = React.useState("");
 
+  const [stateOverlay, setStateOverlay] = React.useState(false);
   const [dataOverlay, setDataOverlay] = React.useState(false);
   const [hashtagOverlay, setHashtagOverlay] = React.useState(false);
 
@@ -80,18 +82,18 @@ export default function Component({ data, created, mutations, navigation }) {
             </Div>
 
             <Div flex={1} ml="lg">
-              <TouchableOpacity
-                activeOpacity={created ? 0.2 : 1}
-                onPress={
-                  created
-                    ? () => {
-                        setDataOverlay(true);
-                      }
-                    : undefined
-                }
-              >
-                <Div row justifyContent="space-between">
-                  <Div maxW="70%">
+              <Div row justifyContent="space-between">
+                <Div maxW="70%">
+                  <TouchableOpacity
+                    activeOpacity={created ? 0.2 : 1}
+                    onPress={
+                      created
+                        ? () => {
+                            setDataOverlay(true);
+                          }
+                        : undefined
+                    }
+                  >
                     <Text
                       fontSize="4xl"
                       lineHeight={25}
@@ -99,7 +101,10 @@ export default function Component({ data, created, mutations, navigation }) {
                     >
                       {data.project.name}
                     </Text>
-                  </Div>
+                  </TouchableOpacity>
+                </Div>
+
+                <TouchableOpacity onPress={() => setStateOverlay(true)}>
                   <Div
                     alignSelf="flex-start"
                     bg={States[data.project.currentState].color + "500"}
@@ -110,7 +115,19 @@ export default function Component({ data, created, mutations, navigation }) {
                       {States[data.project.currentState].name.toUpperCase()}
                     </Text>
                   </Div>
-                </Div>
+                </TouchableOpacity>
+              </Div>
+
+              <TouchableOpacity
+                activeOpacity={created ? 0.2 : 1}
+                onPress={
+                  created
+                    ? () => {
+                        setDataOverlay(true);
+                      }
+                    : undefined
+                }
+              >
                 <Text
                   lineHeight={20}
                   fontSize="xl"
@@ -120,7 +137,6 @@ export default function Component({ data, created, mutations, navigation }) {
                   {data.project.description}
                 </Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 activeOpacity={created ? 0.2 : 1}
                 onPress={
@@ -338,6 +354,8 @@ export default function Component({ data, created, mutations, navigation }) {
           },
         }}
       />
+
+      <StateOverlay visible={stateOverlay} setVisible={setStateOverlay} />
     </>
   );
 }
