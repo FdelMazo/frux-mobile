@@ -86,6 +86,7 @@ export default function Render(props) {
         ...ProjectFavAndInvest_user
         ...ProjectSeer_user
         ...ProjectProgress_user
+        ...ProjectMessages_profile
       }
       project(dbId: $dbId) {
         id
@@ -97,7 +98,7 @@ export default function Render(props) {
         ...ProjectRating
         ...ProjectHeader_project
         ...ProjectData
-        ...ProjectMessages
+        ...ProjectMessages_project
         ...ProjectFavAndInvest_project
         ...ProjectProgress_project
         ...ProjectStatus
@@ -119,6 +120,7 @@ export default function Render(props) {
     ${ProjectProgress.fragments.user}
     ${ProjectRating.fragments.project}
     ${ProjectMessages.fragments.project}
+    ${ProjectMessages.fragments.profile}
     ${ProjectStatus.fragments.project}
     ${ProjectSeer.fragments.project}
     ${ProjectSeer.fragments.user}
@@ -344,8 +346,8 @@ export default function Render(props) {
     mutateRemoveProjectStageError,
   ];
 
-  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   if (loading) return <Loading />;
+  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   return (
     <Screen
       data={data}

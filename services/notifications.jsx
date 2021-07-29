@@ -1,5 +1,9 @@
-import { NOTIFICATIONS_ENDPOINT } from "@env";
 import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationChannelAsync("default", {
+  name: "default",
+  importance: Notifications.AndroidImportance.DEFAULT,
+});
 
 export const notificationHandshake = async (user_id) => {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -9,12 +13,8 @@ export const notificationHandshake = async (user_id) => {
     finalStatus = status;
   }
   const token = (await Notifications.getExpoPushTokenAsync()).data;
-  Notifications.setNotificationChannelAsync("default", {
-    name: "default",
-    importance: Notifications.AndroidImportance.DEFAULT,
-  });
 
-  await fetch(NOTIFICATIONS_ENDPOINT + `/user/${user_id}`, {
+  await fetch(`http://192.168.1.100:5500/user/${user_id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

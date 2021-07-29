@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
+import { TouchableOpacity } from "react-native";
 import { Button, Div, Image, Input, Text } from "react-native-magnus";
+import { sendMessage } from "../services/chat";
 
 export default function Component({ data, created }) {
   const [question, setQuestion] = React.useState("");
@@ -53,30 +55,49 @@ export default function Component({ data, created }) {
         value={question}
         onChangeText={setQuestion}
       />
-      <Image
-        w={30}
-        h={30}
-        mx="md"
-        source={
-          question
-            ? require("../assets/images/send.png")
-            : require("../assets/images/no-send.png")
-        }
-      />
+      <TouchableOpacity
+        onPress={() => {
+          sendMessage(
+            data.project.dbId,
+            data.profile.dbId,
+            data.project.owner.dbId,
+            question,
+            true
+          );
+        }}
+      >
+        <Image
+          w={30}
+          h={30}
+          mx="md"
+          source={
+            question
+              ? require("../assets/images/send.png")
+              : require("../assets/images/no-send.png")
+          }
+        />
+      </TouchableOpacity>
     </Div>
   );
 }
 
 Component.fragments = {
   project: gql`
-    fragment ProjectMessages on Project {
+    fragment ProjectMessages_project on Project {
       id
       name
       owner {
         id
+        dbId
         username
         email
       }
+    }
+  `,
+  profile: gql`
+    fragment ProjectMessages_profile on User {
+      id
+      dbId
     }
   `,
 };
