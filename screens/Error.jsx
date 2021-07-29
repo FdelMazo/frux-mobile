@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Collapse, Div, Icon, Image, Text } from "react-native-magnus";
+import { Button, Collapse, Div, Icon, Image, Text } from "react-native-magnus";
 import { MainView, View } from "../components/Themed";
 
-const Component = ({ errors }) => {
+const Component = ({ errors, refetch }) => {
   return (
     <View>
       <MainView>
@@ -17,6 +17,29 @@ const Component = ({ errors }) => {
               <Text fontSize="xl" fontWeight="bold">
                 Oops! We had some Frux Errors!
               </Text>
+            </Div>
+
+            <Div my="md" justifyContent="center" alignItems="center">
+              <Button
+                block
+                bg={undefined}
+                color="blue500"
+                fontSize="lg"
+                onPress={async () => {
+                  refetch();
+                }}
+                prefix={
+                  <Icon
+                    name="refresh"
+                    fontFamily="SimpleLineIcons"
+                    fontSize="2xl"
+                    mr="xs"
+                    color="blue700"
+                  />
+                }
+              >
+                Why don't you try refreshing?
+              </Button>
             </Div>
 
             {errors

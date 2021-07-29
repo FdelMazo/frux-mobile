@@ -344,7 +344,7 @@ export default function Render(props) {
     mutateRemoveProjectStageError,
   ];
 
-  if (errors.some((e) => e)) return <Error errors={errors} />;
+  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   if (loading) return <Loading />;
   return (
     <Screen
