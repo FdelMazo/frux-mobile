@@ -10,7 +10,7 @@ const Component = () => {
     let isMounted = true;
     setTimeout(() => {
       if (isMounted) setWakeup(true);
-    }, 3000);
+    }, 7000);
     return () => {
       isMounted = false;
     };
