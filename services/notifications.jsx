@@ -5,6 +5,14 @@ Notifications.setNotificationChannelAsync("default", {
   importance: Notifications.AndroidImportance.DEFAULT,
 });
 
+export const getNotificationsCount = async () => {
+  return Notifications.getBadgeCountAsync();
+};
+
+export const clearNotifications = async () => {
+  return Notifications.setBadgeCountAsync(0);
+};
+
 export const notificationHandshake = async (user_id) => {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;

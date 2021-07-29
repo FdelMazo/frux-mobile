@@ -4,6 +4,7 @@ import { Button, Div, Icon, Image, Text } from "react-native-magnus";
 import { AppIcons } from "../constants/Constants";
 import { loggingOut, useUser } from "../services/user";
 import CreateProjectButton from "./CreateProjectButton";
+import Notifications from "./Notifications";
 
 export default function Component({
   data,
@@ -24,7 +25,6 @@ export default function Component({
     >
       {user && (
         <>
-          {/* <Notifications navigation={navigation} /> */}
           <Div position="absolute" right={0} bottom={0}>
             <Button bg={undefined} onPress={() => loggingOut()}>
               <Icon
@@ -41,6 +41,7 @@ export default function Component({
               mutations={mutations}
             />
           </Div>
+          <Notifications navigation={navigation} />
         </>
       )}
 

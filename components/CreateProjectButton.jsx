@@ -30,7 +30,7 @@ export default function Component({ mutations, navigation }) {
         borderColor="black"
         borderWidth={1}
         p="xs"
-        mb="sm"
+        mb="md"
         onPress={() => {
           setCreateProjectOverlay(true);
         }}
