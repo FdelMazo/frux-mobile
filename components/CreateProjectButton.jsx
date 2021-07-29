@@ -35,7 +35,7 @@ export default function Component({ mutations, navigation }) {
           setCreateProjectOverlay(true);
         }}
       >
-        <Icon name="add" color="white" fontFamily="Ionicons" fontSize="2xl" />
+        <Icon name="add" color="white" fontFamily="Ionicons" fontSize="3xl" />
       </Button>
 
       <FruxOverlay
