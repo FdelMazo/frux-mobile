@@ -81,12 +81,16 @@ function Screen({ data, navigation, mutations, refetch }) {
 export default function Render(props) {
   const query = gql`
     query User($dbId: Int!) {
+      profile {
+        id
+        ...UserData_profile
+      }
       user(dbId: $dbId) {
         dbId
         isBlocked
         id
         email
-        ...UserData
+        ...UserData_user
         ...UserEditionHeaderAndDropdown
         ...UserProjects
         ...UserSupervisorBanner
@@ -97,6 +101,7 @@ export default function Render(props) {
       }
     }
     ${UserData.fragments.user}
+    ${UserData.fragments.profile}
     ${UserFavouriteTopics.fragments.user}
     ${UserProjects.fragments.user}
     ${UserEditionHeaderAndDropdown.fragments.user}

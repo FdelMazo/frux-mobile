@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 import * as React from "react";
-import { Clipboard } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Clipboard, TouchableOpacity } from "react-native";
 import {
   Button,
   Div,
@@ -21,17 +20,18 @@ export default function Component({ data, isViewer, mutations }) {
   const [basicDataOverlay, setBasicDataOverlay] = React.useState(false);
   const [walletOverlay, setWalletOverlay] = React.useState(false);
   const [walletShown, setWalletShown] = React.useState(false);
+  const [privateKeyShown, setPrivateKeyShown] = React.useState(false);
   const snackbarRef = React.createRef();
 
   const [dollarBalance, setDollarBalance] = React.useState(0);
   React.useEffect(() => {
-    if (isViewer) return;
+    if (!isViewer) return;
     async function dollars() {
-      let d = await toDollars(data.user.wallet.balance);
+      let d = await toDollars(data.profile.wallet.balance);
       setDollarBalance(d);
     }
     dollars();
-  }, [data.user.wallet.balance]);
+  }, [isViewer, data.profile.wallet.balance]);
 
   return (
     <>
@@ -202,7 +202,7 @@ export default function Component({ data, isViewer, mutations }) {
             </Text>
           </Div>
           <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
-            {data.user.wallet.balance} ETH
+            {data.profile.wallet.balance} ETH
           </Text>
         </Div>
         <Div row justifyContent="flex-end">
@@ -212,23 +212,35 @@ export default function Component({ data, isViewer, mutations }) {
         </Div>
 
         <Div my="md">
-          <Text>
-            This is your own personal ethereum wallet address, by adding funds
-            onto this address you'll be able to sponsor the different seeds
-            throught <Text color="fruxgreen">Frux</Text>.
-          </Text>
-
-          <Text></Text>
+          {privateKeyShown ? (
+            <Text>
+              This is your own personal ethereum wallet{" "}
+              <Text fontWeight="bold">private</Text> key. The keyword in here is{" "}
+              <Text fontWeight="bold">private</Text>. You should never, never,
+              and I really mean never share this key with anyone. Not even your
+              mum.
+            </Text>
+          ) : (
+            <Text>
+              This is your own personal ethereum wallet address, by adding funds
+              onto this address you'll be able to sponsor the different seeds
+              throught <Text color="fruxgreen">Frux</Text>.
+            </Text>
+          )}
 
           <Button
             bg={undefined}
             underlayColor={"none"}
             p={0}
             onPress={() => {
-              Clipboard.setString(data.user.wallet.address);
+              if (privateKeyShown)
+                Clipboard.setString(data.profile.walletPrivateKey);
+              else Clipboard.setString(data.profile.walletAddress);
               if (snackbarRef.current && !walletShown) {
                 snackbarRef.current.show(
-                  "Wallet address copied to clipboard!",
+                  `${
+                    privateKeyShown ? "Private key" : "Wallet address"
+                  } copied to clipboard!`,
                   {
                     duration: 2000,
                   }
@@ -248,7 +260,28 @@ export default function Component({ data, isViewer, mutations }) {
               rounded="sm"
               p="sm"
             >
-              {data.user.wallet.address}
+              {privateKeyShown
+                ? data.profile.walletPrivateKey
+                : data.profile.walletAddress}
+            </Text>
+          </Button>
+
+          <Button
+            bg={undefined}
+            underlayColor={"none"}
+            p={0}
+            onPress={() => {
+              setPrivateKeyShown(!privateKeyShown);
+            }}
+          >
+            <Icon
+              name={privateKeyShown ? "wallet" : "key"}
+              fontFamily={privateKeyShown ? "AntDesign" : "Foundation"}
+              mx="xs"
+              color="gray800"
+            />
+            <Text>
+              Show {privateKeyShown ? "Wallet Address" : "Private Key"}
             </Text>
           </Button>
         </Div>
@@ -278,15 +311,20 @@ export default function Component({ data, isViewer, mutations }) {
 
 Component.fragments = {
   user: gql`
-    fragment UserData on User {
+    fragment UserData_user on User {
       id
       firstName
       lastName
       description
+    }
+  `,
+  profile: gql`
+    fragment UserData_profile on User {
+      id
+      walletAddress
+      walletPrivateKey
       wallet {
-        id
         balance
-        address
       }
     }
   `,
