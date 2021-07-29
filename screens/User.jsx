@@ -198,8 +198,8 @@ export default function Render(props) {
     mutateSetSeerError,
     mutateRemoveSeerError,
   ];
-  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   if (loading) return <Loading />;
+  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   return (
     <Screen
       data={data}
