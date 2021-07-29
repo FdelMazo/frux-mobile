@@ -80,11 +80,22 @@ export default function Component({ data, mutations, created }) {
   React.useEffect(() => {
     let r = -1;
     let accum = 0;
-    for (let s of stages) {
-      if (data.project.amountCollected >= accum + s.goal) {
-        accum += s.goal;
-        r += 1;
-      } else break;
+    // When a project is funding, the current stage is the one getting funds at the moment
+    // Instead, when a project is in progress, the current stage is the one that is being developed
+    if (data.project.currentState === "FUNDING") {
+      for (let s of stages) {
+        if (data.project.amountCollected >= accum + s.goal) {
+          accum += s.goal;
+          r += 1;
+        } else break;
+      }
+    } else {
+      for (let s of stages) {
+        if (s.fundsReleased) {
+          r += 1;
+        } else break;
+      }
+      r -= 1;
     }
     setCurrentStage(r + 1);
   }, [stages, data.project.amountCollected]);
@@ -124,7 +135,8 @@ export default function Component({ data, mutations, created }) {
             </Div>
           ) : (
             <Div>
-              {data.project.currentState === "FUNDING" ? (
+              {data.project.currentState === "FUNDING" ||
+              data.project.currentState === "IN_PROGRESS" ? (
                 <>
                   <Div maxW="70%" row>
                     <Text fontSize="lg" fontWeight="bold">
@@ -132,14 +144,23 @@ export default function Component({ data, mutations, created }) {
                     </Text>
                     <Text fontSize="lg">{stages[currentStage]?.title}</Text>
                   </Div>
-                  <MultiSlider
-                    selectedStyle={{ backgroundColor: Colors.fruxgreen }}
-                    enabledOne={false}
-                    values={[
-                      (data.project.amountCollected / data.project.goal) * 10,
-                    ]}
-                    sliderLength={150}
-                  />
+                  {data.project.currentState === "FUNDING" ? (
+                    <MultiSlider
+                      selectedStyle={{ backgroundColor: Colors.fruxgreen }}
+                      enabledOne={false}
+                      values={[
+                        (data.project.amountCollected / data.project.goal) * 10,
+                      ]}
+                      sliderLength={150}
+                    />
+                  ) : (
+                    <MultiSlider
+                      selectedStyle={{ backgroundColor: Colors.fruxgreen }}
+                      enabledOne={false}
+                      values={[(currentStage / stages.length) * 10]}
+                      sliderLength={150}
+                    />
+                  )}
                 </>
               ) : (
                 <>
