@@ -171,7 +171,7 @@ export default function Component({ data, created, mutations, navigation }) {
                     color="fruxgreen"
                     fontSize="sm"
                   >
-                    ####
+                    ## add hashtags ##
                   </Text>
                 )}
               </TouchableOpacity>
