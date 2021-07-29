@@ -27,13 +27,13 @@ export default function Component({ data, isViewer, mutations }) {
 
   const [dollarBalance, setDollarBalance] = React.useState(0);
   React.useEffect(() => {
-    if (!isViewer) return;
+    if (!isViewer || !data.profile) return;
     async function dollars() {
-      let d = await toDollars(data.profile.wallet.balance);
+      let d = await toDollars(data.profile?.wallet.balance);
       setDollarBalance(d);
     }
     dollars();
-  }, [isViewer, data.profile.wallet.balance]);
+  }, [isViewer, data.profile?.wallet.balance]);
 
   const [location, setLocation] = React.useState({
     latitude: data.user?.latitude,
@@ -260,7 +260,7 @@ export default function Component({ data, isViewer, mutations }) {
             </Text>
           </Div>
           <Text fontSize="xl" fontWeight="bold" color="fruxgreen">
-            {data.profile.wallet.balance} ETH
+            {data.profile?.wallet.balance} ETH
           </Text>
         </Div>
         <Div row justifyContent="flex-end">
@@ -292,8 +292,8 @@ export default function Component({ data, isViewer, mutations }) {
             p={0}
             onPress={() => {
               if (privateKeyShown)
-                Clipboard.setString(data.profile.walletPrivateKey);
-              else Clipboard.setString(data.profile.walletAddress);
+                Clipboard.setString(data.profile?.walletPrivateKey);
+              else Clipboard.setString(data.profile?.walletAddress);
               if (snackbarRef.current && !walletShown) {
                 snackbarRef.current.show(
                   `${
@@ -319,8 +319,8 @@ export default function Component({ data, isViewer, mutations }) {
               p="sm"
             >
               {privateKeyShown
-                ? data.profile.walletPrivateKey
-                : data.profile.walletAddress}
+                ? data.profile?.walletPrivateKey
+                : data.profile?.walletAddress}
             </Text>
           </Button>
 

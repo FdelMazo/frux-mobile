@@ -12,13 +12,12 @@ import { loggingOut, useUser } from "../services/user";
 import Error from "./Error";
 import Loading from "./Loading";
 
-function Screen({ data, navigation, mutations, refetch }) {
-  const { user } = useUser();
+function Screen({ data, navigation, mutations, refetch, user }) {
+  const [blockedOverlay, setBlockedOverlay] = React.useState(false);
   const isViewer = React.useMemo(
     () => user && data.user.email === user.email,
     [user]
   );
-  const [blockedOverlay, setBlockedOverlay] = React.useState(false);
 
   React.useEffect(() => {
     setBlockedOverlay(isViewer && data.user.isBlocked);
@@ -80,8 +79,8 @@ function Screen({ data, navigation, mutations, refetch }) {
 
 export default function Render(props) {
   const query = gql`
-    query User($dbId: Int!) {
-      profile {
+    query User($dbId: Int!, $isLogged: Boolean!) {
+      profile @include(if: $isLogged) {
         id
         ...UserData_profile
       }
@@ -183,8 +182,13 @@ export default function Render(props) {
   const [mutateRemoveSeer, { error: mutateRemoveSeerError }] =
     useMutation(removeSeerMutation);
 
+  const { user } = useUser();
+
   const { loading, error, data, refetch } = useQuery(query, {
-    variables: { dbId: props.dbId || props.route?.params.dbId },
+    variables: {
+      dbId: props.dbId || props.route?.params.dbId,
+      isLogged: !!user,
+    },
   });
 
   const errors = [
@@ -207,6 +211,7 @@ export default function Render(props) {
         mutateRemoveSeer,
       }}
       refetch={refetch}
+      user={user}
     />
   );
 }
