@@ -20,7 +20,7 @@ export default function Component({ data, mutations, created }) {
   }, [data.project.investors, data.profile]);
 
   const [sponsorOverlay, setSponsorOverlay] = React.useState(false);
-  const [toSponsor, setToSponsor] = React.useState(0);
+  const [toSponsor, setToSponsor] = React.useState(0.01);
   const [errors, setErrors] = React.useState("");
   const [toSponsorDollars, setToSponsorDollars] = React.useState(0);
 
@@ -125,9 +125,11 @@ export default function Component({ data, mutations, created }) {
                     enabledOne={false}
                     values={[
                       data.project.amountCollected / data.project.goal,
-                      data.project.amountCollected / data.project.goal,
+                      data.project.amountCollected / data.project.goal +
+                        toSponsor / data.project.goal,
                     ]}
                     sliderLength={250}
+                    minMarkerOverlapDistance={15}
                     onValuesChange={(v) => {
                       setToSponsor(
                         ((v[1] - v[0]) * data.project.goal).toFixed(4)
