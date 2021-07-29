@@ -256,6 +256,15 @@ export default function Render(props) {
     ${ProjectProgress.fragments.project}
   `;
 
+  const removeStageMutation = gql`
+    mutation removeStageMutation($idProject: Int!, $idStage: Int!) {
+      mutateRemoveProjectStage(idProject: $idProject, idStage: $idStage) {
+        ...ProjectProgress_stage
+      }
+    }
+    ${ProjectProgress.fragments.stage}
+  `;
+
   const { user } = useUser();
   const isLogged = !!user;
   const { loading, error, data, refetch } = useQuery(query, {
@@ -292,6 +301,19 @@ export default function Render(props) {
     }
   );
 
+  const [mutateRemoveProjectStage, { error: mutateRemoveProjectStageError }] =
+    useMutation(removeStageMutation, {
+      refetchQueries: [
+        {
+          query,
+          variables: {
+            dbId: props.route.params.dbId,
+            isLogged,
+          },
+        },
+      ],
+    });
+
   const [mutateProjectStage, { error: mutateProjectStageError }] = useMutation(
     stageMutation,
     {
@@ -319,6 +341,7 @@ export default function Render(props) {
     mutateSeerProjectError,
     mutateReviewProjectError,
     mutateCompleteStageError,
+    mutateRemoveProjectStageError,
   ];
 
   if (errors.some((e) => e)) return <Error errors={errors} />;
@@ -337,6 +360,7 @@ export default function Render(props) {
         mutateInvestProject,
         mutateReviewProject,
         mutateCompleteStage,
+        mutateRemoveProjectStage,
       }}
     />
   );

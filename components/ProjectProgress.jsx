@@ -392,7 +392,8 @@ export default function Component({ data, mutations, created }) {
                 <Text color="fruxred" fontWeight="bold">
                   won't{" "}
                 </Text>
-                be able to change this data later.
+                be able to change this data after the project finishes its
+                setup.
               </Text>
             </>
           )}
@@ -501,6 +502,32 @@ export default function Component({ data, mutations, created }) {
           >
             {!!stages[shownStage]?.title ? "Close" : "Cancel"}
           </Button>
+
+          {stages[shownStage]?.title &&
+            data.project.currentState === "CREATED" && (
+              <Button
+                onPress={() => {
+                  mutations.mutateRemoveProjectStage({
+                    variables: {
+                      idProject: data.project.dbId,
+                      idStage: stages[shownStage]?.dbId,
+                    },
+                  });
+                  setErrors("");
+                  setShownStageNewName("");
+                  setShownStageNewDescription("");
+                  setShownStageNewGoal(0);
+                  setStageOverlay(false);
+                }}
+                mx="sm"
+                p="md"
+                bg="fruxred"
+                color="white"
+              >
+                Remove Stage
+              </Button>
+            )}
+
           {!stages[shownStage]?.title && (
             <Button
               onPress={async () => {
@@ -609,6 +636,7 @@ Component.fragments = {
       description
       creationDate
       goal
+      dbId
     }
   `,
   project: gql`
@@ -625,6 +653,7 @@ Component.fragments = {
         edges {
           node {
             id
+            dbId
             fundsReleased
             title
             creationDate
