@@ -1,5 +1,5 @@
-import groupBy from "lodash.groupby";
 import { NOTIFICATIONS_ENDPOINT } from "@env";
+import groupBy from "lodash.groupby";
 
 export const sendMessage = async (
   project_id,
@@ -33,9 +33,7 @@ export const getProjectConversations = async (projectId, userId, isCreator) => {
 
   if (!isCreator) {
     conversations = conversations.filter(
-      (c) =>
-        c.commenter_id === parseFloat(userId) ||
-        c.user_id === parseFloat(userId)
+      (c) => parseFloat(c.commenter_id) === userId || c.user_id === userId
     );
   }
 
