@@ -32,7 +32,7 @@ export default function App() {
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : "",
+        authorization: token ? `Bearer ${token}` : undefined,
       },
     };
   });
