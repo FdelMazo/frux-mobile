@@ -167,7 +167,8 @@ export default function Render(props) {
     variables: { isLogged: !!user },
   });
   // if (error) return <Error errors={[error]} />;
-  if (loading) return <Loading />;
+  if (loading || error?.networkError?.name === "ServerParseError")
+    return <Loading />;
   return !!data?.profile ? (
     <User dbId={data.profile.dbId} navigation={props.navigation} />
   ) : (

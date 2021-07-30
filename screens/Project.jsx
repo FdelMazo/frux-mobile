@@ -346,7 +346,8 @@ export default function Render(props) {
     mutateRemoveProjectStageError,
   ];
 
-  if (loading) return <Loading />;
+  if (loading || error?.networkError?.name === "ServerParseError")
+    return <Loading />;
   if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   return (
     <Screen
