@@ -40,6 +40,7 @@
     "graphql": "^15.5.0",
     "graphql-tag": "^2.12.4",
     "graphql-tools": "^7.0.4",
+    "lodash.groupby": "^4.6.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",

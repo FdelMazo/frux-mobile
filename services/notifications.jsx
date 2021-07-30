@@ -13,7 +13,7 @@ export const clearNotifications = async () => {
   return Notifications.setBadgeCountAsync(0);
 };
 
-export const notificationHandshake = async (user_id) => {
+export const notificationHandshake = async (userId) => {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
   if (existingStatus !== "granted") {
@@ -22,21 +22,21 @@ export const notificationHandshake = async (user_id) => {
   }
   const token = (await Notifications.getExpoPushTokenAsync()).data;
 
-  await fetch(`http://192.168.1.100:5500/user/${user_id}`, {
+  await fetch(`http://192.168.1.100:5500/user/${userId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user_id,
+      user_id: userId,
       token,
     }),
   });
 };
 
-export const getAllNotifications = async (user_id) => {
+export const getAllNotifications = async (userId) => {
   const notifs = await fetch(
-    `http://192.168.1.100:5500/user/${user_id}/notifications`
+    `http://192.168.1.100:5500/user/${userId}/notifications`
   ).then((res) => res.json());
 
   return notifs;
