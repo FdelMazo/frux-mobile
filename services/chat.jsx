@@ -8,7 +8,7 @@ export const sendMessage = async (
   body,
   chat_id = undefined
 ) => {
-  await fetch(NOTIFICATIONS_ENDPOINT + `/${project_id}`, {
+  await fetch(NOTIFICATIONS_ENDPOINT + `/chat/${project_id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const sendMessage = async (
 
 export const getProjectConversations = async (projectId, userId, isCreator) => {
   let conversations = await fetch(
-    NOTIFICATIONS_ENDPOINT + `/${projectId}`
+    NOTIFICATIONS_ENDPOINT + `/chat/${projectId}`
   ).then((res) => res.json());
 
   conversations.sort(

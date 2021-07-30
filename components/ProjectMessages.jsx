@@ -60,6 +60,7 @@ export default function Component({ data, created }) {
                 data.project.owner.dbId,
                 question
               );
+              setQuestion("");
               updateMessages();
             }}
           >
