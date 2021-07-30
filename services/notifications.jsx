@@ -35,9 +35,15 @@ export const notificationHandshake = async (userId) => {
 };
 
 export const getAllNotifications = async (userId) => {
-  const notifs = await fetch(
+  // Flashee python con la reasignacion de variables
+  let notifs = await fetch(
     NOTIFICATIONS_ENDPOINT + `/user/${userId}/notifications`
   ).then((res) => res.json());
+
+  // We want to display them from newest to oldest
+  notifs = notifs.sort(
+    (c1, c2) => new Date(c2?.created_at) - new Date(c1?.created_at)
+  );
 
   return notifs;
 };

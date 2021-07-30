@@ -147,10 +147,12 @@ export default function Component({ user_id, navigation }) {
                       <Div row w="100%" justifyContent="flex-end" my="xs">
                         <Icon
                           mr="sm"
-                          name={n.chat ? "envelope" : "checkcircle"}
+                          name={n.chat_id ? "envelope" : "checkcircle"}
                           fontSize="sm"
                           color="gray700"
-                          fontFamily={n.chat ? "SimpleLineIcons" : "AntDesign"}
+                          fontFamily={
+                            n.chat_id ? "SimpleLineIcons" : "AntDesign"
+                          }
                         />
                         <Text
                           mr="2xl"
@@ -169,6 +171,7 @@ export default function Component({ user_id, navigation }) {
                   <Collapse.Body
                     py={0}
                     px={0}
+                    h={50}
                     borderColor={"white"}
                     borderWidth={1}
                     rounded="sm"
