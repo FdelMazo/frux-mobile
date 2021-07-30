@@ -503,7 +503,7 @@ export default function Component({ data, mutations, created }) {
             {!!stages[shownStage]?.title ? "Close" : "Cancel"}
           </Button>
 
-          {stages[shownStage]?.title &&
+          {!!stages[shownStage]?.title &&
             data.project.currentState === "CREATED" && (
               <Button
                 onPress={() => {
