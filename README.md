@@ -6,11 +6,15 @@ Android Client for Frux.
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
+## How can I install Frux in my phone?
+
+Here is our [latest stable APK](https://expo.io/artifacts/5fc6330d-633c-4d8a-944b-53a4013d57af)!
+
 ## What is Frux?
 
 Frux is the newest crowdfunding app in town.
 
-Before reading this repo, you should probably visit our [homepage](https://www.notion.so/fdelmazo/frux-efab2dee3dd74d52b2a57311a1891bd4), with lots of info on the development, latest news, and lots (*lots*) of documentation. 
+Before reading this repo, you should probably visit our [homepage](https://www.notion.so/fdelmazo/frux-efab2dee3dd74d52b2a57311a1891bd4), with lots of info on the development, latest news, and lots (_lots_) of documentation.
 
 If you are only interested in the source code, check out the different repos!
 
