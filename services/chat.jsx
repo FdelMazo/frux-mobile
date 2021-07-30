@@ -1,4 +1,5 @@
 import groupBy from "lodash.groupby";
+import { NOTIFICATIONS_ENDPOINT } from "@env";
 
 export const sendMessage = async (
   project_id,
@@ -7,7 +8,7 @@ export const sendMessage = async (
   body,
   chat_id = undefined
 ) => {
-  await fetch(`http://192.168.1.100:5500/chat/${project_id}`, {
+  await fetch(NOTIFICATIONS_ENDPOINT + `/${project_id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +24,7 @@ export const sendMessage = async (
 
 export const getProjectConversations = async (projectId, userId, isCreator) => {
   let conversations = await fetch(
-    `http://192.168.1.100:5500/chat/${projectId}`
+    NOTIFICATIONS_ENDPOINT + `/${projectId}`
   ).then((res) => res.json());
 
   conversations.sort(

@@ -1,5 +1,5 @@
+import { NOTIFICATIONS_ENDPOINT } from "@env";
 import * as Notifications from "expo-notifications";
-
 Notifications.setNotificationChannelAsync("default", {
   name: "default",
   importance: Notifications.AndroidImportance.DEFAULT,
@@ -22,7 +22,7 @@ export const notificationHandshake = async (userId) => {
   }
   const token = (await Notifications.getExpoPushTokenAsync()).data;
 
-  await fetch(`http://192.168.1.100:5500/user/${userId}`, {
+  await fetch(NOTIFICATIONS_ENDPOINT + `/user/${userId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export const notificationHandshake = async (userId) => {
 
 export const getAllNotifications = async (userId) => {
   const notifs = await fetch(
-    `http://192.168.1.100:5500/user/${userId}/notifications`
+    NOTIFICATIONS_ENDPOINT + `/user/${userId}/notifications`
   ).then((res) => res.json());
 
   return notifs;
