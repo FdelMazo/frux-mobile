@@ -106,14 +106,14 @@ export default function Component({ data, isViewer, mutations }) {
             </Text>
 
             <Text my="md">
-              By agreeing on this terms, you'll be selected to supervise a
-              random project out of the thousands that make
+              By agreeing on this terms, you'll be randomly selected to
+              supervise projects out of the thousands that make
               <Text color="fruxgreen"> Frux</Text> what it is today.
             </Text>
 
             <Text my="md">
-              Don't worry! When a project is selected for you, you'll see it
-              right here in your profile screen.
+              Don't worry! When a project is selected for you, you'll get a
+              notification and see it right here in your profile screen.
             </Text>
           </>
         }
