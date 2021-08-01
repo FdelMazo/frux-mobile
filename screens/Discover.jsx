@@ -107,8 +107,8 @@ export default function Render(props) {
   });
 
   const errors = [error, mutateProjectError];
-  if (loading || error?.networkError?.name === "ServerParseError")
-    return <Loading />;
+  if (loading) return <Loading />;
+  if (error?.networkError?.name === "ServerParseError") refetch();
   if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
   return (
     <Screen

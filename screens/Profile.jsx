@@ -163,12 +163,12 @@ export default function Render(props) {
   `;
 
   const { user } = useUser();
-  const { loading, error, data } = useQuery(query, {
+  const { loading, error, data, refetch } = useQuery(query, {
     variables: { isLogged: !!user },
   });
   // if (error) return <Error errors={[error]} />;
-  if (loading || error?.networkError?.name === "ServerParseError")
-    return <Loading />;
+  if (loading) return <Loading />;
+  if (error?.networkError?.name === "ServerParseError") refetch();
   return !!data?.profile ? (
     <User dbId={data.profile.dbId} navigation={props.navigation} />
   ) : (
