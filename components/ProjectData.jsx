@@ -164,15 +164,19 @@ export default function Component({ data, created, mutations, navigation }) {
                     ))}
                   </Div>
                 ) : (
-                  <Text
-                    px={0}
-                    bg={undefined}
-                    mx="sm"
-                    color="fruxgreen"
-                    fontSize="sm"
-                  >
-                    ## add hashtags ##
-                  </Text>
+                  <>
+                    {created && (
+                      <Text
+                        px={0}
+                        bg={undefined}
+                        mx="sm"
+                        color="fruxgreen"
+                        fontSize="sm"
+                      >
+                        ## add hashtags ##
+                      </Text>
+                    )}
+                  </>
                 )}
               </TouchableOpacity>
             </Div>
