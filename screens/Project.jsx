@@ -347,8 +347,10 @@ export default function Render(props) {
   ];
 
   if (loading) return <Loading />;
+
   if (error?.networkError?.name === "ServerParseError") refetch();
-  if (errors.some((e) => e)) return <Error errors={errors} refetch={refetch} />;
+  else if (errors.some((e) => e))
+    return <Error errors={errors} refetch={refetch} />;
   return (
     <Screen
       data={data}
