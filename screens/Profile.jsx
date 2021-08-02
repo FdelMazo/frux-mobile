@@ -168,7 +168,10 @@ export default function Render(props) {
   });
   // if (error) return <Error errors={[error]} />;
   if (loading) return <Loading />;
-  if (error?.networkError?.name === "ServerParseError") refetch();
+  if (error?.networkError?.name === "ServerParseError") {
+    refetch();
+    return <Loading />;
+  }
   return !!data?.profile ? (
     <User dbId={data.profile.dbId} navigation={props.navigation} />
   ) : (
