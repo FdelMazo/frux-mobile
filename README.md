@@ -10,6 +10,8 @@ Android Client for Frux.
 
 Here is our [latest stable APK](https://expo.io/artifacts/92dc16fb-e2fd-4157-b454-947870bcfb2e)!
 
+Check out the [video walkthrough](https://youtu.be/mN2ryNOUrfk)!
+
 ## What is Frux?
 
 Frux is the newest crowdfunding app in town.
