@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { Collapse, Div, Icon, Image, Text } from "react-native-magnus";
 import { MainView, View } from "../components/Themed";
 
-const Component = ({ errors, refetch }) => {
+const Component = ({ errors }) => {
   return (
     <View>
       <MainView>
@@ -20,24 +20,6 @@ const Component = ({ errors, refetch }) => {
               </Text>
             </Div>
 
-            <Div my="md" alignItems="center">
-              <TouchableOpacity
-                onPress={async () => {
-                  refetch();
-                }}
-              >
-                <Text color="blue500" fontSize="lg">
-                  Why don't you try refreshing?
-                </Text>
-                <Icon
-                  name="refresh"
-                  fontFamily="SimpleLineIcons"
-                  fontSize="4xl"
-                  m="xs"
-                  color="blue700"
-                />
-              </TouchableOpacity>
-            </Div>
 
             {errors
               .filter((e) => e)

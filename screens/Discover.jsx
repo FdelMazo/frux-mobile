@@ -113,7 +113,7 @@ export default function Render(props) {
     refetch();
     return <Loading />;
   } else if (errors.some((e) => e))
-    return <Error errors={errors} refetch={refetch} />;
+    return <Error errors={errors} />;
   return (
     <Screen
       data={data}
