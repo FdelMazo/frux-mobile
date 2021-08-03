@@ -8,7 +8,7 @@ Android Client for Frux.
 
 ## How can I install Frux in my phone?
 
-Here is our [latest stable APK](https://expo.io/artifacts/5fc6330d-633c-4d8a-944b-53a4013d57af)!
+Here is our [latest stable APK](https://expo.io/artifacts/92dc16fb-e2fd-4157-b454-947870bcfb2e)!
 
 ## What is Frux?
 
