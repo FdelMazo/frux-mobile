@@ -125,12 +125,12 @@ export default function Component({ mutations, navigation }) {
             }
 
             setCreateProjectOverlay(false);
-
+            const finalizationDate = formatDateInput(newFinalizationDate);
             const newProject = await mutations.mutateProject({
               variables: {
                 name: newProjectName,
                 description: newProjectDescription,
-                deadline: formatDateInput(newFinalizationDate),
+                deadline: finalizationDate,
               },
             });
             setProjectId(newProject.data.mutateProject.dbId);
