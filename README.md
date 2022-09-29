@@ -58,7 +58,7 @@ Go to your favourite Android device and download the [Expo Go](https://expo.io/c
 
 ![](docs/expo.png)
 
-If you prefer to use the latest build in APK form, just go over to the [releases page](https://github.com/FdelMazo/frux-mobile/actions)!
+If you prefer to use the latest build in APK form, just go over to the [releases page](https://github.com/FdelMazo/frux-mobile/releases)!
 
 Even though this app is only developed for Android devices, Expo makes it pretty easy to port it to iOS too. If you are feeling risky, feel free to try it out on an iOS device with the Expo Go client installed.
 
